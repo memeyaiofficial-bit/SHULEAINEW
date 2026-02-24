@@ -17,7 +17,7 @@ class AppwriteService {
       const expiresAt = new Date();
       const { SUBSCRIPTION_PLANS } = require("../config/constants");
       expiresAt.setDate(
-        expiresAt.getDate() + SUBSCRIPTION_PLANS[paymentData.planType].days
+        expiresAt.getDate() + SUBSCRIPTION_PLANS[paymentData.planType].days,
       );
 
       const payment = await this.databases.createDocument(
@@ -27,18 +27,15 @@ class AppwriteService {
         {
           email: paymentData.email,
           phone: paymentData.phone,
-          transaction_code: paymentData.transactionCode,
           plan_type: paymentData.planType,
           amount: paymentData.amount,
           status: "pending",
           expires_at: expiresAt.toISOString(),
           paid_at: new Date().toISOString(),
-          game_name: paymentData.gameName || "",
-          till_number: paymentData.tillNumber || process.env.TILL_NUMBER,
           full_name: paymentData.fullName,
           user_agent: paymentData.userAgent || "",
           ip_address: paymentData.ipAddress || "",
-        }
+        },
       );
 
       return { success: true, payment };
@@ -53,7 +50,7 @@ class AppwriteService {
       const result = await this.databases.listDocuments(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        [Query.equal("transaction_code", transactionCode)]
+        [Query.equal("transaction_code", transactionCode)],
       );
 
       return {
@@ -75,7 +72,7 @@ class AppwriteService {
           Query.equal("email", email),
           Query.equal("status", "active"),
           Query.greaterThan("expires_at", new Date().toISOString()),
-        ]
+        ],
       );
 
       return {
@@ -94,7 +91,7 @@ class AppwriteService {
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
         [Query.equal("email", email), Query.orderDesc("$createdAt")],
-        100 // Limit to 100 records
+        100, // Limit to 100 records
       );
 
       return {
@@ -116,7 +113,7 @@ class AppwriteService {
         {
           status: status,
           verification_date: new Date().toISOString(),
-        }
+        },
       );
 
       return { success: true, payment: updatedPayment };
@@ -132,7 +129,7 @@ class AppwriteService {
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
         [Query.equal("status", "pending"), Query.orderDesc("$createdAt")],
-        limit
+        limit,
       );
 
       return { success: true, payments: result.documents };
@@ -155,12 +152,12 @@ class AppwriteService {
           user_full_name: userData.fullName,
           created_at: new Date().toISOString(),
           expires_at: new Date(
-            Date.now() + 30 * 24 * 60 * 60 * 1000
+            Date.now() + 30 * 24 * 60 * 60 * 1000,
           ).toISOString(), // 30 days
           last_active: new Date().toISOString(),
           user_agent: userData.userAgent || "",
           ip_address: userData.ipAddress || "",
-        }
+        },
       );
 
       return { success: true, session };
@@ -175,7 +172,7 @@ class AppwriteService {
       const session = await this.databases.getDocument(
         this.databaseId,
         process.env.SESSIONS_COLLECTION_ID,
-        sessionId
+        sessionId,
       );
 
       if (new Date(session.expires_at) < new Date()) {
@@ -194,14 +191,14 @@ class AppwriteService {
       // Get total payments
       const totalResult = await this.databases.listDocuments(
         this.databaseId,
-        process.env.USER_PAYMENTS_COLLECTION_ID
+        process.env.USER_PAYMENTS_COLLECTION_ID,
       );
 
       // Get pending payments
       const pendingResult = await this.databases.listDocuments(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        [Query.equal("status", "pending")]
+        [Query.equal("status", "pending")],
       );
 
       // Get active users
@@ -211,14 +208,14 @@ class AppwriteService {
         [
           Query.equal("status", "active"),
           Query.greaterThan("expires_at", new Date().toISOString()),
-        ]
+        ],
       );
 
       // Calculate total revenue from active payments
       const revenueResult = await this.databases.listDocuments(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        [Query.equal("status", "active")]
+        [Query.equal("status", "active")],
       );
 
       let totalRevenue = 0;
@@ -268,7 +265,7 @@ class AppwriteService {
             Query.search("email", filters.search),
             Query.search("transaction_code", filters.search),
             Query.search("full_name", filters.search),
-          ])
+          ]),
         );
       }
 
@@ -279,7 +276,7 @@ class AppwriteService {
         filters.limit,
         (filters.page - 1) * filters.limit,
         "paid_at",
-        "DESC"
+        "DESC",
       );
 
       return {
@@ -299,12 +296,89 @@ class AppwriteService {
       const payment = await this.databases.getDocument(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        paymentId
+        paymentId,
       );
 
       return { success: true, payment };
     } catch (error) {
       console.error("Get Payment By ID Error:", error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Get pending payment by phone and amount (for M-Pesa callback matching)
+  async getPendingPaymentByPhoneAndAmount(phone, amount) {
+    try {
+      // Ensure phone and amount are in correct format
+      const normalizedPhone = phone.toString().replace(/\D/g, "");
+      const normalizedAmount = Math.round(parseFloat(amount));
+
+      console.log(
+        `   🔍 Querying for phone: ${normalizedPhone}, amount: ${normalizedAmount}`,
+      );
+
+      // First try exact match with phone and amount
+      const result = await this.databases.listDocuments(
+        this.databaseId,
+        process.env.USER_PAYMENTS_COLLECTION_ID,
+        [
+          Query.equal("phone", normalizedPhone),
+          Query.equal("amount", normalizedAmount),
+          Query.equal("status", "pending"),
+          Query.orderDesc("$createdAt"),
+        ],
+      );
+
+      if (result.documents.length > 0) {
+        console.log(
+          `   ✅ Found exact match:`,
+          result.documents[0].$id,
+          "Phone:",
+          result.documents[0].phone,
+          "Amount:",
+          result.documents[0].amount,
+        );
+        return {
+          success: true,
+          payment: result.documents[0],
+        };
+      }
+
+      console.log(
+        `   ⚠️ No exact match found. Trying phone-only search for: ${normalizedPhone}`,
+      );
+
+      // Fallback: Try matching by phone number alone (sorted by most recent)
+      const phoneResult = await this.databases.listDocuments(
+        this.databaseId,
+        process.env.USER_PAYMENTS_COLLECTION_ID,
+        [
+          Query.equal("phone", normalizedPhone),
+          Query.equal("status", "pending"),
+          Query.orderDesc("$createdAt"),
+        ],
+      );
+
+      if (phoneResult.documents.length > 0) {
+        const payment = phoneResult.documents[0];
+        console.log(
+          `   ✅ Found by phone. Payment ID: ${payment.$id}, Phone: ${payment.phone}, Amount: ${payment.amount}, Expected: ${normalizedAmount}`,
+        );
+        return {
+          success: true,
+          payment,
+        };
+      }
+
+      console.log(
+        `   ❌ No pending payment found for phone: ${normalizedPhone}`,
+      );
+      return {
+        success: true,
+        payment: null,
+      };
+    } catch (error) {
+      console.error("Appwrite Error - Get Pending Payment:", error);
       return { success: false, error: error.message };
     }
   }

@@ -52,10 +52,10 @@ document.addEventListener("keydown", (e) => {
   const devtoolsCheck = /./;
   devtoolsCheck.toString = function () {
     console.warn(
-      "⚠️ Developer tools detected! Unauthorized access is prohibited."
+      "⚠️ Developer tools detected! Unauthorized access is prohibited.",
     );
     console.warn(
-      "🔒 This platform is protected. Please respect intellectual property rights."
+      "🔒 This platform is protected. Please respect intellectual property rights.",
     );
   };
   console.log("%c", devtoolsCheck);
@@ -64,25 +64,25 @@ document.addEventListener("keydown", (e) => {
 // Console warning message
 console.log(
   "%c⚠️ WARNING - STOP!",
-  "color: red; font-size: 30px; font-weight: bold;"
+  "color: red; font-size: 30px; font-weight: bold;",
 );
 console.log(
   "%cThis is a browser feature intended for developers.",
-  "font-size: 16px;"
+  "font-size: 16px;",
 );
 console.log(
   "%cIf someone told you to copy-paste something here, it's a scam and may compromise your account.",
-  "font-size: 14px;"
+  "font-size: 14px;",
 );
 console.log(
   "%c© 2024 MemeyAI Digital Solutions - ShuleAI Platform",
-  "font-size: 12px; color: #2e7d4a; font-weight: bold;"
+  "font-size: 12px; color: #2e7d4a; font-weight: bold;",
 );
 
 // Disable text selection on sensitive areas
 document.addEventListener("DOMContentLoaded", function () {
   const sensitiveElements = document.querySelectorAll(
-    ".payment-modal, .user-status-badge"
+    ".payment-modal, .user-status-badge",
   );
   sensitiveElements.forEach((el) => {
     el.style.userSelect = "none";
@@ -201,7 +201,7 @@ async function checkUserStatusImmediate() {
 
     const response = await fetch(
       `${API_BASE_URL}/payments/status/${encodeURIComponent(user.email)}`,
-      { cache: "no-store" }
+      { cache: "no-store" },
     );
 
     if (response.ok) {
@@ -239,23 +239,35 @@ function startAggressivePolling(email) {
     try {
       const response = await fetch(
         `${API_BASE_URL}/payments/status/${encodeURIComponent(email)}`,
-        { cache: "no-store" }
+        { cache: "no-store" },
       );
 
       if (response.ok) {
         const data = await response.json();
+        console.log(`📊 Poll #${pollCount}: Status response:`, data);
 
-        if (data.success && data.isActive) {
-          console.log("🎉 Subscription detected on poll", pollCount);
-          currentUser = data.subscription;
-          updateUIForSubscribedUser();
-          showUserStatusBadge();
-          stopStatusPolling();
+        if (data.success && data.subscription) {
+          console.log("   Subscription Data:", {
+            email: data.subscription.email,
+            plan: data.subscription.planName,
+            daysRemaining: data.subscription.daysRemaining,
+            status: data.subscription.status,
+            isActive: data.isActive,
+          });
 
-          showVibrantNotification(
-            "🎮 Ready to Play!",
-            "Your subscription is now active! Click any game to start playing."
-          );
+          if (data.isActive) {
+            console.log("🎉 Subscription ACTIVATED on poll", pollCount);
+            currentUser = data.subscription;
+            updateUIForSubscribedUser();
+            showUserStatusBadge();
+            stopStatusPolling();
+
+            showVibrantNotification(
+              "🎮 Ready to Play!",
+              "Your subscription is now active! Click any game to start playing.",
+            );
+            return;
+          }
         }
       }
 
@@ -359,6 +371,7 @@ function getGamePath(gameTitle) {
 
 function updateUIForSubscribedUser() {
   console.log("🎨 Updating UI for subscribed user");
+  console.log("   Current User Data:", currentUser);
 
   document.querySelectorAll(".play-button").forEach((button) => {
     button.textContent = "Play Now 🎮";
@@ -377,6 +390,83 @@ function updateUIForSubscribedUser() {
 
   showUserStatusBadge();
   closePaymentModal();
+}
+
+// Display user subscription/session status badge
+function showUserStatusBadge() {
+  // Remove existing badge
+  const existing = document.querySelector(".user-status-badge");
+  if (existing) existing.remove();
+
+  if (!currentUser) {
+    console.warn("⚠️ No user data available to display");
+    return;
+  }
+
+  // Determine subscription status
+  const isSubscribed =
+    currentUser.isActive !== undefined
+      ? currentUser.isActive
+      : currentUser.status === "active";
+  const daysRemaining = currentUser.daysRemaining || 0;
+  const planName = currentUser.planName || currentUser.plan_type || "Standard";
+  const fullName = currentUser.fullName || currentUser.email || "User";
+  const expiresAt = currentUser.expiresAt
+    ? new Date(currentUser.expiresAt).toLocaleDateString()
+    : "Unknown";
+
+  console.log("📊 Creating status badge:", {
+    email: currentUser.email,
+    isSubscribed,
+    daysRemaining,
+    planName,
+    fullName,
+    expiresAt,
+  });
+
+  const badge = document.createElement("div");
+  badge.className = "user-status-badge";
+  badge.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #2e7d4a 0%, #4caf50 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 9998;
+    font-size: 0.9rem;
+    min-width: 280px;
+    max-width: 350px;
+    font-family: Arial, sans-serif;
+  `;
+
+  const statusIcon = isSubscribed ? "✅" : "⏳";
+  const statusColor = isSubscribed ? "#4caf50" : "#ff9800";
+
+  badge.innerHTML = `
+    <div style="display: flex; align-items: start; gap: 10px;">
+      <span style="font-size: 1.2rem; margin-top: 2px;">${statusIcon}</span>
+      <div style="flex: 1;">
+        <div style="font-weight: bold; margin-bottom: 5px;">Subscription Status</div>
+        <div style="font-size: 0.85rem; opacity: 0.95;">
+          <div>👤 ${fullName}</div>
+          <div>📋 ${planName}</div>
+          <div>⏰ ${daysRemaining} days remaining</div>
+          <div>📅 Expires: ${expiresAt}</div>
+          <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.3); font-weight: bold; color: ${statusColor};">
+            ${isSubscribed ? "🎮 Full access active!" : "⌛ Pending verification..."}
+          </div>
+        </div>
+      </div>
+      <button onclick="document.querySelector('.user-status-badge').remove();" style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 0; margin: -5px -8px 0 0;">
+        ×
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(badge);
 }
 
 async function submitPayment() {
@@ -561,7 +651,7 @@ function openPaymentModal(gameTitle = "") {
     openSignInModal();
   } else {
     console.error(
-      "Sign-in modal function not found. Please ensure auth-shared.js is loaded."
+      "Sign-in modal function not found. Please ensure auth-shared.js is loaded.",
     );
   }
 }
@@ -597,9 +687,8 @@ function selectPlan(planType) {
   const plan = subscriptionPlans[planType];
 
   document.getElementById("amountDisplay").textContent = `KSh ${plan.amount}`;
-  document.getElementById(
-    "amountInstruction"
-  ).textContent = `KSh ${plan.amount}`;
+  document.getElementById("amountInstruction").textContent =
+    `KSh ${plan.amount}`;
 
   document.querySelectorAll(".plan-card").forEach((card) => {
     card.style.border = "2px solid #ddd";
@@ -709,7 +798,7 @@ function showPaymentSuccess(paymentData, paymentId) {
   setTimeout(() => {
     closePaymentModal();
     showNotification(
-      "Payment submitted successfully! We'll notify you when approved."
+      "Payment submitted successfully! We'll notify you when approved.",
     );
   }, 10000);
 }
@@ -847,7 +936,7 @@ function downloadWorksheet(worksheetId) {
         doc.setFontSize(9);
         const expLines = doc.splitTextToSize(
           `   Explanation: ${q.explanation}`,
-          170
+          170,
         );
         expLines.forEach((line) => {
           doc.text(line, 20, yPos);
@@ -891,7 +980,7 @@ function downloadWorksheet(worksheetId) {
         `© 2025 ChezaAI - ShuleAI Platform | Page ${i} of ${pageCount}`,
         105,
         290,
-        { align: "center" }
+        { align: "center" },
       );
     }
 
@@ -1126,7 +1215,7 @@ function printWorksheet(worksheetId) {
 
   setTimeout(() => {
     alert(
-      `Print dialog would open for "${worksheetId}" worksheet.\n\nIn production, this will:\n- Open the PDF in a new window\n- Trigger the browser's print dialog\n- Allow printer selection and settings`
+      `Print dialog would open for "${worksheetId}" worksheet.\n\nIn production, this will:\n- Open the PDF in a new window\n- Trigger the browser's print dialog\n- Allow printer selection and settings`,
     );
   }, 500);
 }
@@ -1333,7 +1422,7 @@ function viewLessonPlans(subject) {
         `© 2025 ChezaAI - ShuleAI Platform | CBC Lesson Plans | Page ${i} of ${pageCount}`,
         105,
         290,
-        { align: "center" }
+        { align: "center" },
       );
     }
 
@@ -1568,13 +1657,13 @@ function downloadAssessment(type) {
     doc.text(
       "This tool aligns with CBC competency-based assessment principles.",
       20,
-      yPos
+      yPos,
     );
     yPos += 6;
     doc.text(
       "Designed for holistic evaluation of learner progress and achievement.",
       20,
-      yPos
+      yPos,
     );
     yPos += 12;
 
@@ -1833,7 +1922,7 @@ function downloadAssessment(type) {
         `© 2025 ChezaAI - ShuleAI Platform | ${assessmentName} | Page ${i} of ${pageCount}`,
         105,
         290,
-        { align: "center" }
+        { align: "center" },
       );
     }
 

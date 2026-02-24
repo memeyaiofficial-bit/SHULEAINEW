@@ -67,9 +67,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function openSignInModal() {
   document.getElementById("signInModal").style.display = "block";
-  document.getElementById("signInStep").style.display = "block";
+  document.getElementById("paymentInfoStep").style.display = "block";
+  document.getElementById("signInStep").style.display = "none";
   document.getElementById("verifyCodeStep").style.display = "none";
-  document.getElementById("paymentInfoStep").style.display = "none";
 }
 
 function closeSignInModal() {
@@ -83,6 +83,12 @@ function showPaymentInfo() {
 }
 
 function backToSignIn() {
+  document.getElementById("signInStep").style.display = "block";
+  document.getElementById("verifyCodeStep").style.display = "none";
+  document.getElementById("paymentInfoStep").style.display = "none";
+}
+
+function showSignInStep() {
   document.getElementById("signInStep").style.display = "block";
   document.getElementById("verifyCodeStep").style.display = "none";
   document.getElementById("paymentInfoStep").style.display = "none";
@@ -298,75 +304,66 @@ function handleSpecialCode(
   submitBtn,
   originalBtnText,
 ) {
-  // Define valid special codes with creation dates
-  const validSpecialCodes = {
-    "SPECIAL-DEMO1": {
-      created: "2026-01-29",
-      description: "Demo Access Code 1",
-    },
-    "SPECIAL-DEMO2": {
-      created: "2026-01-29",
-      description: "Demo Access Code 2",
-    },
-    "SPECIAL-TRIAL": {
-      created: "2026-01-29",
-      description: "Trial Access Code",
-    },
-    "SPECIAL-TEST1": {
-      created: "2026-01-29",
-      description: "Test Access Code 1",
-    },
-  };
+  // ADMIN ONLY: Single master access code
+  // This code grants unlimited access to admin email only
+  const ADMIN_EMAIL = "shuleaiadmin@memeyai.com";
+  const ADMIN_CODE = "SHULEAI-ADMIN-2025";
 
-  const codeInfo = validSpecialCodes[accessCode];
-
-  if (!codeInfo) {
-    alert("❌ Invalid special code. Please check and try again.");
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
-    return true; // Handled
-  }
-
-  // Check if code has expired (2 days from creation)
-  const createdDate = new Date(codeInfo.created);
-  const expiryDate = new Date(createdDate.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 days
-  const now = new Date();
-
-  if (now > expiryDate) {
+  // Check if email is admin email
+  if (phoneOrEmail.toLowerCase() !== ADMIN_EMAIL) {
     alert(
-      `⏰ Special code "${accessCode}" has expired.\n\nIt was valid from ${createdDate.toLocaleDateString()} to ${expiryDate.toLocaleDateString()}.\n\nPlease contact admin for a new special code or use regular payment options.`,
+      "❌ This access code is for admin use only.\n\nPlease contact admin at " +
+        ADMIN_EMAIL +
+        " for valid access codes.",
     );
     submitBtn.disabled = false;
     submitBtn.textContent = originalBtnText;
     return true; // Handled
   }
 
-  // Calculate remaining time
-  const remainingTime = expiryDate.getTime() - now.getTime();
-  const remainingHours = Math.ceil(remainingTime / (1000 * 60 * 60));
-  const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+  // Check if code matches admin code
+  if (accessCode !== ADMIN_CODE) {
+    alert("❌ Invalid admin code. Please enter the correct admin access code.");
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+    return true; // Handled
+  }
 
-  // Special code is valid - grant access
+  // Admin code is valid - grant unlimited access
+  console.log("🔐 ADMIN ACCESS GRANTED");
+
+  // Set permanent access (no expiry)
+  const permanentExpiry = new Date(
+    Date.now() + 365 * 24 * 60 * 60 * 1000,
+  ).getTime(); // 1 year (effectively permanent for admin)
+
   localStorage.setItem("shuleai_signed_in", "true");
-  localStorage.setItem("shuleai_access_code", accessCode);
-  localStorage.setItem("shuleai_contact", phoneOrEmail);
-  localStorage.setItem("shuleai_access_expiry", expiryDate.getTime());
-  localStorage.setItem("shuleai_access_type", "special");
+  localStorage.setItem("shuleai_access_code", ADMIN_CODE);
+  localStorage.setItem("shuleai_contact", ADMIN_EMAIL);
+  localStorage.setItem("shuleai_access_expiry", permanentExpiry);
+  localStorage.setItem("shuleai_access_type", "admin");
   localStorage.setItem(
     "shuleai_user_data",
     JSON.stringify({
-      contact: phoneOrEmail,
-      accessType: "special",
-      codeDescription: codeInfo.description,
-      expiryDate: expiryDate.getTime(),
-      remainingDays: remainingDays,
+      contact: ADMIN_EMAIL,
+      accessType: "admin",
+      role: "Administrator",
+      accessLevel: "unlimited",
+      expiryDate: permanentExpiry,
+      createdAt: new Date().toISOString(),
     }),
   );
 
   // Success notification
   showQuickNotification(
-    `✅ Special access granted! ${remainingDays > 1 ? remainingDays + " days" : remainingHours + " hours"} remaining.`,
+    "✅ Admin access granted! Unlimited access to all resources.",
   );
+
+  console.log("📋 Admin session created:", {
+    email: ADMIN_EMAIL,
+    accessType: "admin",
+    expiresAt: new Date(permanentExpiry).toISOString(),
+  });
 
   // Close modal and show main app
   closeSignInModal();
@@ -386,8 +383,8 @@ function initializeSignInForm() {
       const submitBtn = e.target.querySelector('button[type="submit"]');
       const originalBtnText = submitBtn.textContent;
 
-      // Check if it's a special code
-      if (accessCode.startsWith("SPECIAL-")) {
+      // Check if it's an admin code
+      if (accessCode.startsWith("SHULEAI-")) {
         if (
           handleSpecialCode(
             phoneOrEmail,
@@ -403,7 +400,7 @@ function initializeSignInForm() {
       // Validate regular code format
       if (accessCode.length !== 6 || !/^\d{6}$/.test(accessCode)) {
         alert(
-          "Please enter a valid 6-digit code or special code (SPECIAL-XXXXX)",
+          "Please enter a valid 6-digit code or admin code (SHULEAI-XXXXX)",
         );
         return;
       }
@@ -474,7 +471,7 @@ function initializeSignInForm() {
 
 // Initialize forms when DOM is loaded
 window.addEventListener("DOMContentLoaded", () => {
-  initializePaymentForm();
+  // initializePaymentForm(); // ← Disabled: using new STK Push handler in index.html instead
   initializeSignInForm();
 });
 
@@ -2011,38 +2008,22 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 });
 
-// Special Code Generator (for admin use)
-// To use in console: generateSpecialCode("Test Code for User")
-function generateSpecialCode(description = "Generated Special Code") {
-  const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
-  const specialCode = `SPECIAL-${randomSuffix}`;
-  const creationDate = new Date().toISOString().split("T")[0];
-  const expiryDate = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0];
+// Admin Access Information
+// ADMIN CODE: SHULEAI-ADMIN-2025
+// EMAIL: shuleaiadmin@memeyai.com
+// EXPIRY: Never expires (permanent admin access)
+// This code grants unlimited access to all platform features
 
-  console.log(`
+console.log(`
 ╔════════════════════════════════════════╗
-║           SPECIAL CODE GENERATED       ║
+║          ADMIN ACCESS CONFIGURED       ║
 ╠════════════════════════════════════════╣
-║ Code: ${specialCode.padEnd(26)} ║
-║ Description: ${description.substring(0, 20).padEnd(20)} ║
-║ Created: ${creationDate.padEnd(23)} ║
-║ Expires: ${expiryDate.padEnd(23)} ║
-║ Valid for: 2 days                      ║
+║ Admin Email: shuleaiadmin@memeyai.com ║
+║ Admin Code: SHULEAI-ADMIN-2025        ║
+║ Expiry: NEVER (permanent)              ║
+║ Access Level: UNLIMITED                ║
 ╚════════════════════════════════════════╝
-
-To activate this code, add it to the validSpecialCodes object in handleSpecialCode function:
-"${specialCode}": { created: "${creationDate}", description: "${description}" }
-  `);
-
-  return {
-    code: specialCode,
-    description: description,
-    created: creationDate,
-    expires: expiryDate,
-  };
-}
+`);
 
 // End of file - confirm everything loaded
 console.log("✅ auth-shared.js loaded completely!");
@@ -2050,4 +2031,5 @@ console.log("📋 Functions defined:", {
   toggleGames: typeof toggleGames !== "undefined",
   showQuickNotification: typeof showQuickNotification !== "undefined",
   openSignInModal: typeof openSignInModal !== "undefined",
+  handleSpecialCode: typeof handleSpecialCode !== "undefined",
 });

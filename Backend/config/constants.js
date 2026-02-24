@@ -5,20 +5,26 @@ module.exports = {
   SUPPORT_EMAIL: "support@shuleai.com",
 
   SUBSCRIPTION_PLANS: {
+    test: {
+      amount: 5,
+      days: 1,
+      name: "Test Plan (5 KES)",
+    },
     weekly: {
-      amount: 50,
+      amount: 200,
       days: 7,
       name: "Weekly Access",
     },
     monthly: {
-      amount: 150,
+      amount: 600,
       days: 30,
       name: "Monthly Access",
     },
     termly: {
-      amount: 400,
-      days: 90,
-      name: "Termly Access",
+      amount: 1650,
+      days: 90, // Approximately 3 calendar months
+      months: 3, // Exact: 3 calendar months from purchase date
+      name: "Termly Access - 3 Months",
     },
   },
 

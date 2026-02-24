@@ -214,77 +214,218 @@ class EmailService {
       hasPassword: !!process.env.EMAIL_PASSWORD,
     });
     const plan = SUBSCRIPTION_PLANS[paymentData.planType];
+    const fullName =
+      paymentData.fullName || paymentData.full_name || "Valued User";
 
     const mailOptions = {
       from: `"ShuleAI" <${process.env.EMAIL_USER}>`,
       to: paymentData.email,
-      subject: `Payment Received - ShuleAI ${plan.name}`,
+      subject: `⏳ Payment Received - Awaiting Verification`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #2e7d4a, #4caf50); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
-                .info-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4caf50; }
-                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 0.9rem; }
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+                .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; text-align: center; }
+                .header h1 { font-size: 28px; margin-bottom: 10px; }
+                .header p { font-size: 16px; opacity: 0.95; }
+                .icon { font-size: 3rem; margin-bottom: 15px; }
+                .content { padding: 30px; }
+                .greeting { font-size: 16px; margin-bottom: 20px; }
+                .status-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 6px; margin: 20px 0; }
+                .status-box strong { color: #856404; }
+                .details-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                .detail-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #ddd; }
+                .detail-row:last-child { border-bottom: none; }
+                .detail-label { font-weight: 600; color: #555; }
+                .detail-value { color: #667eea; font-weight: 600; }
+                .amount-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+                .amount-value { font-size: 32px; font-weight: bold; margin: 10px 0; }
+                .features-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #e0e0e0; }
+                .features-box h3 { color: #667eea; margin-bottom: 15px; font-size: 16px; }
+                .feature { display: flex; align-items: center; padding: 8px 0; }
+                .feature-icon { color: #4caf50; margin-right: 10px; font-size: 18px; }
+                .feature-text { color: #555; }
+                .timeline { margin: 25px 0; }
+                .step { display: flex; margin: 15px 0; }
+                .step-number { background: #667eea; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; flex-shrink: 0; }
+                .step-content { padding-top: 5px; }
+                .step-title { font-weight: 600; color: #333; margin-bottom: 5px; }
+                .step-desc { color: #666; font-size: 14px; }
+                .action-button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 20px 0; text-align: center; width: 100%; box-sizing: border-box; }
+                .action-button:hover { opacity: 0.95; }
+                .support-box { background: #f0f4ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 6px; margin: 20px 0; }
+                .support-box h4 { color: #667eea; margin-bottom: 10px; }
+                .support-box p { color: #555; margin: 5px 0; font-size: 14px; }
+                .footer { background: #f5f5f5; padding: 20px 30px; text-align: center; border-top: 1px solid #ddd; }
+                .footer p { color: #666; font-size: 12px; margin: 5px 0; }
+                .footer-links { margin-top: 10px; }
+                .footer-links a { color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px; }
             </style>
         </head>
         <body>
             <div class="container">
                 <div class="header">
+                    <div class="icon">⏳</div>
                     <h1>Payment Received!</h1>
-                    <p>Thank you for subscribing to ShuleAI</p>
+                    <p>Thank you for your purchase</p>
                 </div>
+
                 <div class="content">
-                    <h2>Hello ${paymentData.fullName},</h2>
-                    <p>We have received your payment for ShuleAI ${
-                      plan.name
-                    }.</p>
-                    
-                    <div class="info-box">
-                        <h3>Payment Details:</h3>
-                        <p><strong>Transaction Code:</strong> ${
-                          paymentData.transactionCode
-                        }</p>
-                        <p><strong>Amount Paid:</strong> KSh ${
-                          paymentData.amount
-                        }</p>
-                        <p><strong>Plan:</strong> ${plan.name}</p>
-                        <p><strong>Till Number:</strong> ${TILL_NUMBER}</p>
-                        <p><strong>Payment Date:</strong> ${new Date().toLocaleDateString()}</p>
-                        <p><strong>Payment ID:</strong> ${
-                          paymentData.paymentId
-                        }</p>
+                    <div class="greeting">
+                        <p>Hello <strong>${fullName}</strong>,</p>
+                        <p>We have successfully received your payment for <strong>${plan.name}</strong>. Your subscription is now being processed.</p>
                     </div>
-                    
-                    <div class="info-box">
-                        <h3>What's Next?</h3>
-                        <p>✅ Your payment is being verified</p>
-                        <p>📧 You'll receive another email when your subscription is activated</p>
-                        <p>⏰ Activation typically takes 2-24 hours</p>
-                        <p>📱 For immediate activation, WhatsApp your M-Pesa confirmation to: <strong>${SUPPORT_WHATSAPP}</strong></p>
+
+                    <div class="status-box">
+                        <strong>⏳ Status: Awaiting Verification</strong>
+                        <p style="margin-top: 8px; font-size: 14px;">Our admin team is verifying your payment with M-Pesa. This typically takes 1-5 minutes. Once verified, you'll receive a confirmation email with immediate access to all features.</p>
                     </div>
-                    
-                    <p>If you have any questions, please reply to this email or contact our support team.</p>
-                    
-                    <div class="footer">
-                        <p>Best regards,<br>The ShuleAI Team</p>
-                        <p>© 2025 ShuleAI. All rights reserved.</p>
+
+                    <div class="amount-box">
+                        <div style="font-size: 14px; opacity: 0.9;">Amount Paid</div>
+                        <div class="amount-value">KES ${paymentData.amount}</div>
+                        <div style="font-size: 12px; opacity: 0.85; margin-top: 5px;">Phone: ${paymentData.phone}</div>
                     </div>
+
+                    <div class="details-box">
+                        <div class="detail-row">
+                            <span class="detail-label">📋 Plan</span>
+                            <span class="detail-value">${plan.name}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">💳 Amount</span>
+                            <span class="detail-value">KES ${paymentData.amount}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">📞 Payment Method</span>
+                            <span class="detail-value">M-Pesa</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">✉️ Email</span>
+                            <span class="detail-value">${paymentData.email}</span>
+                        </div>
+                    </div>
+
+                    <div class="features-box">
+                        <h3>✨ What You'll Get:</h3>
+                        <div class="feature">
+                            <span class="feature-icon">🎮</span>
+                            <span class="feature-text">54+ Educational Games aligned with CBC curriculum</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📚</span>
+                            <span class="feature-text">All subjects covered: Math, Science, English, Kiswahili & more</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📊</span>
+                            <span class="feature-text">Progress tracking and detailed performance insights</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">⭐</span>
+                            <span class="feature-text">Interactive learning experiences and achievements</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <h3 style="margin-bottom: 15px; color: #333;">What Happens Next:</h3>
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">Verification (1-5 minutes)</div>
+                                <div class="step-desc">Our admin team verifies your M-Pesa payment</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Confirmation Email</div>
+                                <div class="step-desc">You'll receive an email confirming your subscription activation</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Start Learning</div>
+                                <div class="step-desc">Sign in and immediately access all games and features</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="${process.env.FRONTEND_URL || "https://shule.memeyai.com"}" class="action-button">Visit ShuleAI Now →</a>
+
+                    <div class="support-box">
+                        <h4>❓ Need Help?</h4>
+                        <p>📧 Email: ${process.env.SUPPORT_EMAIL || "support@shuleai.com"}</p>
+                        <p>💬 WhatsApp: ${SUPPORT_WHATSAPP || "+254111579473"}</p>
+                        <p>If you have any questions or concerns, feel free to reach out to our support team.</p>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <p><strong>Thank you for choosing ShuleAI!</strong></p>
+                    <p>We're committed to providing the best learning experience for students</p>
+                    <div class="footer-links">
+                        <a href="${process.env.FRONTEND_URL || "https://shule.memeyai.com"}">Visit Website</a>
+                        <a href="mailto:${process.env.SUPPORT_EMAIL || "support@shuleai.com"}">Contact Us</a>
+                    </div>
+                    <p style="margin-top: 15px; border-top: 1px solid #ddd; padding-top: 15px;">
+                        © 2026 Shule AI Plus +. All rights reserved.
+                    </p>
                 </div>
             </div>
         </body>
         </html>
       `,
+      text: `Payment Received - Thank You!
+
+Hello ${fullName},
+
+We have successfully received your payment for ${plan.name}.
+
+Payment Details:
+- Plan: ${plan.name}
+- Amount: KES ${paymentData.amount}
+- Payment Method: M-Pesa
+- Email: ${paymentData.email}
+
+Status: Awaiting Verification
+
+Our admin team is verifying your payment with M-Pesa. This typically takes 1-5 minutes. Once verified, you'll receive a confirmation email with immediate access to all features.
+
+What You Get:
+✓ 54+ Educational Games aligned with CBC curriculum
+✓ All subjects covered: Math, Science, English, Kiswahili & more
+✓ Progress tracking and detailed performance insights
+✓ Interactive learning experiences
+
+What Happens Next:
+1. Verification (1-5 minutes) - Our admin team verifies your M-Pesa payment
+2. Confirmation Email - You'll receive confirmation of your subscription activation
+3. Start Learning - Sign in and access all games and features immediately
+
+Need Help?
+Email: ${process.env.SUPPORT_EMAIL || "support@shuleai.com"}
+WhatsApp: ${SUPPORT_WHATSAPP || "+254111579473"}
+
+Visit: ${process.env.FRONTEND_URL || "https://shule.memeyai.com"}
+
+Thank you for choosing ShuleAI!
+© 2026 Shule AI Plus +. All rights reserved.`,
     };
 
     try {
-      console.log("📤 Attempting to send email via transporter");
+      console.log(
+        "📤 Attempting to send payment confirmation email via transporter",
+      );
       const info = await this.transporter.sendMail(mailOptions);
-      console.log("✅ Email sent successfully:", info.messageId);
+      console.log(
+        "✅ Payment confirmation email sent successfully:",
+        info.messageId,
+      );
       return { success: true };
     } catch (error) {
       console.error("Email Error:", error);
@@ -368,7 +509,7 @@ class EmailService {
                             paymentData.transaction_code
                           }</p>
                           <p><strong>Valid Until:</strong> ${new Date(
-                            paymentData.expires_at
+                            paymentData.expires_at,
                           ).toLocaleDateString()}</p>
                       </div>
 
@@ -405,7 +546,7 @@ class EmailService {
         text: `Payment Approved - Your ShuleAI Access Code\n\nYour 6-digit access code: ${accessCode}\n\nValid for: 5 minutes\n\nSubscription: ${
           plan.name
         }\nAmount: KSh ${paymentData.amount}\nValid Until: ${new Date(
-          paymentData.expires_at
+          paymentData.expires_at,
         ).toLocaleDateString()}\n\nTo sign in:\n1. Go to ${
           process.env.FRONTEND_URL || "ShuleAI"
         }\n2. Click "Sign In"\n3. Enter your email: ${
@@ -502,7 +643,7 @@ class EmailService {
                                 <li><strong>Expires:</strong> ${expiresAt.toLocaleDateString()}</li>
                                 <li><strong>Days Remaining:</strong> ${Math.ceil(
                                   (expiresAt - new Date()) /
-                                    (1000 * 60 * 60 * 24)
+                                    (1000 * 60 * 60 * 24),
                                 )} days</li>
                                 <li><strong>Access Level:</strong> Full access to all games and features</li>
                             </ul>

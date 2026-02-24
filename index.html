@@ -42,9 +42,18 @@
           <div class="pricing-section">
             <h2>Choose Your Plan</h2>
             <div class="pricing-cards">
+              <div class="pricing-card" style="opacity: 0.85; border: 2px dashed #999;">
+                <h3>Test Plan</h3>
+                <div class="price">KES 5</div>
+                <ul class="features-list">
+                  <li>✓ Test M-Pesa</li>
+                  <li>✓ 1 day access</li>
+                  <li>✓ Demo purposes</li>
+                </ul>
+              </div>
               <div class="pricing-card">
                 <h3>Weekly Access</h3>
-                <div class="price">KES 50</div>
+                <div class="price">KES 200</div>
                 <ul class="features-list">
                   <li>✓ Access all games</li>
                   <li>✓ All subjects included</li>
@@ -55,7 +64,7 @@
               <div class="pricing-card featured">
                 <div class="popular-badge">Most Popular</div>
                 <h3>Monthly Access</h3>
-                <div class="price">KES 150</div>
+                <div class="price">KES 600</div>
                 <ul class="features-list">
                   <li>✓ Access all games</li>
                   <li>✓ All subjects included</li>
@@ -66,7 +75,7 @@
               </div>
               <div class="pricing-card">
                 <h3>Termly Access</h3>
-                <div class="price">KES 400</div>
+                <div class="price">KES 1650</div>
                 <ul class="features-list">
                   <li>✓ Access all games</li>
                   <li>✓ All subjects included</li>
@@ -97,7 +106,7 @@
       <div class="auth-modal-content">
         <span class="auth-close" onclick="closeSignInModal()">&times;</span>
 
-        <div id="signInStep" class="auth-step">
+        <div id="signInStep" class="auth-step" style="display: none">
           <div class="auth-header">
             <h2>Sign In to Shule AI Plus +</h2>
             <p>Enter your email/phone and access code from admin approval</p>
@@ -149,19 +158,7 @@
               Don't have an access code yet?
               <a href="#" onclick="showPaymentInfo()">View payment options</a>
             </p>
-            <p
-              style="
-                margin-top: 15px;
-                padding: 10px;
-                background: #f0f8ff;
-                border-radius: 5px;
-                border-left: 4px solid #4caf50;
-              "
-            >
-              <strong>🎁 Have a Special Code?</strong><br />
-              Enter your special code (format: SPECIAL-XXXXX) for 2 days free
-              access!
-            </p>
+            
           </div>
         </div>
 
@@ -186,7 +183,7 @@
           </div>
         </div>
 
-        <div id="paymentInfoStep" class="auth-step" style="display: none">
+        <div id="paymentInfoStep" class="auth-step">
           <div class="auth-header">
             <h2>Submit Payment Information</h2>
             <p>Complete payment and submit your details below</p>
@@ -196,233 +193,11 @@
             class="payment-options"
             style="max-height: 60vh; overflow-y: auto; padding-right: 10px"
           >
-            <!-- Till Number Display -->
-            <div
-              style="
-                text-align: center;
-                margin-bottom: 20px;
-                padding: 20px;
-                background: linear-gradient(135deg, #2e7d4a 0%, #1e5a35 100%);
-                border-radius: 10px;
-                color: white;
-              "
-            >
-              <h3 style="margin: 0 0 15px 0">Pay to Till Number:</h3>
-              <div
-                style="
-                  font-size: 2.5rem;
-                  font-weight: bold;
-                  letter-spacing: 3px;
-                "
-              >
-                5628512
-              </div>
-              <p style="margin: 15px 0 0 0; font-size: 1rem; opacity: 0.9">
-                <strong>Business Name:</strong> MemeyAI Digital Solutions
-              </p>
-            </div>
+             
 
-            <!-- Payment Instructions -->
-            <div style="margin: 20px 0">
-              <h4
-                style="
-                  margin-bottom: 20px;
-                  color: #2e7d4a;
-                  display: flex;
-                  align-items: center;
-                  gap: 10px;
-                "
-              >
-                <span style="font-size: 1.5rem">📱</span> How to Pay via M-Pesa:
-              </h4>
-              <div style="display: flex; flex-direction: column; gap: 12px">
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    1
-                  </div>
-                  <div style="padding-top: 5px">
-                    Go to <strong>M-Pesa</strong> on your phone
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    2
-                  </div>
-                  <div style="padding-top: 5px">
-                    Select <strong>Lipa na M-Pesa</strong>
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    3
-                  </div>
-                  <div style="padding-top: 5px">
-                    Select <strong>Buy Goods and Services</strong>
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    4
-                  </div>
-                  <div style="padding-top: 5px">
-                    Enter Till Number: <strong>5628512</strong>
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    5
-                  </div>
-                  <div style="padding-top: 5px">
-                    Enter Amount based on your plan (KES 50/150/400)
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    6
-                  </div>
-                  <div style="padding-top: 5px">
-                    Enter your <strong>M-Pesa PIN</strong>
-                  </div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    7
-                  </div>
-                  <div style="padding-top: 5px">Wait for confirmation SMS</div>
-                </div>
-                <div style="display: flex; align-items: start; gap: 15px">
-                  <div
-                    style="
-                      min-width: 32px;
-                      height: 32px;
-                      background: #2e7d4a;
-                      color: white;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: bold;
-                    "
-                  >
-                    8
-                  </div>
-                  <div style="padding-top: 5px">
-                    Submit payment details below and wait for admin approval
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pricing Plans -->
-            <div class="pricing-quick" style="margin: 20px 0">
-              <div class="price-item">
-                <span>Weekly:</span>
-                <strong>KES 50</strong>
-              </div>
-              <div class="price-item">
-                <span>Monthly:</span>
-                <strong>KES 150</strong>
-              </div>
-              <div class="price-item">
-                <span>Termly:</span>
-                <strong>KES 400</strong>
-              </div>
-            </div>
-
-            <!-- Payment Submission Form -->
-            <form
-              id="paymentSubmissionForm"
-              class="auth-form"
-              style="margin-top: 20px"
-            >
-              <h4 style="color: #2e7d4a; margin-bottom: 15px">
-                📋 Submit Your Payment Details
-              </h4>
-
+            <!-- Payment Submission Form - simplified Pay Now flow -->
+            <form id="paymentSubmissionForm" class="auth-form" style="margin-top: 20px">
+              <h4 style="color: #2e7d4a; margin-bottom: 15px">📋Submit Your Payment Details & Pay</h4>
               <div class="form-group">
                 <label for="paymentFullName">Full Name *</label>
                 <input
@@ -433,7 +208,6 @@
                   required
                 />
               </div>
-
               <div class="form-group">
                 <label for="paymentEmail">Email Address *</label>
                 <input
@@ -446,69 +220,37 @@
               </div>
 
               <div class="form-group">
-                <label for="paymentPhone">M-Pesa Phone Number *</label>
-                <input
-                  type="tel"
-                  id="paymentPhone"
-                  name="phone"
-                  placeholder="0712345678 or 254712345678"
-                  required
-                />
-                <small style="color: #666; font-size: 0.85rem"
-                  >Must match your M-Pesa registered number</small
-                >
-              </div>
-
-              <div class="form-group">
-                <label for="transactionCode">M-Pesa Transaction Code *</label>
-                <input
-                  type="text"
-                  id="transactionCode"
-                  name="transactionCode"
-                  placeholder="e.g., ABC1234XYZ"
-                  required
-                  style="text-transform: uppercase"
-                />
-                <small style="color: #666; font-size: 0.85rem"
-                  >From your M-Pesa confirmation SMS</small
-                >
-              </div>
-
-              <div class="form-group">
                 <label for="planType">Subscription Plan *</label>
-                <select
-                  id="planType"
-                  name="planType"
-                  required
-                  style="
-                    width: 100%;
-                    padding: 1rem;
-                    border: 2px solid #ddd;
-                    border-radius: 10px;
-                    font-size: 1rem;
-                    background: white;
-                  "
-                >
+                <select id="planType" name="planType" required style="width: 100%; padding: 1rem; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; background: white;">
                   <option value="">Select a plan</option>
-                  <option value="weekly">Weekly - KES 50</option>
-                  <option value="monthly">Monthly - KES 150</option>
-                  <option value="termly">Termly - KES 400</option>
+                  <option value="test">Test Plan - KES 5 (1 day)</option>
+                  <option value="weekly">Weekly - KES 200</option>
+                  <option value="monthly">Monthly - KES 600</option>
+                  <option value="termly">Termly (3 Months) - KES 1650</option>
                 </select>
               </div>
 
-              <button type="submit" class="auth-btn" style="margin-top: 10px">
-                Submit Payment Information
-              </button>
+              <div class="form-group">
+                <label for="paymentPhone">M-Pesa Phone Number *</label>
+                <input type="tel" id="paymentPhone" name="phone" placeholder="0712345678 or 254712345678" required />
+                <small style="color: #666; font-size: 0.85rem">Must match your M-Pesa registered number</small>
+              </div>
+
+              <button type="submit" class="auth-btn" id="payNowBtn" style="margin-top: 10px">Pay Now</button>
+
+              <div id="paymentStatus" style="margin-top:12px; font-size:0.95rem"></div>
             </form>
           </div>
 
-          <button
-            class="auth-btn"
-            onclick="backToSignIn()"
-            style="margin-top: 15px; background: #666"
-          >
-            Back to Sign In
-          </button>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button
+              class="auth-btn"
+              onclick="showSignInStep()"
+              style="flex: 1; background: #667eea"
+            >
+              Already Have a Code?
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -11592,7 +11334,9 @@
       src="js/tutor-system.js"
       onload="console.log('✅ tutor-system.js loaded successfully')"
       onerror="console.error('❌ Failed to load tutor-system.js')"
-    ></script>
+    >
+  </script>
+
     <script>
       console.log("📁 After loading auth-shared.js");
       console.log(
@@ -11689,6 +11433,216 @@
         transform: rotate(180deg);
       }
     </style>
+
+    <!-- STK Push frontend handler -->
+    <script>
+      (function () {
+        // Configure backend API URL - UPDATE THIS FOR YOUR ENVIRONMENT
+        // For development: use http://localhost:5000 (local backend)
+        // For production: use your backend URL (e.g., https://shuleaibackend-0fcq.onrender.com)
+        const API_BASE_URL = 'http://localhost:5000';  // ← CHANGE THIS to your backend URL
+        
+        console.log('🔗 API Base URL configured as:', API_BASE_URL);
+
+        const planAmounts = { test: 5, weekly: 200, monthly: 600, termly: 1650 };
+        const planDays = { test: 1, weekly: 7, monthly: 30, termly: 90 };
+
+        function normalizePhone(input) {
+          let p = (input || "").replace(/\D/g, "");
+          if (p.startsWith("0")) p = "254" + p.substring(1);
+          else if ((p.startsWith("7") || p.startsWith("1")) && p.length === 9) p = "254" + p;
+          return p;
+        }
+
+        function calculateExpiry(planType) {
+          const days = planDays[planType] || 30;
+          const expiry = new Date();
+          expiry.setDate(expiry.getDate() + days);
+          return expiry.toISOString();
+        }
+
+        const form = document.getElementById("paymentSubmissionForm");
+        if (!form) return;
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          
+          // Get form data
+          const fullName = document.getElementById("paymentFullName").value.trim();
+          const email = document.getElementById("paymentEmail").value.trim();
+          const plan = document.getElementById("planType").value;
+          const phoneRaw = document.getElementById("paymentPhone").value.trim();
+          const statusEl = document.getElementById("paymentStatus");
+          const payBtn = document.getElementById("payNowBtn");
+
+          statusEl.textContent = "";
+          
+          // Validate all inputs
+          if (!fullName) {
+            statusEl.innerHTML = '<span style="color:#c00">Please enter your full name.</span>';
+            return;
+          }
+
+          if (!email) {
+            statusEl.innerHTML = '<span style="color:#c00">Please enter your email address.</span>';
+            return;
+          }
+
+          if (!plan) {
+            statusEl.innerHTML = '<span style="color:#c00">Please select a plan.</span>';
+            return;
+          }
+
+          const amount = planAmounts[plan];
+          if (!amount) {
+            statusEl.innerHTML = '<span style="color:#c00">Invalid plan selected.</span>';
+            return;
+          }
+
+          const formattedPhone = normalizePhone(phoneRaw);
+          if (!/^254\d{9}$/.test(formattedPhone)) {
+            statusEl.innerHTML = '<span style="color:#c00">Phone must be in format 0712345678 or 254712345678.</span>';
+            return;
+          }
+
+          payBtn.disabled = true;
+          payBtn.textContent = "Sending payment prompt...";
+
+          try {
+            // Step 1: Initiate STK Push
+            const stkPushUrl = `${API_BASE_URL}/api/stkpush`;
+            console.log('📤 Step 1: Calling STK Push endpoint:', stkPushUrl);
+            
+            const stkRes = await fetch(stkPushUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ phoneNumber: formattedPhone, amount }),
+            });
+
+            console.log('📥 STK Push response status:', stkRes.status);
+            const stkJson = await stkRes.json().catch(() => null);
+            console.log('📥 STK Push response:', stkJson);
+
+            if (stkRes.ok && stkJson && stkJson.success) {
+              statusEl.innerHTML = '<span style="color:blue">⏳ Payment prompt sent to your phone. Enter your M-Pesa PIN to complete payment...</span>';
+              
+              // Step 2: After STK Push success, record the payment with user details
+              console.log('📤 Step 2: Recording payment details...');
+              
+              const submitUrl = `${API_BASE_URL}/api/payments/submit`;
+              const submitRes = await fetch(submitUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                  fullName, 
+                  email, 
+                  planType: plan,
+                  phone: formattedPhone
+                }),
+              });
+
+              console.log('📥 Payment submit response status:', submitRes.status);
+              const submitJson = await submitRes.json().catch(() => null);
+              console.log('📥 Payment submit response:', submitJson);
+
+              if (submitRes.ok && submitJson && submitJson.success) {
+                statusEl.innerHTML = '<span style="color:blue">⏳ Payment registration complete. Waiting for M-Pesa confirmation...</span>';
+                
+                // Step 3: Poll for callback verification (payment activation)
+                console.log('📤 Step 3: Polling for payment verification...');
+                let verified = false;
+                let pollCount = 0;
+                const maxPolls = 300; // 10 minutes with 2-second intervals
+                
+                const pollInterval = setInterval(async () => {
+                  pollCount++;
+                  
+                  try {
+                    const verifyUrl = `${API_BASE_URL}/api/payments/status/${email}`;
+                    const verifyRes = await fetch(verifyUrl);
+                    const verifyJson = await verifyRes.json().catch(() => null);
+                    
+                    console.log(`Poll #${pollCount}: Status =`, verifyJson?.subscription?.status, 'IsActive =', verifyJson?.isActive);
+                    
+                    if (verifyRes.ok && verifyJson && verifyJson.success && verifyJson.isActive) {
+                      verified = true;
+                      clearInterval(pollInterval);
+                      
+                      statusEl.innerHTML = '<span style="color:green">✅ Payment verified! Your subscription is now active. You have immediate access to all games!</span>';
+                      console.log('✅ Payment verified successfully!');
+                      
+                      // Store auth data in localStorage BEFORE reloading
+                      const expiryDate = verifyJson.subscription?.expires_at || calculateExpiry(plan);
+                      console.log('📦 Storing auth data in localStorage:', {
+                        email,
+                        fullName,
+                        plan,
+                        expiresAt: expiryDate
+                      });
+                      
+                      localStorage.setItem("shuleai_signed_in", "true");
+                      localStorage.setItem("shuleai_access_code", plan);
+                      localStorage.setItem("shuleai_user_data", JSON.stringify({
+                        email,
+                        fullName,
+                        planType: plan,
+                        phone: formattedPhone,
+                        expiryDate: expiryDate
+                      }));
+                      localStorage.setItem("shuleai_access_expiry", new Date(expiryDate).getTime());
+                      
+                      // Clear form
+                      form.reset();
+                      
+                      // Close modal after 1 second and show main app
+                      setTimeout(() => {
+                        closeSignInModal();
+                        // Show main app instead of reloading
+                        if (typeof showMainApp === 'function') {
+                          console.log('📱 Showing main app...');
+                          showMainApp();
+                        } else {
+                          // Fallback to reload if showMainApp not loaded
+                          location.reload();
+                        }
+                      }, 1000);
+                      return;
+                    } else {
+                      // Show polling progress
+                      if (pollCount % 10 === 0) {
+                        statusEl.innerHTML = `<span style="color:blue">⏳ Checking payment... (${Math.floor(pollCount / 10)}0 seconds) Please complete the M-Pesa prompt if you haven't yet.</span>`;
+                      }
+                    }
+                  } catch (pollErr) {
+                    console.warn(`Polling error #${pollCount}:`, pollErr.message);
+                  }
+                  
+                  // Check if polling timeout reached
+                  if (pollCount >= maxPolls) {
+                    clearInterval(pollInterval);
+                    
+                    statusEl.innerHTML = '<span style="color:orange">⏱️ Verification timeout. Payment may still be processing. Please check your M-Pesa SMS confirmation. Your subscription will activate automatically once payment completes. <br><br><strong>Note:</strong> If you don\'t receive confirmation within 5 minutes, contact support at support@shuleai.com</span>';
+                    console.log('⏱️ Polling timeout reached');
+                  }
+                }, 2000); // Poll every 2 seconds
+              } else {
+                const errMsg = (submitJson && (submitJson.message || JSON.stringify(submitJson))) || 'Unknown error';
+                statusEl.innerHTML = '<span style="color:#c00">⚠️ Payment registration failed: ' + errMsg + '</span>';
+              }
+            } else {
+              const msg = (stkJson && (stkJson.message || (stkJson.error && stkJson.error.errorMessage) || JSON.stringify(stkJson))) || stkRes.statusText || 'Unknown error';
+              statusEl.innerHTML = '<span style="color:#c00">❌ Payment initiation failed: ' + msg + '</span>';
+            }
+          } catch (err) {
+            console.error('Request error:', err);
+            statusEl.innerHTML = '<span style="color:#c00">❌ Request failed: ' + (err.message || err) + '</span>';
+          } finally {
+            payBtn.disabled = false;
+            payBtn.textContent = "Pay Now";
+          }
+        });
+      })();
+    </script>
 
     <!-- Landing Page & Authentication Styles -->
     <style>

@@ -10,10 +10,7 @@ router.get("/status/:email", (req, res) =>
   paymentController.checkSubscription(req, res)
 );
 
-// Get payment history
-router.get("/history/:email", (req, res) =>
-  paymentController.getPaymentHistory(req, res)
-);
+// Verify payment completion (for polling from frontend after STK Push)\nrouter.get(\"/verify-completion/:email\", (req, res) =>\n  paymentController.checkSubscription(req, res)\n);\n\n// Activate subscription after M-Pesa callback verification\nrouter.post(\"/activate\", (req, res) =>\n  paymentController.activateByPhone(req, res)\n);\n\n// Get payment history\nrouter.get(\"/history/:email\", (req, res) =>\n  paymentController.getPaymentHistory(req, res)\n);
 router.post("/verify", (req, res) => paymentController.verifyPayment(req, res));
 
 // New admin routes

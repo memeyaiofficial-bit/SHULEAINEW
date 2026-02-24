@@ -17,16 +17,29 @@ class PaymentController {
   }
 
   // Calculate expiry date based on plan type
+  // ACCURACY NOTE:
+  // - Test/Weekly/Monthly use milliseconds (precise)
+  // - Termly uses calendar months (3 calendar months, not 90 days)
   calculateExpiryDate(planType) {
     const now = new Date();
     switch (planType) {
+      case "test":
+        // Exactly 1 day (86,400,000ms)
+        return new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000);
       case "weekly":
+        // Exactly 7 days (604,800,000ms)
         return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       case "monthly":
+        // Exactly 30 days (2,592,000,000ms)
         return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
       case "termly":
-        return new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+        // Exactly 3 calendar months
+        // Using setMonth() for accurate calendar-based periods
+        const termlyDate = new Date(now);
+        termlyDate.setMonth(termlyDate.getMonth() + 3);
+        return termlyDate;
       default:
+        // Default: 30 days
         return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     }
   }
@@ -34,6 +47,8 @@ class PaymentController {
   // Get games count based on plan
   getGamesCountForPlan(planType) {
     switch (planType) {
+      case "test":
+        return 7; // Limited demo access
       case "weekly":
         return 7;
       case "monthly":
@@ -45,16 +60,61 @@ class PaymentController {
     }
   }
 
-  // Submit payment details
+  // Get human-readable plan name
+  getPlanName(planType) {
+    switch (planType) {
+      case "test":
+        return "Test Plan (5 KES)";
+      case "weekly":
+        return "Weekly Plan";
+      case "monthly":
+        return "Monthly Plan";
+      case "termly":
+        return "Termly Plan";
+      default:
+        return "Standard Plan";
+    }
+  }
+
+  // Submit payment details - Create PENDING subscription, await callback verification
   async submitPayment(req, res) {
     try {
-      const { fullName, email, phone, transactionCode, planType } = req.body;
+      const { fullName, email, planType, phone } = req.body;
 
-      // Validation
-      if (!fullName || !email || !phone || !transactionCode || !planType) {
+      // Validation - now require phone as well
+      if (!fullName || !email || !planType || !phone) {
         return res.status(400).json({
           success: false,
-          message: "All fields are required",
+          message: "Full name, email, phone, and plan type are required",
+        });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid email format",
+        });
+      }
+
+      // Validate phone format
+      const phoneRegex = /^254\d{9}$/;
+      const cleanPhone = phone.replace(/\D/g, "");
+      let formattedPhone = cleanPhone;
+      if (cleanPhone.startsWith("0")) {
+        formattedPhone = "254" + cleanPhone.substring(1);
+      } else if (
+        (cleanPhone.startsWith("7") || cleanPhone.startsWith("1")) &&
+        cleanPhone.length === 9
+      ) {
+        formattedPhone = "254" + cleanPhone;
+      }
+
+      if (!phoneRegex.test(formattedPhone)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid phone format. Must be: 0712345678 or 254712345678",
         });
       }
 
@@ -62,56 +122,31 @@ class PaymentController {
       if (!SUBSCRIPTION_PLANS[planType]) {
         return res.status(400).json({
           success: false,
-          message: "Invalid plan type",
+          message: "Invalid plan type. Must be: weekly, monthly, or termly",
         });
       }
 
-      // Validate phone number
-      const phoneRegex = /^(?:254|\+254|0)?[17]\d{8}$/;
-      const cleanPhone = phone.replace(/\D/g, "");
-      let formattedPhone = cleanPhone;
-
-      if (cleanPhone.startsWith("0")) {
-        formattedPhone = "254" + cleanPhone.substring(1);
-      } else if (cleanPhone.startsWith("+254")) {
-        formattedPhone = cleanPhone.substring(1);
-      }
-
-      if (!phoneRegex.test(formattedPhone) || formattedPhone.length !== 12) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid phone number. Please use format: 07XX XXX XXX",
-        });
-      }
-
-      // Check if transaction code already exists
-      const existingPayment = await appwriteService.getPaymentByTransactionCode(
-        transactionCode
-      );
-      if (existingPayment.success && existingPayment.payment) {
-        return res.status(400).json({
-          success: false,
-          message: "This transaction code has already been used",
-        });
-      }
-
-      // Calculate expiry date
+      // Calculate amount and expiry date from plan
+      const amount = SUBSCRIPTION_PLANS[planType].amount;
       const expiryDate = this.calculateExpiryDate(planType);
       const gamesCount = this.getGamesCountForPlan(planType);
 
-      // Create payment record
+      console.log(
+        `⏳ Registering payment - Email: ${email}, Phone: ${formattedPhone}, Plan: ${planType}, Amount: KES ${amount}`,
+      );
+
+      // Create PENDING payment record (awaiting M-Pesa callback verification)
       const paymentData = {
         fullName,
         email,
         phone: formattedPhone,
-        transactionCode,
         planType,
-        amount: SUBSCRIPTION_PLANS[planType].amount,
-        tillNumber: TILL_NUMBER,
+        amount,
         expiryDate: expiryDate.toISOString(),
-        gamesAllowed: gamesCount,
         userAgent: req.headers["user-agent"],
         ipAddress: req.ip,
+        status: "pending", // Mark as pending until M-Pesa callback confirms
+        createdAt: new Date().toISOString(),
       };
 
       const result = await appwriteService.createPayment(paymentData);
@@ -119,49 +154,33 @@ class PaymentController {
       if (!result.success) {
         return res.status(500).json({
           success: false,
-          message: "Failed to record payment",
+          message: "Failed to record payment registration",
         });
       }
 
-      console.log("✅ Payment saved to Appwrite. ID:", result.payment.$id);
-
-      // Send confirmation email
-      /* await emailService.sendPaymentConfirmation({
-        ...paymentData,
-        paymentId: result.payment.$id,
-      }); */
-
-      // Send confirmation email (with error handling)
-      try {
-        console.log("📧 Attempting to send email to:", paymentData.email);
-        await emailService.sendPaymentConfirmation({
-          ...paymentData,
-          paymentId: result.payment.$id,
-        });
-        console.log("✅ Email sent successfully");
-      } catch (emailError) {
-        console.error("⚠️ Email failed but payment saved:", emailError.message);
-        // Don't fail the payment - email is secondary
-      }
-
-      // Create user session
-      await appwriteService.createUserSession({
-        email,
-        phone: formattedPhone,
-        fullName,
-        userAgent: req.headers["user-agent"],
-        ipAddress: req.ip,
-      });
+      console.log(
+        "⏳ Payment registration created (PENDING). ID:",
+        result.payment.$id,
+      );
+      console.log("   Awaiting M-Pesa callback confirmation...");
+      console.log(
+        "   📧 Email will be sent after payment verification via M-Pesa callback",
+      );
 
       res.json({
         success: true,
-        message: "Payment submitted successfully",
+        message:
+          "Payment registration created. Awaiting M-Pesa confirmation...",
         paymentId: result.payment.$id,
         data: {
+          fullName,
           email,
           phone: formattedPhone,
           planType,
-          amount: paymentData.amount,
+          amount,
+          status: "pending",
+          message:
+            "Complete the M-Pesa prompt on your phone to activate your subscription",
         },
       });
     } catch (error) {
@@ -196,21 +215,35 @@ class PaymentController {
 
       if (result.subscription) {
         const expiresAt = new Date(result.subscription.expires_at);
-        const daysRemaining = Math.ceil(
-          (expiresAt - new Date()) / (1000 * 60 * 60 * 24)
-        );
+        const now = new Date();
+        const timeRemaining = expiresAt - now;
+        // Math.ceil: if user has 1 hour left, rounds to 1 day for better UX
+        const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
+        const status = result.subscription.status || "unknown";
+        const isActive = status === "active" && timeRemaining > 0;
+
+        console.log(`📋 Subscription Found:`);
+        console.log(`   Email: ${result.subscription.email}`);
+        console.log(`   Plan: ${result.subscription.plan_type}`);
+        console.log(`   Expires: ${expiresAt.toISOString()}`);
+        console.log(`   Days Remaining: ${daysRemaining}`);
+        console.log(`   Active: ${isActive}`);
 
         return res.json({
           success: true,
-          isActive: true,
+          isActive,
+          status,
           subscription: {
             email: result.subscription.email,
             phone: result.subscription.phone,
             planType: result.subscription.plan_type,
+            planName: this.getPlanName(result.subscription.plan_type),
             amount: result.subscription.amount,
             expiresAt: result.subscription.expires_at,
             daysRemaining,
             paidAt: result.subscription.paid_at,
+            status,
+            fullName: result.subscription.full_name,
           },
         });
       }
@@ -218,10 +251,83 @@ class PaymentController {
       res.json({
         success: true,
         isActive: false,
-        message: "No active subscription found",
+        status: "no_subscription",
+        message: "No subscription found. Please complete payment first.",
       });
     } catch (error) {
       console.error("Check Subscription Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  }
+
+  // Activate subscription after payment verification (called by callback)
+  async activateByPhone(req, res) {
+    try {
+      const { phone, amount } = req.body;
+
+      if (!phone || !amount) {
+        return res.status(400).json({
+          success: false,
+          message: "Phone and amount are required",
+        });
+      }
+
+      // Find pending payment by phone and amount
+      const result = await appwriteService.getPendingPaymentByPhoneAndAmount(
+        phone,
+        amount,
+      );
+
+      if (!result.success || !result.payment) {
+        return res.status(404).json({
+          success: false,
+          message: "No pending payment found for this phone and amount",
+        });
+      }
+
+      const paymentId = result.payment.$id;
+      console.log(
+        `✅ Activating subscription ${paymentId} for phone: ${phone}`,
+      );
+
+      // Activate the subscription
+      const updateResult = await appwriteService.updatePaymentStatus(
+        paymentId,
+        "active",
+      );
+
+      if (!updateResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to activate subscription",
+        });
+      }
+
+      console.log("✅ Subscription activated!");
+
+      // Send activation confirmation email with immediate access
+      try {
+        console.log(
+          "📧 Sending activation confirmation to:",
+          result.payment.email,
+        );
+        await emailService.sendActivationConfirmation(result.payment);
+        console.log("✅ Activation email sent");
+      } catch (emailError) {
+        console.error("⚠️ Activation email failed:", emailError.message);
+      }
+
+      res.json({
+        success: true,
+        message:
+          "Subscription activated successfully. You now have immediate access!",
+        subscription: updateResult.payment,
+      });
+    } catch (error) {
+      console.error("Activate By Phone Error:", error);
       res.status(500).json({
         success: false,
         message: "Internal server error",
@@ -252,15 +358,13 @@ class PaymentController {
 
       const formattedPayments = result.payments.map((payment) => ({
         id: payment.$id,
-        transactionCode: payment.transaction_code,
+
         amount: payment.amount,
         planType: payment.plan_type,
         status: payment.status,
         paidAt: payment.paid_at,
         expiresAt: payment.expires_at,
         verifiedAt: payment.verification_date,
-        gameName: payment.game_name,
-        tillNumber: payment.till_number,
       }));
 
       res.json({
@@ -342,7 +446,7 @@ class PaymentController {
     try {
       const result = await this.databases.listDocuments(
         this.databaseId,
-        process.env.USER_PAYMENTS_COLLECTION_ID
+        process.env.USER_PAYMENTS_COLLECTION_ID,
       );
       return result.total;
     } catch (error) {
@@ -356,7 +460,7 @@ class PaymentController {
       const result = await this.databases.listDocuments(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        [Query.equal("status", "pending")]
+        [Query.equal("status", "pending")],
       );
       return result.total;
     } catch (error) {
@@ -373,7 +477,7 @@ class PaymentController {
         [
           Query.equal("status", "active"),
           Query.greaterThan("expires_at", new Date().toISOString()),
-        ]
+        ],
       );
       return result.total;
     } catch (error) {
@@ -387,7 +491,7 @@ class PaymentController {
       const result = await this.databases.listDocuments(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        [Query.equal("status", "active")]
+        [Query.equal("status", "active")],
       );
 
       let total = 0;
@@ -402,59 +506,12 @@ class PaymentController {
     }
   }
 
-  /* async getAllPayments(filters) {
-    try {
-      const queries = [];
-
-      if (filters.status && filters.status !== "all") {
-        queries.push(Query.equal("status", filters.status));
-      }
-
-      if (filters.dateFrom) {
-        queries.push(Query.greaterThanEqual("paid_at", filters.dateFrom));
-      }
-
-      if (filters.dateTo) {
-        queries.push(Query.lessThanEqual("paid_at", filters.dateTo));
-      }
-
-      if (filters.search) {
-        queries.push(
-          Query.or([
-            Query.search("email", filters.search),
-            Query.search("transaction_code", filters.search),
-            Query.search("full_name", filters.search),
-          ])
-        );
-      }
-
-      const result = await this.databases.listDocuments(
-        this.databaseId,
-        process.env.USER_PAYMENTS_COLLECTION_ID,
-        queries,
-        filters.limit,
-        (filters.page - 1) * filters.limit,
-        "paid_at",
-        "DESC"
-      );
-
-      return {
-        success: true,
-        payments: result.documents,
-        total: result.total,
-      };
-    } catch (error) {
-      console.error("Get All Payments Error:", error);
-      return { success: false, error: error.message };
-    }
-  }
- */
   async getPaymentById(paymentId) {
     try {
       const payment = await this.databases.getDocument(
         this.databaseId,
         process.env.USER_PAYMENTS_COLLECTION_ID,
-        paymentId
+        paymentId,
       );
 
       return { success: true, payment };
@@ -618,7 +675,7 @@ class PaymentController {
 
       const result = await appwriteService.updatePaymentStatus(
         paymentId,
-        status
+        status,
       );
 
       if (!result.success) {
@@ -637,7 +694,7 @@ class PaymentController {
 
           // Generate 6-digit access code
           const accessCode = Math.floor(
-            100000 + Math.random() * 900000
+            100000 + Math.random() * 900000,
           ).toString();
           const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
@@ -652,14 +709,14 @@ class PaymentController {
               [
                 Query.equal("contact", result.payment.email),
                 Query.equal("type", "access_code"),
-              ]
+              ],
             );
 
             for (const doc of existingCodes.documents) {
               await this.databases.deleteDocument(
                 this.databaseId,
                 process.env.SESSIONS_COLLECTION_ID,
-                doc.$id
+                doc.$id,
               );
             }
 
@@ -675,7 +732,7 @@ class PaymentController {
                 expiresAt: expiresAt.toISOString(),
                 attempts: 0,
                 createdAt: new Date().toISOString(),
-              }
+              },
             );
 
             console.log("✅ Access code stored:", accessCode);
@@ -686,20 +743,20 @@ class PaymentController {
           // Send activation email with access code
           const emailResult = await emailService.sendActivationWithAccessCode(
             result.payment,
-            accessCode
+            accessCode,
           );
 
           if (!emailResult.success) {
             console.warn("⚠️ Activation email failed:", emailResult.error);
           } else {
             console.log(
-              "✅ Activation email with access code sent successfully"
+              "✅ Activation email with access code sent successfully",
             );
           }
         } catch (emailError) {
           console.error(
             "⚠️ Activation email error (non-critical):",
-            emailError.message
+            emailError.message,
           );
           // Continue even if email fails
         }
@@ -718,56 +775,6 @@ class PaymentController {
       });
     }
   }
-  /* async verifyPayment(req, res) {
-    try {
-      const { paymentId, status } = req.body;
-      const { adminKey } = req.headers;
-
-      // Simple admin authentication
-       if (adminKey !== process.env.ADMIN_SECRET) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      } 
-
-      if (!paymentId || !status) {
-        return res.status(400).json({
-          success: false,
-          message: "Payment ID and status are required",
-        });
-      }
-
-      const result = await appwriteService.updatePaymentStatus(
-        paymentId,
-        status
-      );
-
-      if (!result.success) {
-        return res.status(500).json({
-          success: false,
-          message: "Failed to update payment status",
-        });
-      }
-
-      // If payment is activated, send activation email
-      if (status === "active") {
-        await emailService.sendActivationConfirmation(result.payment);
-      }
-
-      res.json({
-        success: true,
-        message: `Payment ${status} successfully`,
-        payment: result.payment,
-      });
-    } catch (error) {
-      console.error("Verify Payment Error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
-    }
-  } */
 }
 
 module.exports = new PaymentController();
