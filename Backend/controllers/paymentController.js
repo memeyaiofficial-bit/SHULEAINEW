@@ -846,17 +846,7 @@ class PaymentController {
 
         console.log("✅ Access code generated:", accessCode);
 
-        // Send email with access code
-        try {
-          await emailService.sendActivationWithAccessCode(payment, accessCode);
-          console.log("📧 Access code email sent to:", payment.email);
-        } catch (emailError) {
-          console.error(
-            "⚠️ Email send failed (non-critical):",
-            emailError.message,
-          );
-        }
-
+        // Send response immediately - email will be sent in background
         res.json({
           success: true,
           message: `✅ Access code generated successfully for ${payment.full_name}`,
@@ -866,6 +856,22 @@ class PaymentController {
           expiresAt: expiresAt.toISOString(),
           expiresIn: "24 hours",
           instructions: `Share this code with the user. They can use it to sign in: ${accessCode}`,
+        });
+
+        // Send email asynchronously in background (non-blocking)
+        setImmediate(async () => {
+          try {
+            await emailService.sendActivationWithAccessCode(
+              payment,
+              accessCode,
+            );
+            console.log("📧 Access code email sent to:", payment.email);
+          } catch (emailError) {
+            console.error(
+              "⚠️ Email send failed (non-critical):",
+              emailError.message,
+            );
+          }
         });
       } catch (codeError) {
         console.error("❌ Error generating access code:", codeError.message);
