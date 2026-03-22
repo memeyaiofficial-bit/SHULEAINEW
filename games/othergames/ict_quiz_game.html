@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Tools in Communication – Grade 7 | Shule.memeyai.com</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap');
+
+  :root {
+    --green-dark: #1a5c2a;
+    --green-main: #2d8a47;
+    --green-mid: #3aaf5c;
+    --green-light: #6fd68a;
+    --green-pale: #e6f9ec;
+    --yellow: #f5c842;
+    --orange: #f58a20;
+    --red: #e03a3a;
+    --white: #ffffff;
+    --bg: #f0faf3;
+    --shadow: 0 4px 18px rgba(45,138,71,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 40px;
+  }
+
+  /* HEADER */
+  header {
+    width: 100%;
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-main) 100%);
+    color: white;
+    text-align: center;
+    padding: 18px 20px 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  }
+  header .site-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green-light);
+    margin-bottom: 4px;
+  }
+  header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(16px, 3vw, 22px);
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  header .subtitle {
+    font-size: 12px;
+    color: #b8f0c8;
+    margin-top: 3px;
+  }
+
+  /* SCREENS */
+  .screen { display: none; width: 100%; max-width: 680px; padding: 20px 16px; }
+  .screen.active { display: block; }
+
+  /* LEVEL SELECT */
+  .level-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+  }
+  .level-desc {
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 22px;
+  }
+  .levels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .level-card {
+    background: white;
+    border: 3px solid var(--green-light);
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    box-shadow: var(--shadow);
+  }
+  .level-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(45,138,71,0.25); border-color: var(--green-main); }
+  .level-card .lnum {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 26px;
+    color: var(--green-main);
+    margin-bottom: 8px;
+  }
+  .level-card .lname { font-weight: 800; font-size: 13px; color: var(--green-dark); margin-bottom: 4px; }
+  .level-card .lq { font-size: 11px; color: #888; }
+  .level-card.locked { opacity: 0.45; cursor: not-allowed; }
+  .level-card.locked:hover { transform: none; }
+  .level-card .lock-icon { font-size: 22px; margin-bottom: 6px; }
+  .level-card.completed { border-color: var(--yellow); }
+  .level-card.completed .lnum { color: var(--yellow); }
+
+  /* STARS display */
+  .stars { font-size: 18px; margin-top: 4px; }
+
+  /* GAME SCREEN */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .game-info { font-weight: 700; color: var(--green-dark); font-size: 14px; }
+  .progress-bar-wrap { width: 100%; height: 10px; background: #c8ecd2; border-radius: 99px; margin-bottom: 16px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--green-mid), var(--green-light)); border-radius: 99px; transition: width 0.4s ease; }
+  .score-badge {
+    background: var(--green-dark);
+    color: white;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .timer-badge {
+    background: var(--yellow);
+    color: var(--green-dark);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-weight: 800;
+    font-size: 14px;
+    min-width: 68px;
+    text-align: center;
+  }
+  .timer-badge.danger { background: var(--red); color: white; animation: pulse 0.6s infinite alternate; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.06); } }
+
+  .question-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+    border-left: 6px solid var(--green-mid);
+  }
+  .question-num { font-size: 11px; color: var(--green-main); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .question-text { font-size: clamp(14px, 2.5vw, 17px); font-weight: 700; color: #1a2e22; line-height: 1.45; }
+
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .option-btn {
+    background: white;
+    border: 2.5px solid var(--green-light);
+    border-radius: 12px;
+    padding: 13px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--green-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .option-btn:hover:not(:disabled) { background: var(--green-pale); border-color: var(--green-main); transform: translateY(-2px); }
+  .option-btn .opt-letter {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border-radius: 6px;
+    min-width: 22px;
+    height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .option-btn.correct { background: #d4f7de; border-color: var(--green-mid); color: var(--green-dark); }
+  .option-btn.correct .opt-letter { background: var(--green-mid); color: white; }
+  .option-btn.wrong { background: #fde8e8; border-color: var(--red); color: var(--red); }
+  .option-btn.wrong .opt-letter { background: var(--red); color: white; }
+  .option-btn:disabled { cursor: default; }
+
+  .feedback-bar {
+    background: var(--green-pale);
+    border: 2px solid var(--green-light);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-top: 12px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .feedback-bar.show { display: flex; }
+  .feedback-bar.wrong-fb { background: #fdeaea; border-color: var(--red); color: var(--red); }
+  .feedback-icon { font-size: 20px; }
+
+  .next-btn {
+    margin-top: 14px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(45,138,71,0.3);
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(45,138,71,0.35); }
+  .next-btn.show { display: block; }
+
+  /* RESULTS */
+  .result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 24px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .result-emoji { font-size: 60px; margin-bottom: 10px; }
+  .result-title { font-size: 24px; font-weight: 900; color: var(--green-dark); margin-bottom: 6px; }
+  .result-score-big { font-family: 'Press Start 2P', monospace; font-size: 36px; color: var(--green-main); margin: 14px 0 6px; }
+  .result-sub { font-size: 14px; color: #555; margin-bottom: 18px; }
+  .result-stars { font-size: 40px; margin-bottom: 18px; }
+  .result-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+  .stat-box { background: var(--green-pale); border-radius: 12px; padding: 12px 8px; }
+  .stat-num { font-size: 22px; font-weight: 900; color: var(--green-dark); }
+  .stat-label { font-size: 11px; color: #666; margin-top: 2px; }
+  .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+    color: white; border: none; border-radius: 12px;
+    padding: 13px 24px; font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(45,138,71,0.3);
+    transition: transform 0.15s;
+  }
+  .btn-green:hover { transform: translateY(-2px); }
+  .btn-outline {
+    background: white; color: var(--green-dark);
+    border: 2.5px solid var(--green-main);
+    border-radius: 12px; padding: 13px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .btn-outline:hover { transform: translateY(-2px); background: var(--green-pale); }
+
+  footer {
+    text-align: center;
+    color: #888;
+    font-size: 11px;
+    padding: 20px 16px 0;
+    letter-spacing: 0.5px;
+  }
+  footer a { color: var(--green-main); text-decoration: none; font-weight: 700; }
+
+  /* Celebration */
+  @keyframes bounce-in {
+    0% { transform: scale(0.7); opacity: 0; }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .bounce-in { animation: bounce-in 0.4s ease forwards; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-tag">🌿 Shule.memeyai.com</div>
+  <h1>ICT Tools in Communication</h1>
+  <div class="subtitle">Grade 7 · Pre Technical Studies · Interactive Quiz Game</div>
+</header>
+
+<!-- LEVEL SELECT SCREEN -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:680px;margin:0 auto;padding:20px 16px;">
+    <div class="level-title">Choose Your Level</div>
+    <div class="level-desc">3 Levels · 20 Questions Each · Answer correctly to unlock the next level!</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="screen-game">
+  <div class="game-header">
+    <span class="game-info" id="game-level-label">Level 1</span>
+    <span class="timer-badge" id="timer-badge">⏱ 30s</span>
+    <span class="score-badge" id="score-display">Score: 0</span>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="question-num" id="question-num">Question 1 of 20</div>
+    <div class="question-text" id="question-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-bar" id="feedback-bar"><span class="feedback-icon" id="feedback-icon"></span><span id="feedback-text"></span></div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="screen-results">
+  <div style="max-width:680px;margin:0 auto;padding:20px 16px;">
+    <div class="result-card bounce-in">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <div class="result-title" id="result-title">Level Complete!</div>
+      <div class="result-stars" id="result-stars">⭐⭐⭐</div>
+      <div class="result-score-big" id="result-score">0</div>
+      <div class="result-sub" id="result-sub">points earned</div>
+      <div class="result-stats">
+        <div class="stat-box"><div class="stat-num" id="stat-correct">0</div><div class="stat-label">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-wrong">0</div><div class="stat-label">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-pct">0%</div><div class="stat-label">📊 Score %</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-outline" onclick="goHome()">🏠 Levels</button>
+        <button class="btn-green" id="retry-btn" onclick="retryLevel()">🔄 Retry</button>
+        <button class="btn-green" id="next-level-btn" onclick="nextLevel()" style="display:none">Next Level ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Grade 7 Pre Technical Studies · ICT Tools in Communication
+</footer>
+
+<script>
+// ===================== QUESTIONS DATA =====================
+const allQuestions = {
+  1: [
+    { q: "What does ICT stand for?", opts: ["Information and Communication Technology","International Computer Tools","Integrated Circuit Technology","Internet Connection Terminal"], ans: 0 },
+    { q: "Which of the following is an example of an ICT tool used for communication?", opts: ["Hammer","Mobile phone","Ruler","Paintbrush"], ans: 1 },
+    { q: "What is email primarily used for?", opts: ["Printing documents","Sending messages electronically","Playing video games","Watching movies"], ans: 1 },
+    { q: "Which device is used to make and receive phone calls over the internet?", opts: ["Calculator","VoIP phone","Typewriter","Compass"], ans: 1 },
+    { q: "A computer network that connects computers in a small area like a school is called a:", opts: ["WAN","MAN","LAN","PAN"], ans: 2 },
+    { q: "What does WWW stand for?", opts: ["World Wide Web","World Wireless Web","Wide Wireless World","World Web Wire"], ans: 0 },
+    { q: "Which of the following is a social media platform?", opts: ["Microsoft Word","Facebook","Adobe Photoshop","Windows Explorer"], ans: 1 },
+    { q: "What is the main purpose of a telephone?", opts: ["To store data","To communicate by voice","To print documents","To scan images"], ans: 1 },
+    { q: "Which ICT tool is used to hold a video meeting with people in different locations?", opts: ["Fax machine","Zoom","Calculator","Printer"], ans: 1 },
+    { q: "What does the @ symbol mean in an email address?", opts: ["It means 'at' – separating user name from domain","It means 'about'","It is a decoration","It stands for Anonymous"], ans: 0 },
+    { q: "Which of these is an input device?", opts: ["Monitor","Printer","Keyboard","Speaker"], ans: 2 },
+    { q: "A message sent from one mobile phone to another as text is called a:", opts: ["Email","SMS (Short Message Service)","Blog","Tweet"], ans: 1 },
+    { q: "What is the internet?", opts: ["A single computer","A global network connecting millions of computers","A type of software","A storage device"], ans: 1 },
+    { q: "Which of these is used to browse the internet?", opts: ["Web browser","Calculator","Spreadsheet","Paint program"], ans: 0 },
+    { q: "What is a website?", opts: ["A type of cable","A collection of web pages on the internet","A computer virus","A printer model"], ans: 1 },
+    { q: "Which device allows you to connect to the internet wirelessly?", opts: ["USB cable","Wi-Fi router","Ethernet cable","Power cable"], ans: 1 },
+    { q: "What is a blog?", opts: ["A type of computer","An online journal or informational website","A file format","A computer game"], ans: 1 },
+    { q: "Radio is an example of which type of communication tool?", opts: ["Print media","Broadcast media","Digital media","Social media"], ans: 1 },
+    { q: "Which of these is a benefit of using ICT in communication?", opts: ["Slows down information sharing","Enables fast communication across distances","Increases postal costs","Reduces electricity"], ans: 1 },
+    { q: "What does a modem do?", opts: ["Prints documents","Converts digital signals to analog and vice versa for internet","Stores files","Displays images"], ans: 1 },
+  ],
+  2: [
+    { q: "What is the full meaning of SMS?", opts: ["Short Message Service","Small Mobile Signal","Simple Mail System","Short Mail Send"], ans: 0 },
+    { q: "Which of the following best describes a fax machine?", opts: ["A device that sends printed documents via telephone line","A type of computer","A wireless speaker","A projector"], ans: 0 },
+    { q: "What is meant by 'downloading' a file?", opts: ["Sending a file to someone","Transferring a file from the internet to your device","Deleting a file","Printing a file"], ans: 1 },
+    { q: "What is 'uploading' a file?", opts: ["Sending a file from your device to the internet or server","Opening a file","Copying a file on your computer","Formatting a file"], ans: 0 },
+    { q: "Which of these is an instant messaging app?", opts: ["Microsoft Excel","WhatsApp","Google Sheets","Adobe Reader"], ans: 1 },
+    { q: "What is a domain name in a website address?", opts: ["The password of the website","The unique name identifying a website e.g. google.com","A type of cookie","The file size of the site"], ans: 1 },
+    { q: "What does HTTP stand for?", opts: ["Hyper Text Transfer Protocol","High Tech Transfer Program","Home Text Transfer Portal","Hyper Tool Transfer Point"], ans: 0 },
+    { q: "Which of the following is an output device?", opts: ["Mouse","Scanner","Printer","Keyboard"], ans: 2 },
+    { q: "What is the purpose of a web camera (webcam)?", opts: ["To store large files","To capture video and images for online communication","To connect to a LAN","To type documents"], ans: 1 },
+    { q: "What type of communication uses written text in newspapers and books?", opts: ["Digital media","Broadcast media","Print media","Social media"], ans: 2 },
+    { q: "Which of these services uses satellite technology to communicate?", opts: ["Landline telephone","Satellite phone or TV","Local area network","USB flash drive"], ans: 1 },
+    { q: "What does a search engine do?", opts: ["Creates websites","Helps users find information on the internet","Sends emails automatically","Stores user passwords"], ans: 1 },
+    { q: "What is cyberbullying?", opts: ["Bullying done through ICT devices and online platforms","Playing computer games alone","Sending large email files","Using a computer in a library"], ans: 0 },
+    { q: "Which of these is a responsible use of ICT tools?", opts: ["Sharing other people's passwords","Respecting privacy and not spreading false information","Hacking into websites","Sending harmful messages"], ans: 1 },
+    { q: "What is spam email?", opts: ["An email from your teacher","Unwanted, unsolicited bulk email messages","A type of social media post","A computer virus"], ans: 1 },
+    { q: "What is a computer virus?", opts: ["A useful program","Malicious software that can damage or disrupt a computer","An input device","A storage device"], ans: 1 },
+    { q: "What does URL stand for?", opts: ["Universal Resource Locator","United Radio Link","Uniform Remote Location","Universal Read Link"], ans: 0 },
+    { q: "What is cloud storage?", opts: ["Storing data on a physical hard drive","Storing data on remote servers accessed via the internet","A type of USB drive","A computer RAM module"], ans: 1 },
+    { q: "Which of these is an example of e-learning?", opts: ["Reading a printed textbook","Attending an online lesson via a tablet","Using a calculator","Writing with a pencil"], ans: 1 },
+    { q: "What is bandwidth in relation to the internet?", opts: ["The size of the computer screen","The amount of data that can be transmitted in a given time","The weight of a laptop","The number of USB ports"], ans: 1 },
+  ],
+  3: [
+    { q: "What is the difference between the internet and intranet?", opts: ["They are exactly the same","Internet is a global public network; intranet is a private network within an organisation","Intranet is faster than internet","Internet is only for email"], ans: 1 },
+    { q: "Which communication protocol is used to send emails?", opts: ["FTP","HTTP","SMTP","HTTPS"], ans: 2 },
+    { q: "What does VoIP stand for?", opts: ["Voice over Internet Protocol","Video on Internet Portal","Virtual Output Internet Program","Volume over IP network"], ans: 0 },
+    { q: "What is encryption in ICT communication?", opts: ["Making a computer faster","Converting data into a coded form to prevent unauthorized access","Increasing internet speed","Creating a new email account"], ans: 1 },
+    { q: "Which generation of mobile networks introduced smartphones with high-speed internet?", opts: ["1G","2G","3G","4G/LTE"], ans: 3 },
+    { q: "What is a podcast?", opts: ["A type of computer port","A digital audio or video program available for download or streaming","A printed magazine","A type of USB device"], ans: 1 },
+    { q: "In email communication, what does CC mean?", opts: ["Cancel Copy","Carbon Copy – sending a copy to additional recipients","Computer Connection","Create Contact"], ans: 1 },
+    { q: "What is a firewall in computer networks?", opts: ["A physical wall in a data center","Security software or hardware that monitors and controls network traffic","A type of antivirus","A wireless router"], ans: 1 },
+    { q: "What is digital literacy?", opts: ["The ability to read physical books","The ability to use digital tools and technology effectively and safely","A type of computer language","The speed of typing"], ans: 1 },
+    { q: "Which of these is an ethical issue in ICT communication?", opts: ["Charging your phone","Plagiarism – using someone's work without permission","Saving a document","Adjusting screen brightness"], ans: 1 },
+    { q: "What is the purpose of HTTPS (vs HTTP) in a web address?", opts: ["It loads pages faster","It indicates a secure, encrypted connection","It stores cookies","It blocks advertisements"], ans: 1 },
+    { q: "What is a QR code used for?", opts: ["To print text in large fonts","To quickly link to websites or information when scanned","To store electricity","To type on a mobile phone"], ans: 1 },
+    { q: "Which of these is a disadvantage of ICT tools in communication?", opts: ["Fast message delivery","Risk of privacy breaches and cybercrime","Easy access to information","Global connectivity"], ans: 1 },
+    { q: "What does the term 'netiquette' mean?", opts: ["A type of fishing net","Proper, respectful behavior while using the internet","Internet speed measurement","A network cable type"], ans: 1 },
+    { q: "What is a WAN?", opts: ["A small local network","Wide Area Network connecting computers over large geographic areas","Wireless Audio Network","Web Address Node"], ans: 1 },
+    { q: "Which technology allows contactless payment and data transfer between devices?", opts: ["Bluetooth only","NFC (Near Field Communication)","Wi-Fi Direct","Infrared only"], ans: 1 },
+    { q: "What does 'streaming' mean in ICT?", opts: ["Downloading files to a hard drive","Receiving and playing audio or video in real time over the internet","Printing large documents","Backing up data offline"], ans: 1 },
+    { q: "What is the role of an ISP?", opts: ["To make computers","Internet Service Provider – provides access to the internet","To repair mobile phones","To create websites"], ans: 1 },
+    { q: "Which of the following best describes 'digital divide'?", opts: ["The line between hardware and software","The gap between those who have access to ICT and those who do not","The speed difference between LAN and WAN","The difference between emails and SMS"], ans: 1 },
+    { q: "What is multi-factor authentication (MFA)?", opts: ["Using more than one computer at once","A security method requiring two or more verification steps to access an account","Having multiple email accounts","Using different browsers"], ans: 1 },
+  ]
+};
+
+// ===================== STATE =====================
+let currentLevel = 1;
+let currentQ = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let timer = null;
+let timeLeft = 30;
+let answered = false;
+let shuffled = [];
+let levelStars = { 1: 0, 2: 0, 3: 0 };
+let levelUnlocked = { 1: true, 2: false, 3: false };
+
+function shuffle(arr) {
+  return arr.slice().sort(() => Math.random() - 0.5);
+}
+
+// ===================== RENDER LEVELS =====================
+function renderLevels() {
+  const names = { 1: "Beginner", 2: "Intermediate", 3: "Advanced" };
+  const grid = document.getElementById('levels-grid');
+  grid.innerHTML = '';
+  for (let l = 1; l <= 3; l++) {
+    const card = document.createElement('div');
+    card.className = 'level-card' + (levelStars[l] > 0 ? ' completed' : '') + (!levelUnlocked[l] ? ' locked' : '');
+    const starsHtml = levelStars[l] > 0 ? '⭐'.repeat(levelStars[l]) + '☆'.repeat(3 - levelStars[l]) : '';
+    card.innerHTML = !levelUnlocked[l]
+      ? `<div class="lock-icon">🔒</div><div class="lname">${names[l]}</div><div class="lq">20 Questions</div>`
+      : `<div class="lnum">${l}</div><div class="lname">${names[l]}</div><div class="lq">20 Questions</div><div class="stars">${starsHtml || '☆☆☆'}</div>`;
+    if (levelUnlocked[l]) card.onclick = () => startLevel(l);
+    grid.appendChild(card);
+  }
+}
+
+// ===================== START LEVEL =====================
+function startLevel(level) {
+  currentLevel = level;
+  currentQ = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+  shuffled = shuffle(allQuestions[level]);
+  showScreen('screen-game');
+  document.getElementById('game-level-label').textContent = `Level ${level}`;
+  loadQuestion();
+}
+
+// ===================== LOAD QUESTION =====================
+function loadQuestion() {
+  answered = false;
+  clearInterval(timer);
+  timeLeft = 30;
+
+  const q = shuffled[currentQ];
+  document.getElementById('question-num').textContent = `Question ${currentQ + 1} of ${shuffled.length}`;
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('score-display').textContent = `Score: ${score}`;
+  document.getElementById('progress-bar').style.width = `${(currentQ / shuffled.length) * 100}%`;
+
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar';
+  document.getElementById('next-btn').className = 'next-btn';
+
+  const timerBadge = document.getElementById('timer-badge');
+  timerBadge.className = 'timer-badge';
+  timerBadge.textContent = `⏱ ${timeLeft}s`;
+
+  // Render options
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i, q.ans, btn);
+    grid.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+// ===================== TIMER =====================
+function startTimer() {
+  const badge = document.getElementById('timer-badge');
+  timer = setInterval(() => {
+    timeLeft--;
+    badge.textContent = `⏱ ${timeLeft}s`;
+    if (timeLeft <= 8) badge.className = 'timer-badge danger';
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      autoFail();
+    }
+  }, 1000);
+}
+
+function autoFail() {
+  if (answered) return;
+  answered = true;
+  wrong++;
+  const q = shuffled[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+  showFeedback(false, `Time's up! The correct answer was: ${q.opts[q.ans]}`);
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+// ===================== SELECT ANSWER =====================
+function selectAnswer(chosen, correct_ans, btn) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timer);
+
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+
+  const q = shuffled[currentQ];
+  if (chosen === correct_ans) {
+    btn.classList.add('correct');
+    score += 5;
+    correct++;
+    showFeedback(true, '✅ Correct! Well done!');
+  } else {
+    btn.classList.add('wrong');
+    btns[correct_ans].classList.add('correct');
+    wrong++;
+    showFeedback(false, `❌ Wrong! Correct answer: ${q.opts[correct_ans]}`);
+  }
+
+  document.getElementById('score-display').textContent = `Score: ${score}`;
+  document.getElementById('next-btn').className = 'next-btn show';
+}
+
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('feedback-bar');
+  fb.className = 'feedback-bar show' + (ok ? '' : ' wrong-fb');
+  document.getElementById('feedback-icon').textContent = ok ? '🎉' : '💡';
+  document.getElementById('feedback-text').textContent = msg;
+}
+
+// ===================== NEXT QUESTION =====================
+document.getElementById('next-btn').onclick = () => {
+  currentQ++;
+  if (currentQ >= shuffled.length) {
+    showResults();
+  } else {
+    loadQuestion();
+  }
+};
+
+// ===================== SHOW RESULTS =====================
+function showResults() {
+  const total = shuffled.length;
+  const pct = Math.round((correct / total) * 100);
+  let stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0;
+  levelStars[currentLevel] = Math.max(levelStars[currentLevel], stars);
+
+  if (stars >= 1 && currentLevel < 3) levelUnlocked[currentLevel + 1] = true;
+
+  document.getElementById('result-emoji').textContent = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '👍' : '💪';
+  document.getElementById('result-title').textContent = pct >= 90 ? 'Excellent!' : pct >= 70 ? 'Great Job!' : pct >= 50 ? 'Good Effort!' : 'Keep Practising!';
+  document.getElementById('result-stars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  document.getElementById('result-score').textContent = score;
+  document.getElementById('result-sub').textContent = `out of ${total * 5} possible points`;
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  const nextBtn = document.getElementById('next-level-btn');
+  if (currentLevel < 3 && stars >= 1) {
+    nextBtn.style.display = 'inline-block';
+  } else {
+    nextBtn.style.display = 'none';
+  }
+
+  showScreen('screen-results');
+}
+
+// ===================== NAVIGATION =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  clearInterval(timer);
+  renderLevels();
+  showScreen('screen-levels');
+}
+
+function retryLevel() {
+  startLevel(currentLevel);
+}
+
+function nextLevel() {
+  if (currentLevel < 3) startLevel(currentLevel + 1);
+}
+
+// ===================== INIT =====================
+renderLevels();
+showScreen('screen-levels');
+</script>
+</body>
+</html>

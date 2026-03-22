@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitution of Kenya Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #006600 50%, #BF0A30 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.4);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .flag {
+            width: 100%;
+            max-width: 350px;
+            height: 180px;
+            margin: 0 auto 20px;
+            position: relative;
+            border: 3px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .flag-black { background: #000; height: 33.33%; }
+        .flag-red { background: #BF0A30; height: 33.33%; position: relative; }
+        .flag-green { background: #006600; height: 33.33%; }
+        .shield {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 60px;
+            background: #8B4513;
+            border: 3px solid white;
+            border-radius: 0 0 25px 25px;
+            z-index: 10;
+        }
+        .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #006600;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .intro {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #006600;
+            margin: 20px 0;
+            color: #333;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .level-card {
+            background: linear-gradient(135deg, #006600, #009900);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: 3px solid #004400;
+        }
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,100,0,0.4);
+        }
+        .level-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .level-card p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            background: linear-gradient(135deg, #BF0A30, #FF0000);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 110px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #006600, #009900);
+            transition: width 0.5s;
+        }
+        .question-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #006600;
+        }
+        .question-box h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .category {
+            display: inline-block;
+            background: #006600;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #006600;
+            background: #f0fff0;
+            transform: translateX(5px);
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .option.wrong {
+            border-color: #BF0A30;
+            background: #FFEBEE;
+        }
+        .explanation {
+            background: #FFF9C4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #FBC02D;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #006600, #009900);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #BF0A30, #FF0000);
+        }
+        .hidden {
+            display: none;
+        }
+        .results {
+            text-align: center;
+            padding: 30px;
+        }
+        .results h2 {
+            color: #006600;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .trophy {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+        .score-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #006600;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #006600;
+            font-size: 24px;
+        }
+        .message {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #2e7d32;
+            border: 2px solid #006600;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 28px; }
+            .flag { max-width: 280px; height: 140px; }
+            .level-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menu">
+            <div class="header">
+                <div class="flag">
+                    <div class="flag-black"></div>
+                    <div class="flag-red">
+                        <div class="shield"></div>
+                    </div>
+                    <div class="flag-green"></div>
+                </div>
+                <div class="icon">⚖️</div>
+                <h1>🇰🇪 Constitution of Kenya Quiz</h1>
+                <p class="subtitle">Master Kenya's Supreme Law - 2010 Constitution</p>
+            </div>
+            
+            <div class="intro">
+                <strong>📖 About This Quiz:</strong> Test your knowledge of the Constitution of Kenya 2010 - 
+                the supreme law that governs our nation. Learn about the Bill of Rights, government structure, 
+                devolution, national values, and constitutional principles. 45 questions across 3 comprehensive levels!
+            </div>
+
+            <div class="level-grid">
+                <div class="level-card" onclick="start(1)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">📜</div>
+                    <h3>Level 1: Foundations</h3>
+                    <p>History, structure, national values & symbols</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(2)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🏛️</div>
+                    <h3>Level 2: Rights & Government</h3>
+                    <p>Bill of Rights, three arms of government</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(3)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🏆</div>
+                    <h3>Level 3: Advanced</h3>
+                    <p>Devolution, commissions, leadership & integrity</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-label">🏆 Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="qnum">1</span>
+                    <span class="stat-label">📝 Question</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">📊 Total</span>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="category" id="category"></div>
+                <h2 id="qtext"></h2>
+                <div id="options"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="menu()">🏠 Menu</button>
+                <button class="btn" id="next" onclick="next()" style="display:none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="results">
+                <div class="trophy">🏆</div>
+                <h2>Level Complete!</h2>
+                
+                <div class="score-box">
+                    <div class="score-item">
+                        <span>🏆 Final Score:</span>
+                        <span class="score-value" id="final">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>✅ Correct Answers:</span>
+                        <span class="score-value" id="correct">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>❌ Wrong Answers:</span>
+                        <span class="score-value" id="wrong">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📊 Percentage:</span>
+                        <span class="score-value" id="percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <button class="btn" onclick="again()">🔄 Retry Level</button>
+                <button class="btn btn-secondary" onclick="menu()">🏠 Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var questions = {
+            1: [
+                {
+                    q: "When was the current Constitution of Kenya promulgated?",
+                    opts: ["2008", "2010", "2012", "2013"],
+                    ans: 1,
+                    cat: "History",
+                    exp: "The Constitution of Kenya 2010 was promulgated on August 27, 2010, replacing the 1963 independence constitution. It was approved by 67% of voters in a referendum."
+                },
+                {
+                    q: "What is the supreme law of Kenya?",
+                    opts: ["Acts of Parliament", "The Constitution", "Presidential decrees", "Court rulings"],
+                    ans: 1,
+                    cat: "Supremacy",
+                    exp: "Article 2 declares the Constitution as the supreme law of Kenya. All law must conform to it, and any law inconsistent with the Constitution is void."
+                },
+                {
+                    q: "How many chapters does the Constitution of Kenya have?",
+                    opts: ["10", "12", "16", "18"],
+                    ans: 3,
+                    cat: "Structure",
+                    exp: "The Constitution has 18 chapters covering sovereignty, citizenship, Bill of Rights, legislature, executive, judiciary, devolution, public finance, land, and more."
+                },
+                {
+                    q: "What is Kenya's national motto?",
+                    opts: ["Unity", "Harambee", "Freedom", "Justice"],
+                    ans: 1,
+                    cat: "National Symbols",
+                    exp: "Kenya's national motto is 'Harambee' which means 'pulling together' or 'let us all work together'. It emphasizes unity and collective effort."
+                },
+                {
+                    q: "Which article contains the national values and principles of governance?",
+                    opts: ["Article 5", "Article 10", "Article 15", "Article 20"],
+                    ans: 1,
+                    cat: "National Values",
+                    exp: "Article 10 lists national values including patriotism, unity, sharing, devolution, rule of law, democracy, human rights, good governance, integrity, and sustainable development."
+                },
+                {
+                    q: "What are the official languages of Kenya?",
+                    opts: ["English only", "Swahili only", "English and Kiswahili", "English, Kiswahili and tribal languages"],
+                    ans: 2,
+                    cat: "Languages",
+                    exp: "Article 7 declares English and Kiswahili as the official languages of Kenya. Kiswahili is also the national language, while all indigenous languages are promoted."
+                },
+                {
+                    q: "What does sovereignty in Kenya belong to?",
+                    opts: ["The President", "Parliament", "The people of Kenya", "The courts"],
+                    ans: 2,
+                    cat: "Sovereignty",
+                    exp: "Article 1 states that all sovereign power belongs to the people of Kenya, who exercise it directly or through elected representatives at national and county levels."
+                },
+                {
+                    q: "What is the national anthem of Kenya called?",
+                    opts: ["Kenya Yetu", "Ee Mungu Nguvu Yetu", "Harambee", "Jamhuri"],
+                    ans: 1,
+                    cat: "National Symbols",
+                    exp: "'Ee Mungu Nguvu Yetu' (O God of All Creation) is Kenya's national anthem, adopted at independence. It emphasizes unity, freedom, and prayer for the nation."
+                },
+                {
+                    q: "How many articles are in the Constitution of Kenya?",
+                    opts: ["200", "264", "300", "350"],
+                    ans: 1,
+                    cat: "Structure",
+                    exp: "The Constitution contains 264 articles organized into 18 chapters, plus schedules. It is more detailed than the previous constitution."
+                },
+                {
+                    q: "Which chapter of the Constitution contains the Bill of Rights?",
+                    opts: ["Chapter 2", "Chapter 4", "Chapter 6", "Chapter 8"],
+                    ans: 1,
+                    cat: "Bill of Rights",
+                    exp: "Chapter 4 (Articles 19-59) contains the Bill of Rights, which outlines fundamental rights and freedoms of all Kenyans."
+                },
+                {
+                    q: "What does the shield and spears on Kenya's coat of arms represent?",
+                    opts: ["War", "Defense and protection of freedom", "Hunting", "Traditional culture"],
+                    ans: 1,
+                    cat: "National Symbols",
+                    exp: "The shield and two crossed spears symbolize defense of the nation and readiness to protect freedom. The rooster symbolizes a new day and prosperity."
+                },
+                {
+                    q: "What is the meaning of 'devolution' in the Constitution?",
+                    opts: ["Centralization", "Transfer of powers to county governments", "Presidential power", "Court system"],
+                    ans: 1,
+                    cat: "Devolution",
+                    exp: "Devolution (Chapter 11) means transferring powers, resources, and functions from the national government to 47 county governments to promote local development."
+                },
+                {
+                    q: "Who has the power to amend the Constitution?",
+                    opts: ["President only", "Parliament through special procedure", "Courts", "Governor"],
+                    ans: 1,
+                    cat: "Amendment",
+                    exp: "Parliament can amend the Constitution through special procedures (Article 255-257). Some amendments require a referendum. The process protects the Constitution from easy changes."
+                },
+                {
+                    q: "What are the colors of the Kenyan flag?",
+                    opts: ["Red, Green, Blue", "Black, Red, Green with white stripes", "Yellow, Black, Red", "Green, White, Blue"],
+                    ans: 1,
+                    cat: "National Symbols",
+                    exp: "The flag has black (people), red (blood/struggle), green (land/agriculture), and white stripes (peace). The shield and spears represent defense."
+                },
+                {
+                    q: "What does Article 1 of the Constitution declare?",
+                    opts: ["President's power", "Kenya is a sovereign republic", "Bill of Rights", "Parliament's role"],
+                    ans: 1,
+                    cat: "Sovereignty",
+                    exp: "Article 1(1) declares 'Kenya is a sovereign republic'. Article 1(2) states sovereign power belongs to the people, exercised at national and county levels."
+                }
+            ],
+            2: [
+                {
+                    q: "How many fundamental rights and freedoms are in the Bill of Rights?",
+                    opts: ["10", "15", "Over 20", "30"],
+                    ans: 2,
+                    cat: "Bill of Rights",
+                    exp: "The Bill of Rights (Chapter 4) contains over 20 fundamental rights including life, equality, human dignity, freedom from slavery, privacy, fair trial, and many more."
+                },
+                {
+                    q: "What is the retirement age for the President in Kenya?",
+                    opts: ["No limit if elected", "65 years", "70 years", "75 years"],
+                    ans: 0,
+                    cat: "Executive",
+                    exp: "There is no retirement age limit for the President. However, one can only serve a maximum of two 5-year terms (10 years total)."
+                },
+                {
+                    q: "How many arms of government does Kenya have?",
+                    opts: ["Two", "Three", "Four", "Five"],
+                    ans: 1,
+                    cat: "Government Structure",
+                    exp: "Kenya has three arms: Legislature (Parliament - makes laws), Executive (President & Cabinet - implements laws), and Judiciary (Courts - interprets laws)."
+                },
+                {
+                    q: "What is the term of office for a Kenyan President?",
+                    opts: ["4 years", "5 years", "6 years", "7 years"],
+                    ans: 1,
+                    cat: "Executive",
+                    exp: "The President serves a term of 5 years (Article 136) and can be re-elected for one more term only, meaning a maximum of 10 years."
+                },
+                {
+                    q: "Which court is the highest in Kenya?",
+                    opts: ["High Court", "Court of Appeal", "Supreme Court", "Magistrate Court"],
+                    ans: 2,
+                    cat: "Judiciary",
+                    exp: "The Supreme Court is the highest court (Article 163). It handles presidential election petitions, constitutional matters, and appeals from the Court of Appeal."
+                },
+                {
+                    q: "How many members does the National Assembly have?",
+                    opts: ["290", "349", "416", "450"],
+                    ans: 1,
+                    cat: "Legislature",
+                    exp: "The National Assembly has 349 members: 290 elected from constituencies, 47 women (one per county), 12 nominated, plus the Speaker."
+                },
+                {
+                    q: "What percentage of votes does a presidential candidate need to win?",
+                    opts: ["40%", "50% plus 1", "More than 50% and at least 25% in half of counties", "60%"],
+                    ans: 2,
+                    cat: "Elections",
+                    exp: "To win, a candidate needs more than 50% of votes AND at least 25% of votes in more than half (24) of the 47 counties (Article 138)."
+                },
+                {
+                    q: "Who is the head of the National Police Service?",
+                    opts: ["President", "Inspector General", "Cabinet Secretary", "Commissioner"],
+                    ans: 1,
+                    cat: "Security",
+                    exp: "The Inspector General of Police heads the National Police Service (Article 245). The service is independent and civilian in character."
+                },
+                {
+                    q: "What is the role of the Senate?",
+                    opts: ["Make national laws only", "Represent counties and protect devolution", "Appoint judges", "Control the budget"],
+                    ans: 1,
+                    cat: "Legislature",
+                    exp: "The Senate represents counties, protects devolution, participates in law-making concerning counties, and oversees national revenue allocated to counties (Article 96)."
+                },
+                {
+                    q: "Who appoints the Chief Justice?",
+                    opts: ["President alone", "Parliament", "President with National Assembly approval", "Judiciary Service Commission"],
+                    ans: 2,
+                    cat: "Judiciary",
+                    exp: "The President appoints the Chief Justice and Deputy Chief Justice after nomination by the Judicial Service Commission and approval by the National Assembly (Article 166)."
+                },
+                {
+                    q: "What is the minimum age to vote in Kenya?",
+                    opts: ["16 years", "18 years", "21 years", "25 years"],
+                    ans: 1,
+                    cat: "Elections",
+                    exp: "Article 38 grants every adult citizen the right to vote. An adult is defined as 18 years or older (Article 260)."
+                },
+                {
+                    q: "Which body conducts elections in Kenya?",
+                    opts: ["Parliament", "President's office", "Independent Electoral and Boundaries Commission", "Judiciary"],
+                    ans: 2,
+                    cat: "Elections",
+                    exp: "The Independent Electoral and Boundaries Commission (IEBC) is the independent body that conducts elections and referendums (Article 88)."
+                },
+                {
+                    q: "What is the term of office for Members of Parliament?",
+                    opts: ["3 years", "4 years", "5 years", "6 years"],
+                    ans: 2,
+                    cat: "Legislature",
+                    exp: "Members of the National Assembly and Senate serve 5-year terms (Article 101), same as the President. Elections are held on the second Tuesday of August."
+                },
+                {
+                    q: "Who is the head of the Cabinet?",
+                    opts: ["Prime Minister", "The President", "Deputy President", "Cabinet Secretary"],
+                    ans: 1,
+                    cat: "Executive",
+                    exp: "The President is the head of the Cabinet (Article 131). The Cabinet consists of the President, Deputy President, Attorney General, and Cabinet Secretaries (not more than 22)."
+                },
+                {
+                    q: "What is the right to a fair trial called in legal terms?",
+                    opts: ["Habeas corpus", "Due process", "Legal aid", "Bail"],
+                    ans: 1,
+                    cat: "Bill of Rights",
+                    exp: "Article 50 guarantees fair trial rights (due process): presumption of innocence, right to be informed of charges, adequate time to prepare defense, and legal representation."
+                }
+            ],
+            3: [
+                {
+                    q: "How many counties does Kenya have?",
+                    opts: ["40", "45", "47", "50"],
+                    ans: 2,
+                    cat: "Devolution",
+                    exp: "Kenya has 47 counties (Article 6 and First Schedule). Each county has its own government with a Governor and County Assembly."
+                },
+                {
+                    q: "What is the role of a Governor?",
+                    opts: ["National government representative", "Chief executive of county government", "Member of Parliament", "Judge"],
+                    ans: 1,
+                    cat: "Devolution",
+                    exp: "The Governor is the chief executive of the county government (Article 179), similar to how the President is chief executive at national level."
+                },
+                {
+                    q: "Which commission deals with complaints about the police?",
+                    opts: ["IEBC", "JSC", "IPOA", "EACC"],
+                    ans: 2,
+                    cat: "Commissions",
+                    exp: "The Independent Policing Oversight Authority (IPOA) investigates complaints about police misconduct and serious injuries/deaths from police action (Article 244)."
+                },
+                {
+                    q: "What is Chapter Six of the Constitution about?",
+                    opts: ["Elections", "Leadership and Integrity", "Devolution", "Land"],
+                    ans: 1,
+                    cat: "Leadership",
+                    exp: "Chapter Six (Articles 73-80) outlines leadership and integrity requirements for state officers, including responsibility, transparency, accountability, and selfless service."
+                },
+                {
+                    q: "Which body fights corruption in Kenya?",
+                    opts: ["Police", "Ethics and Anti-Corruption Commission", "Judiciary", "Parliament"],
+                    ans: 1,
+                    cat: "Commissions",
+                    exp: "The Ethics and Anti-Corruption Commission (EACC) investigates corruption, economic crimes, and unethical conduct by public officers (Article 79)."
+                },
+                {
+                    q: "What is the National Land Commission responsible for?",
+                    opts: ["Selling land", "Managing public land on behalf of national and county governments", "Building houses", "Collecting taxes"],
+                    ans: 1,
+                    cat: "Commissions",
+                    exp: "The National Land Commission manages public land, investigates historical land injustices, and ensures equitable access to land (Article 67)."
+                },
+                {
+                    q: "How is revenue shared between national and county governments?",
+                    opts: ["50-50", "At least 15% to counties", "Counties get everything", "No sharing"],
+                    ans: 1,
+                    cat: "Public Finance",
+                    exp: "Article 203 requires at least 15% of national revenue to be allocated to county governments. The actual share is determined by Parliament based on Commission recommendations."
+                },
+                {
+                    q: "What is the Auditor General's role?",
+                    opts: ["Tax collection", "Audit public finances and ensure accountability", "Budget making", "Police work"],
+                    ans: 1,
+                    cat: "Public Finance",
+                    exp: "The Auditor General audits all public accounts (national and county governments) to ensure accountability and proper use of public funds (Article 229)."
+                },
+                {
+                    q: "What does the Commission on Revenue Allocation do?",
+                    opts: ["Collect taxes", "Recommend revenue sharing between national and county governments", "Spend money", "Audit accounts"],
+                    ans: 1,
+                    cat: "Commissions",
+                    exp: "The Commission on Revenue Allocation recommends how revenue should be shared between national and county governments and among counties (Article 215)."
+                },
+                {
+                    q: "Which body recommends appointment of judges?",
+                    opts: ["President", "Judicial Service Commission", "Parliament", "Attorney General"],
+                    ans: 1,
+                    cat: "Judiciary",
+                    exp: "The Judicial Service Commission recommends persons for appointment as judges, promotes judicial independence, and ensures accountability (Article 171)."
+                },
+                {
+                    q: "What is the maximum number of Cabinet Secretaries?",
+                    opts: ["15", "18", "22", "No limit"],
+                    ans: 2,
+                    cat: "Executive",
+                    exp: "Article 152 states Cabinet Secretaries shall not be more than 22 (excluding the Attorney General who is also a member of Cabinet)."
+                },
+                {
+                    q: "What does the two-thirds gender rule require?",
+                    opts: ["Equal men and women", "No more than two-thirds of same gender in elective bodies", "Women only", "Men only"],
+                    ans: 1,
+                    cat: "Gender Equality",
+                    exp: "Article 81(b) requires that not more than two-thirds of members of elective public bodies shall be of the same gender, promoting gender balance."
+                },
+                {
+                    q: "Who is the principal legal advisor to the government?",
+                    opts: ["Chief Justice", "Director of Public Prosecutions", "Attorney General", "Solicitor General"],
+                    ans: 2,
+                    cat: "Executive",
+                    exp: "The Attorney General is the principal legal adviser to the government (Article 156). The DPP has power to prosecute while AG provides legal advice."
+                },
+                {
+                    q: "What is the role of the Controller of Budget?",
+                    opts: ["Make budget", "Oversee implementation of budgets by national and county governments", "Collect taxes", "Audit accounts"],
+                    ans: 1,
+                    cat: "Public Finance",
+                    exp: "The Controller of Budget oversees implementation of budgets by both national and county governments (Article 228), ensuring authorized spending only."
+                },
+                {
+                    q: "Which article protects the environment as a right?",
+                    opts: ["Article 40", "Article 42", "Article 50", "Article 69"],
+                    ans: 1,
+                    cat: "Bill of Rights",
+                    exp: "Article 42 grants everyone the right to a clean and healthy environment. Article 69 further obligates the state and citizens to protect the environment."
+                }
+            ]
+        };
+
+        var lvl = 1;
+        var qidx = 0;
+        var sc = 0;
+
+        function start(l) {
+            lvl = l;
+            qidx = 0;
+            sc = 0;
+            document.getElementById('menu').className = 'hidden';
+            document.getElementById('quiz').className = '';
+            show();
+        }
+
+        function show() {
+            var q = questions[lvl][qidx];
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('category').textContent = q.cat;
+            document.getElementById('qnum').textContent = qidx + 1;
+            document.getElementById('score').textContent = sc;
+            
+            var progress = ((qidx + 1) / 15) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            var opts = '';
+            for (var i = 0; i < q.opts.length; i++) {
+                opts += '<div class="option" onclick="pick(' + i + ')">' + q.opts[i] + '</div>';
+            }
+            document.getElementById('options').innerHTML = opts;
+            document.getElementById('explanation').className = 'explanation';
+            document.getElementById('next').style.display = 'none';
+        }
+
+        function pick(i) {
+            var q = questions[lvl][qidx];
+            var opts = document.querySelectorAll('.option');
+            
+            for (var j = 0; j < opts.length; j++) {
+                opts[j].style.pointerEvents = 'none';
+            }
+            
+            if (i === q.ans) {
+                opts[i].className = 'option correct';
+                sc++;
+                document.getElementById('score').textContent = sc;
+            } else {
+                opts[i].className = 'option wrong';
+                opts[q.ans].className = 'option correct';
+            }
+            
+            var expDiv = document.getElementById('explanation');
+            expDiv.innerHTML = '<strong>📖 Constitutional Knowledge:</strong> ' + q.exp;
+            expDiv.className = 'explanation show';
+            
+            document.getElementById('next').style.display = 'inline-block';
+        }
+
+        function next() {
+            qidx++;
+            if (qidx < 15) {
+                show();
+            } else {
+                end();
+            }
+        }
+
+        function end() {
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = '';
+            
+            var pct = Math.round((sc / 15) * 100);
+            var wrong = 15 - sc;
+            var msg = '';
+            
+            if (pct >= 90) msg = '🌟 Excellent! You are a constitutional expert! Hongera!';
+            else if (pct >= 75) msg = '👏 Great work! You understand the Constitution well!';
+            else if (pct >= 60) msg = '👍 Good job! Keep learning about our Constitution!';
+            else if (pct >= 40) msg = '📚 Fair effort! Study the Constitution more!';
+            else msg = '💪 Keep studying! The Constitution protects all of us!';
+            
+            document.getElementById('final').textContent = sc;
+            document.getElementById('correct').textContent = sc;
+            document.getElementById('wrong').textContent = wrong;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('message').textContent = msg;
+        }
+
+        function again() {
+            start(lvl);
+            document.getElementById('results').className = 'hidden';
+        }
+
+        function menu() {
+            document.getElementById('menu').className = '';
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = 'hidden';
+        }
+    </script>
+</body>
+</html>

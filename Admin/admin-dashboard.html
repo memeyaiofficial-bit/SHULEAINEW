@@ -420,6 +420,29 @@
         flex-wrap: wrap;
       }
 
+      /* Notification animations */
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+
       /* Responsive Breakpoints */
       @media (max-width: 1200px) {
         .dashboard-grid {
@@ -807,6 +830,37 @@
           </div>
 
           <div id="paymentsSection">
+            <div
+              style="
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <div style="color: #666; font-weight: bold">
+                <span id="paymentsCount">0</span> payments found
+              </div>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap">
+                <button
+                  class="search-btn"
+                  onclick="exportPaymentsCSV()"
+                  style="background: #17a2b8"
+                >
+                  📥 Export CSV
+                </button>
+                <button
+                  class="search-btn"
+                  onclick="exportPaymentsExcel()"
+                  style="background: #28a745"
+                >
+                  📊 Export Excel
+                </button>
+              </div>
+            </div>
+
             <table class="payments-table">
               <thead>
                 <tr>
@@ -888,12 +942,145 @@
             <span id="detailAgent">-</span>
           </div>
         </div>
+        <div class="modal-actions" id="modalActions">
+          <button
+            class="action-btn approve-btn"
+            onclick="generateAccessCodeForUser()"
+          >
+            🔐 Generate Access Code
+          </button>
+          <button class="action-btn reject-btn" onclick="closePaymentDetails()">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Access Code Generated Modal -->
+    <div class="payment-details-modal" id="accessCodeModal">
+      <div
+        class="payment-details-content"
+        style="max-width: 550px; text-align: center"
+      >
+        <h2>✅ Access Code Generated</h2>
+        <div
+          style="
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+          "
+        >
+          <p style="color: #666; margin-bottom: 1rem">Generated Code:</p>
+          <div
+            style="
+              font-size: 3rem;
+              font-weight: bold;
+              color: #28a745;
+              letter-spacing: 5px;
+              font-family: monospace;
+              margin: 1rem 0;
+              cursor: pointer;
+              padding: 1rem;
+              background: white;
+              border-radius: 10px;
+              user-select: all;
+            "
+            onclick="copyAccessCode(event)"
+            title="Click to copy"
+          >
+            <span id="generatedCode">------</span>
+          </div>
+          <p style="color: #999; font-size: 0.9rem; margin: 0.5rem 0">
+            ← Click the code above to copy
+          </p>
+          <p style="color: #666; margin: 1rem 0">
+            <strong>Plan Type:</strong> <span id="codeplanType">-</span>
+          </p>
+          <p style="color: #666; margin: 1rem 0">
+            <strong>For:</strong> <span id="codeEmail">-</span>
+          </p>
+          <p style="color: #ff9800; font-weight: bold; margin: 1rem 0">
+            ⏰ Expires in: <span id="codeExpires">-</span>
+          </p>
+        </div>
+
+        <!-- Message Template Section -->
+        <div
+          style="
+            background: #f0f7ff;
+            border: 2px solid #2196f3;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+          "
+        >
+          <p style="color: #1976d2; font-weight: bold; margin-bottom: 0.75rem">
+            📨 Copy & Send This Message
+          </p>
+          <div
+            id="shareMessage"
+            style="
+              background: white;
+              padding: 1rem;
+              border-radius: 10px;
+              border: 1px solid #ddd;
+              font-size: 0.9rem;
+              line-height: 1.6;
+              color: #333;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+              cursor: text;
+              user-select: all;
+            "
+          >
+            Hello, Your access code for Shule AI Plus+ is ready: 🔐 CODE:
+            <span id="shareCode">------</span>
+
+            Plan: <span id="sharePlan">Monthly</span>
+            Valid for: 24 hours Sign in here:
+            [www.shuleaiplus.com](https://www.shuleaiplus.com) Enter your email
+            and this code to get instant access! Questions? Reply to this
+            message. Best regards, Shule AI Team
+          </div>
+          <p style="color: #999; font-size: 0.9rem; margin: 0.75rem 0 0 0">
+            ↑ Click to select all, then copy (Ctrl+C)
+          </p>
+        </div>
+
+        <div
+          style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap"
+        >
+          <button
+            class="action-btn approve-btn"
+            onclick="copyShareMessage()"
+            style="flex: 1; min-width: 150px"
+          >
+            📋 Copy Message
+          </button>
+          <button
+            class="action-btn approve-btn"
+            onclick="copyAccessCode()"
+            style="flex: 1; min-width: 150px"
+          >
+            🔐 Copy Code Only
+          </button>
+          <button
+            class="action-btn reject-btn"
+            onclick="closeAccessCodeModal()"
+            style="flex: 1; min-width: 100px"
+          >
+            Done
+          </button>
+        </div>
       </div>
     </div>
 
     <script>
       // Admin Dashboard JavaScript
-      const API_BASE_URL = "http://localhost:5000/api";
+      const API_BASE_URL = "https://shuleainew.onrender.com/api";
       const ALLOWED_ADMIN_EMAIL = "shuleaiadmin@memeyai.com";
       let currentPaymentId = null;
       let currentPage = 1;
@@ -919,12 +1106,17 @@
       function getAdminKey() {
         const adminToken = localStorage.getItem("admin_token");
         if (!adminToken) {
+          console.error("❌ No admin token found in localStorage");
           window.location.href = "admin-login.html";
           return null;
         }
         try {
-          return atob(adminToken);
+          const decodedKey = atob(adminToken);
+          console.log("✅ Admin key decoded successfully");
+          return decodedKey;
         } catch (e) {
+          console.error("❌ Failed to decode admin token:", e);
+          localStorage.clear();
           window.location.href = "admin-login.html";
           return null;
         }
@@ -949,6 +1141,33 @@
         sidebar.classList.remove("active");
         hamburger.classList.remove("active");
         overlay.classList.remove("active");
+      }
+
+      // Toggle sections
+      function showSection(section) {
+        const paymentsSection = document.getElementById("paymentsSection");
+        const analyticsSection = document.getElementById("analyticsSection");
+
+        // Hide all sections
+        paymentsSection.style.display = "none";
+        analyticsSection.style.display = "none";
+
+        // Show selected section
+        if (section === "analytics") {
+          analyticsSection.style.display = "block";
+          loadAnalytics();
+        } else {
+          paymentsSection.style.display = "block";
+          currentPage = 1;
+          loadPayments();
+        }
+
+        // Update active menu item
+        const menuItems = document.querySelectorAll(".sidebar-menu a");
+        menuItems.forEach((item) => item.classList.remove("active"));
+        if (event && event.target) {
+          event.target.classList.add("active");
+        }
       }
 
       // Load dashboard data
@@ -1047,6 +1266,12 @@
         const tbody = document.getElementById("paymentsTableBody");
         tbody.innerHTML = "";
 
+        // Store payments for export
+        allPaymentsForExport = payments;
+
+        // Update payment count
+        document.getElementById("paymentsCount").textContent = payments.length;
+
         if (payments.length === 0) {
           tbody.innerHTML = `
                     <tr>
@@ -1110,21 +1335,170 @@
                         }')">
                             View
                         </button>
-                        ${
-                          status === "pending"
-                            ? `
-                            <button class="action-btn approve-btn" onclick="approvePaymentDirect('${
-                              payment.$id || payment.id || ""
-                            }')">
-                                Approve
-                            </button>
-                        `
-                            : ""
-                        }
+                        <button class="action-btn approve-btn" onclick="viewPaymentDetailsAndGenerate('${
+                          payment.$id || payment.id || ""
+                        }')">
+                            🔐 Code
+                        </button>
                     </td>
                 `;
           tbody.appendChild(row);
         });
+      }
+
+      // Store all payments for export
+      let allPaymentsForExport = [];
+
+      // Export payments as CSV
+      function exportPaymentsCSV() {
+        if (!allPaymentsForExport || allPaymentsForExport.length === 0) {
+          alert("No payments to export. Please load payments first.");
+          return;
+        }
+
+        // Define CSV headers
+        const headers = [
+          "Date",
+          "Full Name",
+          "Email",
+          "Phone",
+          "Transaction Code",
+          "Amount (KSh)",
+          "Plan Type",
+          "Status",
+          "Expires At",
+        ];
+
+        // Create CSV rows
+        const rows = allPaymentsForExport.map((payment) => [
+          new Date(payment.paid_at).toLocaleDateString("en-GB"),
+          payment.full_name || "N/A",
+          payment.email || "N/A",
+          payment.phone || "N/A",
+          payment.transaction_code || "N/A",
+          payment.amount || 0,
+          payment.plan_type || "N/A",
+          payment.status || "pending",
+          payment.expires_at
+            ? new Date(payment.expires_at).toLocaleDateString("en-GB")
+            : "N/A",
+        ]);
+
+        // Combine headers and rows
+        const csvContent = [
+          headers.join(","),
+          ...rows.map((row) =>
+            row
+              .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+              .join(","),
+          ),
+        ].join("\n");
+
+        // Download CSV
+        downloadFile(csvContent, "payments.csv", "text/csv");
+      }
+
+      // Export payments as Excel (using CSV format that Excel can read)
+      function exportPaymentsExcel() {
+        if (!allPaymentsForExport || allPaymentsForExport.length === 0) {
+          alert("No payments to export. Please load payments first.");
+          return;
+        }
+
+        // Define headers
+        const headers = [
+          "Date",
+          "Full Name",
+          "Email",
+          "Phone",
+          "Transaction Code",
+          "Amount (KSh)",
+          "Plan Type",
+          "Status",
+          "Expires At",
+        ];
+
+        // Create data rows
+        const rows = allPaymentsForExport.map((payment) => ({
+          Date: new Date(payment.paid_at).toLocaleDateString("en-GB"),
+          "Full Name": payment.full_name || "N/A",
+          Email: payment.email || "N/A",
+          Phone: payment.phone || "N/A",
+          "Transaction Code": payment.transaction_code || "N/A",
+          "Amount (KSh)": payment.amount || 0,
+          "Plan Type": payment.plan_type || "N/A",
+          Status: payment.status || "pending",
+          "Expires At": payment.expires_at
+            ? new Date(payment.expires_at).toLocaleDateString("en-GB")
+            : "N/A",
+        }));
+
+        // Create HTML table for Excel
+        let excelContent =
+          '<table border="1"><tr style="background-color: #2e7d4a; color: white; font-weight: bold;">';
+
+        // Add headers
+        headers.forEach((header) => {
+          excelContent += `<th>${header}</th>`;
+        });
+        excelContent += "</tr>";
+
+        // Add data rows
+        rows.forEach((row) => {
+          excelContent += "<tr>";
+          headers.forEach((header) => {
+            excelContent += `<td>${row[header]}</td>`;
+          });
+          excelContent += "</tr>";
+        });
+
+        excelContent += "</table>";
+
+        // Download as Excel-compatible HTML
+        downloadFile(excelContent, "payments.xls", "application/vnd.ms-excel");
+      }
+
+      // Helper function to download file
+      function downloadFile(content, filename, mimeType) {
+        const element = document.createElement("a");
+        element.setAttribute(
+          "href",
+          `data:${mimeType};charset=utf-8,${encodeURIComponent(content)}`,
+        );
+        element.setAttribute("download", filename);
+        element.style.display = "none";
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+
+        // Show success message
+        const msg = filename.includes("csv") ? "CSV" : "Excel";
+        showQuickNotification(`✅ ${msg} file downloaded successfully!`, 3000);
+      }
+
+      // Quick notification function
+      function showQuickNotification(message, duration = 3000) {
+        const notification = document.createElement("div");
+        notification.textContent = message;
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: #d4edda;
+          color: #155724;
+          padding: 1rem 1.5rem;
+          border-radius: 8px;
+          border: 1px solid #c3e6cb;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          animation: slideIn 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.animation = "slideOut 0.3s ease";
+          setTimeout(() => notification.remove(), 300);
+        }, duration);
       }
 
       // Render pagination
@@ -1180,42 +1554,133 @@
       async function viewPaymentDetails(paymentId) {
         try {
           const adminKey = getAdminKey();
-          if (!adminKey || !paymentId) return;
+          if (!adminKey || !paymentId) {
+            console.error("Missing admin key or payment ID");
+            alert("Error: Admin authentication not found. Please login again.");
+            window.location.href = "admin-login.html";
+            return;
+          }
+
+          console.log("Fetching payment details...");
 
           const response = await fetch(
             `${API_BASE_URL}/payments/admin/${paymentId}`,
             {
               headers: {
                 "Admin-Key": adminKey,
+                "Content-Type": "application/json",
               },
             },
           );
+
+          if (response.status === 401) {
+            console.error("Authentication failed:", response.statusText);
+            alert(
+              "Unauthorized. Your session may have expired. Please login again.",
+            );
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+            return;
+          }
 
           if (response.ok) {
             const data = await response.json();
             if (data.success) {
               currentPaymentId = paymentId;
               showPaymentDetails(data.payment);
+            } else {
+              alert(
+                "Error: " + (data.message || "Failed to load payment details"),
+              );
             }
+          } else {
+            const error = await response.json();
+            alert(
+              "Error: " + (error.message || "Failed to load payment details"),
+            );
           }
         } catch (error) {
           console.error("Error loading payment details:", error);
+          alert("Error: " + error.message);
+        }
+      }
+
+      // View payment details and show generate code button
+      async function viewPaymentDetailsAndGenerate(paymentId) {
+        try {
+          const adminKey = getAdminKey();
+          if (!adminKey || !paymentId) {
+            console.error("Missing admin key or payment ID");
+            alert("Error: Admin authentication not found. Please login again.");
+            window.location.href = "admin-login.html";
+            return;
+          }
+
+          const response = await fetch(
+            `${API_BASE_URL}/payments/admin/${paymentId}`,
+            {
+              headers: {
+                "Admin-Key": adminKey,
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          if (response.status === 401) {
+            console.error("Authentication failed:", response.statusText);
+            alert(
+              "Unauthorized. Your session may have expired. Please login again.",
+            );
+            localStorage.clear();
+            window.location.href = "admin-login.html";
+            return;
+          }
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              currentPaymentId = paymentId;
+              showPaymentDetails(data.payment);
+            } else {
+              alert(
+                "Error: " + (data.message || "Failed to load payment details"),
+              );
+            }
+          } else {
+            const error = await response.json();
+            alert(
+              "Error: " + (error.message || "Failed to load payment details"),
+            );
+          }
+        } catch (error) {
+          console.error("Error loading payment details:", error);
+          alert("Error: " + error.message);
         }
       }
 
       // Show payment details in modal
       function showPaymentDetails(payment) {
-        document.getElementById("detailName").textContent =
-          payment.full_name || "N/A";
-        document.getElementById("detailEmail").textContent =
-          payment.email || "N/A";
-        document.getElementById("detailPhone").textContent =
-          payment.phone || "N/A";
-        document.getElementById("detailTransaction").textContent =
+        const elements = {
+          detailName: document.getElementById("detailName"),
+          detailEmail: document.getElementById("detailEmail"),
+          detailPhone: document.getElementById("detailPhone"),
+          detailTransaction: document.getElementById("detailTransaction"),
+          detailAmount: document.getElementById("detailAmount"),
+        };
+
+        // Check if modal elements exist
+        if (!elements.detailName) {
+          console.error("Modal elements not found. Checking DOM structure...");
+          console.log("Looking for element with id='detailName'");
+          return;
+        }
+
+        elements.detailName.textContent = payment.full_name || "N/A";
+        elements.detailEmail.textContent = payment.email || "N/A";
+        elements.detailPhone.textContent = payment.phone || "N/A";
+        elements.detailTransaction.textContent =
           payment.transaction_code || "N/A";
-        document.getElementById("detailAmount").textContent = `KSh ${
-          payment.amount || 0
-        }`;
+        elements.detailAmount.textContent = `KSh ${payment.amount || 0}`;
 
         // Format plan type with badge styling
         const planType = payment.plan_type || "N/A";
@@ -1236,11 +1701,18 @@
             gamesCount[planType.toLowerCase()] || ""
           }</span>`;
         }
-        document.getElementById("detailPlan").innerHTML = planBadge;
 
-        document.getElementById("detailDate").textContent = payment.paid_at
-          ? new Date(payment.paid_at).toLocaleString()
-          : "N/A";
+        const detailPlan = document.getElementById("detailPlan");
+        if (detailPlan) {
+          detailPlan.innerHTML = planBadge;
+        }
+
+        const detailDate = document.getElementById("detailDate");
+        if (detailDate) {
+          detailDate.textContent = payment.paid_at
+            ? new Date(payment.paid_at).toLocaleString()
+            : "N/A";
+        }
 
         // Format expiry date
         let expiryText = "N/A";
@@ -1261,33 +1733,187 @@
             )} days ago)`;
           }
         }
-        document.getElementById("detailExpires").textContent = expiryText;
 
-        document.getElementById("detailStatus").textContent =
-          payment.status || "pending";
-        document.getElementById("detailTill").textContent =
-          payment.till_number || "N/A";
-        document.getElementById("detailIP").textContent =
-          payment.ip_address || "N/A";
-        document.getElementById("detailAgent").textContent = payment.user_agent
-          ? payment.user_agent.substring(0, 50) + "..."
-          : "N/A";
-
-        // Show/hide action buttons based on status
-        const modalActions = document.getElementById("modalActions");
-        if (payment.status === "pending") {
-          modalActions.style.display = "flex";
-        } else {
-          modalActions.style.display = "none";
+        const detailExpires = document.getElementById("detailExpires");
+        if (detailExpires) {
+          detailExpires.textContent = expiryText;
         }
 
-        document.getElementById("paymentDetailsModal").style.display = "flex";
+        const detailStatus = document.getElementById("detailStatus");
+        if (detailStatus) {
+          detailStatus.textContent = payment.status || "pending";
+        }
+
+        const detailIP = document.getElementById("detailIP");
+        if (detailIP) {
+          detailIP.textContent = payment.ip_address || "N/A";
+        }
+
+        const detailAgent = document.getElementById("detailAgent");
+        if (detailAgent) {
+          detailAgent.textContent = payment.user_agent
+            ? payment.user_agent.substring(0, 50) + "..."
+            : "N/A";
+        }
+
+        // Always show the action buttons for generating access codes
+        const modalActions = document.getElementById("modalActions");
+        if (modalActions) {
+          modalActions.style.display = "flex";
+        }
+
+        const paymentModal = document.getElementById("paymentDetailsModal");
+        if (paymentModal) {
+          paymentModal.style.display = "flex";
+        }
       }
 
       // Close payment details modal
       function closePaymentDetails() {
         document.getElementById("paymentDetailsModal").style.display = "none";
         currentPaymentId = null;
+      }
+
+      // Generate access code for user with payment issues
+      async function generateAccessCodeForUser() {
+        try {
+          const adminKey = getAdminKey();
+          if (!adminKey || !currentPaymentId) {
+            alert("Error: Admin key or payment ID not found");
+            return;
+          }
+
+          const generateBtn = event.target;
+          generateBtn.disabled = true;
+          generateBtn.textContent = "⏳ Generating...";
+
+          const response = await fetch(
+            `${API_BASE_URL}/payments/admin/generate-code/${currentPaymentId}`,
+            {
+              method: "POST",
+              headers: {
+                "Admin-Key": adminKey,
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          if (response.status === 401) {
+            alert("Unauthorized. Please login again.");
+            window.location.href = "admin-login.html";
+            return;
+          }
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              // Show the access code modal
+              document.getElementById("generatedCode").textContent =
+                data.accessCode;
+              document.getElementById("codeEmail").textContent = data.email;
+              document.getElementById("codeplanType").textContent =
+                data.planType.toUpperCase();
+              document.getElementById("codeExpires").textContent =
+                data.expiresIn;
+
+              // Update share message template
+              const userEmail = data.email;
+              const planType =
+                data.planType.charAt(0).toUpperCase() + data.planType.slice(1);
+              const accessCode = data.accessCode;
+
+              document.getElementById("shareCode").textContent = accessCode;
+              document.getElementById("sharePlan").textContent = planType;
+
+              // Build the full message
+              const message = `Hello,\n\nYour access code for Shule AI Plus+ is ready:\n\n🔐 CODE: ${accessCode}\n\nPlan: ${planType}\nValid for: 24 hours\n\nSign in here: www.shuleaiplus.com\nEnter your email and this code to get instant access!\n\nQuestions? Reply to this message.\n\nBest regards,\nShule AI Team`;
+
+              document.getElementById("shareMessage").innerHTML =
+                `<span style="white-space: pre-wrap;">Hello,\n\nYour access code for Shule AI Plus+ is ready:\n\n🔐 CODE: <strong>${accessCode}</strong>\n\nPlan: <strong>${planType}</strong>\nValid for: <strong>24 hours</strong>\n\nSign in here: www.shuleaiplus.com\nEnter your email and this code to get instant access!\n\nQuestions? Reply to this message.\n\nBest regards,\nShule AI Team</span>`;
+              document.getElementById("shareMessage").dataset.plainText =
+                message;
+
+              // Close payment details and show access code
+              closePaymentDetails();
+              document.getElementById("accessCodeModal").style.display = "flex";
+
+              console.log("✅ Access code generated:", data.accessCode);
+            } else {
+              alert("Error: " + (data.message || "Failed to generate code"));
+            }
+          } else {
+            const error = await response.json();
+            alert(
+              "Error: " + (error.message || "Failed to generate access code"),
+            );
+          }
+        } catch (error) {
+          console.error("Error generating access code:", error);
+          alert("Error: " + error.message);
+        } finally {
+          if (event.target) {
+            event.target.disabled = false;
+            event.target.textContent = "🔐 Generate Access Code";
+          }
+        }
+      }
+
+      // Copy access code to clipboard
+      function copyAccessCode(evt) {
+        const code = document.getElementById("generatedCode").textContent;
+        navigator.clipboard
+          .writeText(code)
+          .then(() => {
+            let copyBtn = evt ? evt.target : event && event.target;
+            if (
+              copyBtn &&
+              copyBtn.classList &&
+              copyBtn.classList.contains("action-btn")
+            ) {
+              const originalText = copyBtn.textContent;
+              copyBtn.textContent = "✅ Copied!";
+              setTimeout(() => {
+                copyBtn.textContent = originalText;
+              }, 2000);
+            } else {
+              // If called from clicking the code itself, show brief feedback
+              alert("✅ Access code copied to clipboard!");
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err);
+            alert("❌ Failed to copy. Try using Ctrl+C instead.");
+          });
+      }
+
+      // Copy share message to clipboard
+      function copyShareMessage() {
+        const messageEl = document.getElementById("shareMessage");
+        const plainText = messageEl.dataset.plainText || messageEl.textContent;
+
+        navigator.clipboard
+          .writeText(plainText)
+          .then(() => {
+            const copyBtn = event.target;
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = "✅ Message Copied!";
+            setTimeout(() => {
+              copyBtn.textContent = originalText;
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err);
+            alert(
+              "❌ Failed to copy. Try manually selecting and copying the text.",
+            );
+          });
+      }
+
+      // Close access code modal
+      function closeAccessCodeModal() {
+        document.getElementById("accessCodeModal").style.display = "none";
+        // Optionally reload payments to refresh the table
+        // loadPayments();
       }
 
       // Load analytics
@@ -1402,9 +2028,14 @@
 
       // Close modal when clicking outside
       window.onclick = function (event) {
-        const modal = document.getElementById("paymentDetailsModal");
-        if (event.target === modal) {
+        const paymentModal = document.getElementById("paymentDetailsModal");
+        const codeModal = document.getElementById("accessCodeModal");
+
+        if (event.target === paymentModal) {
           closePaymentDetails();
+        }
+        if (event.target === codeModal) {
+          closeAccessCodeModal();
         }
       };
     </script>

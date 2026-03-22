@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Introduction to Entrepreneurship</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --brown-deep:  #2c1a0e;
+  --brown-dark:  #4a2c14;
+  --brown-main:  #7b4a21;
+  --brown-mid:   #a0622a;
+  --brown-warm:  #c4813d;
+  --brown-light: #dba96a;
+  --brown-pale:  #f5ead8;
+  --brown-cream: #fdf5ec;
+  --gold:        #d4a017;
+  --gold-light:  #f0c94d;
+  --amber:       #e07b1a;
+  --red-err:     #c0392b;
+  --green-ok:    #2e7d32;
+  --white:       #ffffff;
+  --shadow:      0 6px 24px rgba(44,26,14,0.22);
+  --shadow-lg:   0 12px 40px rgba(44,26,14,0.28);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--brown-cream);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(135deg,var(--brown-deep) 0%,var(--brown-dark) 60%,var(--brown-main) 100%);
+  box-shadow:0 4px 20px rgba(0,0,0,0.35);
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(255,255,255,0.03) 18px,rgba(255,255,255,0.03) 36px);
+}
+.gold-bar{width:100%;height:4px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-light),var(--gold),transparent);}
+.header-inner{position:relative;display:flex;flex-direction:column;align-items:center;padding:18px 20px 16px;}
+.brand-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.brand-icon{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;box-shadow:0 3px 10px rgba(0,0,0,0.3);flex-shrink:0;
+}
+.brand-name{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--white);letter-spacing:.5px;line-height:1;}
+.brand-plus{color:var(--gold-light);}
+.header-sub{font-size:11px;color:var(--brown-light);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.header-title{font-family:'Playfair Display',serif;font-size:clamp(14px,3vw,20px);color:var(--brown-pale);font-weight:700;text-align:center;}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:720px;padding:24px 16px 40px;}
+.screen.active{display:block;}
+
+/* ── LEVEL SELECT ── */
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--brown-dark);text-align:center;margin-bottom:4px;}
+.section-sub{text-align:center;font-size:13px;color:var(--brown-mid);margin-bottom:26px;font-weight:500;}
+
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+@media(min-width:500px){.levels-grid{grid-template-columns:repeat(4,1fr);}}
+
+.level-card{
+  background:var(--white);
+  border:3px solid var(--brown-light);
+  border-radius:18px;
+  padding:22px 10px 18px;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.level-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--brown-warm),var(--gold));
+  opacity:0;transition:opacity .2s;
+}
+.level-card:hover::after{opacity:1;}
+.level-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--brown-warm);}
+.level-card.completed{border-color:var(--gold);}
+.level-card.completed .lnum{color:var(--gold);}
+
+.lnum{font-family:'Press Start 2P',monospace;font-size:26px;color:var(--brown-main);margin-bottom:10px;display:block;}
+.lname{font-weight:800;font-size:13px;color:var(--brown-dark);margin-bottom:3px;}
+.lq{font-size:11px;color:#999;margin-bottom:6px;}
+.level-stars{font-size:16px;min-height:20px;}
+
+.level-badge{
+  display:inline-block;
+  font-size:10px;font-weight:800;
+  padding:3px 8px;border-radius:20px;
+  margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;
+}
+.badge-1{background:#e8f5e9;color:#2e7d32;}
+.badge-2{background:#fff3e0;color:#e65100;}
+.badge-3{background:#e3f2fd;color:#1565c0;}
+.badge-4{background:#fce4ec;color:#880e4f;}
+
+/* ── GAME TOPBAR ── */
+.game-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+.game-level-tag{background:var(--brown-dark);color:var(--brown-pale);border-radius:20px;padding:5px 16px;font-weight:700;font-size:12px;}
+.timer-pill{background:var(--gold);color:var(--brown-deep);border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;min-width:72px;text-align:center;transition:background .3s;}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{background:linear-gradient(135deg,var(--brown-main),var(--brown-dark));color:white;border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;}
+
+.prog-wrap{width:100%;height:10px;background:#e5d5c0;border-radius:99px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--brown-warm),var(--gold));border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);}
+
+/* ── QUESTION ── */
+.question-card{
+  background:var(--white);border-radius:18px;padding:22px 20px 18px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border-left:6px solid var(--brown-warm);
+}
+.q-num{font-size:11px;font-weight:700;color:var(--brown-warm);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.q-text{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:var(--brown-deep);line-height:1.5;}
+
+/* ── OPTIONS ── */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--white);border:2.5px solid #ddc9ae;border-radius:13px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--brown-dark);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){background:var(--brown-pale);border-color:var(--brown-warm);transform:translateY(-2px);box-shadow:0 4px 12px rgba(122,74,33,.15);}
+.opt-letter{background:var(--brown-pale);color:var(--brown-main);border-radius:7px;min-width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;}
+.opt-btn:disabled{cursor:default;}
+
+/* ── FEEDBACK ── */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#e8f5e9;border:2px solid var(--green-ok);border-radius:12px;
+  padding:11px 15px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:20px;flex-shrink:0;}
+
+/* ── NEXT BTN ── */
+.next-btn{
+  width:100%;background:linear-gradient(135deg,var(--brown-warm),var(--brown-dark));
+  color:white;border:none;border-radius:13px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 16px rgba(122,74,33,.35);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(122,74,33,.4);}
+.next-btn.show{display:block;}
+
+/* ── RESULTS ── */
+.result-box{
+  background:var(--white);border-radius:22px;padding:32px 24px 28px;
+  box-shadow:var(--shadow-lg);text-align:center;border-top:6px solid var(--gold);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:64px;margin-bottom:8px;}
+.res-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--brown-dark);margin-bottom:4px;}
+.res-level-name{font-size:13px;color:var(--brown-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:38px;margin:12px 0;}
+.res-big{font-family:'Press Start 2P',monospace;font-size:32px;color:var(--brown-main);margin-bottom:4px;}
+.res-sub{font-size:13px;color:#888;margin-bottom:20px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stat-box{background:var(--brown-pale);border-radius:12px;padding:14px 8px;}
+.stat-n{font-size:24px;font-weight:900;color:var(--brown-dark);}
+.stat-l{font-size:11px;color:#888;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{background:linear-gradient(135deg,var(--brown-warm),var(--brown-dark));color:white;border:none;border-radius:12px;padding:13px 26px;font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(122,74,33,.3);transition:transform .15s;}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{background:white;color:var(--brown-dark);border:2.5px solid var(--brown-warm);border-radius:12px;padding:13px 26px;font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:transform .15s,background .15s;}
+.btn-border:hover{transform:translateY(-2px);background:var(--brown-pale);}
+
+footer{text-align:center;font-size:11px;color:#aaa;padding:16px 20px 30px;letter-spacing:.5px;}
+footer a{color:var(--brown-warm);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gold-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">🚀</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Grade 7 · Pre Technical Studies</div>
+    <div class="header-title">💡 Introduction to Entrepreneurship</div>
+  </div>
+  <div class="gold-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:720px;margin:0 auto;">
+    <div class="section-title" style="margin-top:8px;">Choose Your Level</div>
+    <div class="section-sub">4 Levels · 25 Questions Each · All levels open — play in any order!</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Level 1</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 25</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:720px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Excellent!</div>
+      <div class="res-level-name" id="res-level-name"></div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Levels</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Grade 7 Introduction to Entrepreneurship</footer>
+
+<script>
+// ══════════════════════════════════════════════
+//  QUESTIONS  —  4 levels × 25 questions each
+// ══════════════════════════════════════════════
+const Q = {
+
+// ── LEVEL 1 : What is Entrepreneurship? ──────────────────────────
+1:[
+ {q:"What is entrepreneurship?",opts:["The process of designing and selling computer software","The process of starting and running a new business to make a profit","The act of working for someone else's company","The study of managing other people's money"],a:3},
+ {q:"What is an entrepreneur?",opts:["A person who only invests money in stocks","A government official who manages public funds","A person who starts and runs their own business, taking on risks","An employee who works in a large company"],a:2},
+ {q:"Which of the following best describes a 'business'?",opts:["A hobby that earns no money","An organisation that provides goods or services in exchange for money","A government department","A school club"],a:1},
+ {q:"What is the main goal of most businesses?",opts:["To spend as much money as possible","To avoid paying taxes","To make a profit","To employ as many people as possible"],a:2},
+ {q:"What does 'profit' mean in business?",opts:["The total amount of money earned before expenses","The money left after all costs have been paid","The money borrowed from the bank","The amount spent on raw materials"],a:1},
+ {q:"What is a 'business idea'?",opts:["A plan to spend money on entertainment","A concept for a product or service that can solve a problem or meet a need","A government policy about trade","A list of employees in a company"],a:1},
+ {q:"Which of the following is an example of entrepreneurship?",opts:["Working as a teacher in a government school","Starting a small bakery and selling cakes in the community","Borrowing money from a friend","Watching business documentaries"],a:1},
+ {q:"What does it mean to 'take a risk' in business?",opts:["Spending money recklessly","Refusing to work hard","Accepting the possibility of losing money in hopes of gaining more","Copying another business"],a:2},
+ {q:"Which quality is most important for an entrepreneur?",opts:["Laziness","Creativity and willingness to work hard","Fear of failure","Dependence on others"],a:1},
+ {q:"What is a 'need' in business?",opts:["Something people want but can live without","Something essential that people must have to survive","A luxury product","A type of advertisement"],a:1},
+ {q:"What is a 'want' in business?",opts:["Something essential for survival","A basic human right","Something people desire but can live without","A government requirement"],a:2},
+ {q:"Which of the following is a basic need?",opts:["A smartphone","A luxury car","A television","Food and clean water"],a:3},
+ {q:"What is a 'good' in business terms?",opts:["A physical product that can be bought or sold","A service provided to customers","A type of advertisement","Money in a bank account"],a:0},
+ {q:"What is a 'service' in business?",opts:["A physical object you can touch","A type of raw material","An intangible activity done for someone in exchange for payment","A storage facility"],a:2},
+ {q:"Which of these is an example of a service business?",opts:["A shoe factory","A farm growing maize","A hair salon","A bottled water company"],a:2},
+ {q:"Which of these is an example of a goods-producing business?",opts:["A law firm","A bakery that makes bread","A hospital","A bank"],a:1},
+ {q:"What is a 'customer'?",opts:["A person who works in a shop","A person who buys goods or services from a business","The owner of a business","A government tax collector"],a:1},
+ {q:"What does 'revenue' mean?",opts:["The money a business spends on expenses","The total money earned by a business from selling goods or services","The money borrowed from investors","The profit after tax"],a:1},
+ {q:"What is a 'supplier'?",opts:["A person who buys goods","A business that provides raw materials or products to another business","A customer who pays in advance","A government inspector"],a:1},
+ {q:"What is 'capital' in business?",opts:["The headquarters of a country","The money or assets used to start and run a business","The profits distributed to workers","The total number of customers"],a:1},
+ {q:"What does 'self-employment' mean?",opts:["Working for a government department","Working for a large private company","Working for yourself and running your own business","Being unemployed"],a:2},
+ {q:"What is a 'sole trader'?",opts:["A business owned by many shareholders","A business owned and run by one person","A company with two partners","A government-owned enterprise"],a:1},
+ {q:"Which of these describes an 'innovation' in business?",opts:["Repeating the same business idea","Introducing a new or improved product, service, or process","Reducing the number of workers","Closing a branch"],a:1},
+ {q:"What motivates most people to become entrepreneurs?",opts:["Fear of competition","Desire to be told what to do","The drive to be independent and create income","Avoiding responsibility"],a:2},
+ {q:"Why is entrepreneurship important to a community?",opts:["It increases unemployment","It creates jobs and provides goods and services to people","It raises taxes for everyone","It reduces the number of schools"],a:1},
+],
+
+// ── LEVEL 2 : Business Planning & Ideas ──────────────────────────
+2:[
+ {q:"What is a business plan?",opts:["A list of employees","A document that describes the goals, strategies, and financial details of a business","A government tax form","An advertisement brochure"],a:1},
+ {q:"Which section of a business plan describes what the business does?",opts:["Financial plan","Marketing plan","Business description","Risk analysis"],a:2},
+ {q:"What does 'target market' mean?",opts:["The total population of a country","The specific group of customers a business aims to sell to","All businesses in a region","The government's trade targets"],a:1},
+ {q:"What is a 'SWOT analysis'?",opts:["A method of counting employees","A study of Strengths, Weaknesses, Opportunities, and Threats in a business","A type of advertising campaign","A financial statement"],a:1},
+ {q:"What does the 'S' in SWOT stand for?",opts:["Services","Systems","Strengths","Shareholders"],a:2},
+ {q:"What does the 'T' in SWOT stand for?",opts:["Targets","Technology","Trade","Threats"],a:3},
+ {q:"What is a 'business opportunity'?",opts:["A situation where a need or problem exists that a business can solve profitably","A loan from the bank","A government contract","A type of tax relief"],a:0},
+ {q:"What is 'market research'?",opts:["A study of how markets in different cities are built","Gathering information about customers and competitors to make better business decisions","A method of setting product prices","A government survey"],a:1},
+ {q:"Why is market research important for a new business?",opts:["It helps the owner avoid paying taxes","It allows the business to understand customer needs and reduce the risk of failure","It guarantees profit","It replaces the need for capital"],a:1},
+ {q:"What is a 'competitor' in business?",opts:["A loyal customer","A government regulator","Another business offering similar products or services to the same customers","A business partner"],a:2},
+ {q:"What does 'product' mean in business?",opts:["Only a physical item sold in a shop","Anything a business offers to customers — goods or services","The price charged to customers","The location of the business"],a:1},
+ {q:"What is a 'mission statement'?",opts:["A financial target for the year","A short statement explaining the purpose and values of a business","An advertisement slogan","A list of products"],a:1},
+ {q:"What are 'start-up costs'?",opts:["Profits earned in the first year","Expenses paid regularly every month","The money spent to set up and launch a business before it starts earning","Tax payments"],a:2},
+ {q:"What are 'running costs' (operating costs)?",opts:["One-time costs to start a business","The regular day-to-day expenses of keeping a business running","Costs of buying a building","Profits reinvested"],a:1},
+ {q:"What is 'budgeting' in business?",opts:["Spending money without planning","Borrowing as much money as possible","Planning how money will be earned and spent over a period of time","Avoiding all expenses"],a:2},
+ {q:"What is a 'loss' in business?",opts:["When revenue equals expenses","When a business earns more than it spends","When a business spends more than it earns","When a business closes down"],a:2},
+ {q:"Which of the following is a source of business finance?",opts:["Spending profits","Bank loan","Paying suppliers","Reducing prices"],a:1},
+ {q:"What is a 'loan'?",opts:["Money given freely by the government","Money borrowed that must be repaid, usually with interest","Profit earned by a business","A discount given to customers"],a:1},
+ {q:"What is 'interest' on a loan?",opts:["A reward given to customers","The extra cost paid for borrowing money","A type of business tax","The amount of profit shared with workers"],a:1},
+ {q:"What does 'break-even point' mean?",opts:["When a business closes","When a business earns exactly enough to cover its costs — no profit, no loss","When a business makes its highest profit","When a business fires all staff"],a:1},
+ {q:"What is a 'partnership' in business?",opts:["A business owned by one person only","A business owned and managed by two or more people sharing profits and losses","A company listed on the stock exchange","A government-owned business"],a:1},
+ {q:"What is meant by 'unique selling point' (USP)?",opts:["The highest price a product can be sold for","The feature that makes a business's product different and better than competitors","The total number of products sold","The location of the shop"],a:1},
+ {q:"What is a 'feasibility study'?",opts:["A study of employee performance","An investigation to determine if a business idea is practical and likely to succeed","A record of daily sales","A government inspection report"],a:1},
+ {q:"What does 'diversification' mean in business?",opts:["Selling only one product","Expanding into new products or markets to reduce risk","Reducing the number of workers","Closing unprofitable branches"],a:1},
+ {q:"Why is setting goals important for a business?",opts:["It eliminates all risks","It ensures the business never needs capital","It gives the business a clear direction and helps measure progress","It replaces the need for workers"],a:2},
+],
+
+// ── LEVEL 3 : Marketing, Sales & Money ───────────────────────────
+3:[
+ {q:"What is marketing?",opts:["Only putting up posters","The process of promoting, selling, and distributing a product or service to customers","Designing a company logo","Managing employee salaries"],a:1},
+ {q:"What are the '4 Ps of Marketing'?",opts:["Plan, Prepare, Promote, Perform","People, Place, Pricing, Products","Product, Price, Place, Promotion","Purchase, Pay, Profit, Progress"],a:2},
+ {q:"What does 'Price' mean in the 4 Ps?",opts:["The location where a product is sold","The amount customers pay for a product or service","The type of advertising used","The design of the product"],a:1},
+ {q:"What does 'Place' mean in the 4 Ps?",opts:["The cost of the product","Where and how the product reaches the customer","The promotional method used","The quality of the product"],a:1},
+ {q:"What does 'Promotion' mean in the 4 Ps?",opts:["The physical design of a product","Reducing the price of a product","The activities used to communicate and advertise a product to customers","Choosing where to sell the product"],a:2},
+ {q:"Which of these is an example of advertising?",opts:["Paying salaries to staff","Buying raw materials","A radio announcement promoting a new product","Recording daily sales figures"],a:2},
+ {q:"What is 'word-of-mouth' marketing?",opts:["Advertising on television","When satisfied customers tell others about a business","Sending flyers by post","Selling products online"],a:1},
+ {q:"What is a 'brand'?",opts:["A type of raw material","The unique name, symbol, or design that identifies a business and its products","A government licence","A type of loan"],a:1},
+ {q:"What is 'customer service'?",opts:["The act of manufacturing products","How a business treats and supports its customers before, during, and after a purchase","A type of tax","Counting daily stock"],a:1},
+ {q:"Why is good customer service important?",opts:["It reduces production costs","It keeps customers happy so they return and recommend the business to others","It eliminates the need for advertising","It reduces the number of staff needed"],a:1},
+ {q:"What is a 'receipt'?",opts:["A list of products in the storeroom","A written proof of payment given to a customer after a purchase","A government tax document","A salary slip"],a:1},
+ {q:"What is 'stock' (inventory) in a business?",opts:["Money in a bank account","Shares in a company","The goods a business has available for sale","The number of employees"],a:2},
+ {q:"What is 'cash flow'?",opts:["The speed of internet connection in an office","The movement of money into and out of a business over a period of time","The total profit of a business","The number of daily transactions"],a:1},
+ {q:"What does 'positive cash flow' mean?",opts:["A business is spending more than it earns","A business earns more money than it spends during a period","A business has no expenses","A business has closed its bank account"],a:1},
+ {q:"What is a 'price tag'?",opts:["A type of advertisement","A label showing how much a product costs","A receipt given after payment","A business licence"],a:1},
+ {q:"What does 'discount' mean?",opts:["An extra charge added to a product's price","A reduction in the original price of a product","A type of business tax","A penalty for late payment"],a:1},
+ {q:"What is a 'profit margin'?",opts:["The total amount of money a business earns","The percentage of revenue that is profit after costs","The amount borrowed from a bank","The number of products sold"],a:1},
+ {q:"What is a 'transaction'?",opts:["A type of business plan","A written agreement between two companies","An exchange of goods, services, or money between a buyer and a seller","A government tax payment"],a:2},
+ {q:"What does 'cost price' mean?",opts:["The price at which a product is sold to customers","The price at which a product is bought or produced by the business","The profit earned on a product","The tax paid on a product"],a:1},
+ {q:"What does 'selling price' mean?",opts:["The price paid to produce a product","The price at which the business sells the product to the customer","The price set by the government","The cost of advertising"],a:1},
+ {q:"How is profit calculated?",opts:["Revenue minus taxes","Revenue minus total costs","Revenue plus costs","Selling price minus discount"],a:1},
+ {q:"What is an 'invoice'?",opts:["A salary payment to workers","A document sent to a customer listing items sold and the amount owed","A government inspection notice","A product catalogue"],a:1},
+ {q:"What is a 'bank account' used for in business?",opts:["Only for personal savings","Storing and managing business money safely and tracking financial transactions","Paying government taxes directly","Advertising products"],a:1},
+ {q:"What does 'saving' money mean in a business context?",opts:["Spending all profits immediately","Setting aside part of earnings for future use or emergencies","Donating money to charity","Borrowing from a bank"],a:1},
+ {q:"What is the purpose of keeping financial records?",opts:["To impress customers","To track income and expenses, prepare for taxes, and measure business performance","To reduce the number of staff","To avoid paying suppliers"],a:1},
+],
+
+// ── LEVEL 4 : Entrepreneurship Skills & Society ───────────────────
+4:[
+ {q:"Which skill helps an entrepreneur solve problems creatively?",opts:["Imitation","Creative thinking","Copy-pasting","Complaining"],a:1},
+ {q:"What is 'decision-making' in business?",opts:["Waiting for others to act","Randomly choosing actions","The process of choosing the best course of action from available options","Avoiding all business risks"],a:2},
+ {q:"What does 'persistence' mean for an entrepreneur?",opts:["Giving up when things get difficult","Continuing to work hard despite challenges and failures","Changing business ideas every day","Copying competitors"],a:1},
+ {q:"What is 'communication' as a business skill?",opts:["Talking only to friends","The ability to clearly share ideas, listen, and exchange information with customers and staff","Writing a lot of emails","Using social media only"],a:1},
+ {q:"What is 'time management' in entrepreneurship?",opts:["Sleeping as long as possible","Spending time only on fun activities","Planning and organising tasks to use time effectively and meet business goals","Arriving late to work"],a:2},
+ {q:"What is 'leadership' in business?",opts:["Being the youngest person in a team","The ability to guide, motivate, and inspire others towards achieving goals","Giving orders without listening","Doing all the work alone"],a:1},
+ {q:"What is 'teamwork' in a business setting?",opts:["Working alone to complete all tasks","Different people working together towards a shared business goal","Competing with your colleagues","Sharing salaries equally"],a:1},
+ {q:"What does 'integrity' mean for an entrepreneur?",opts:["Hiding information from customers","Being honest, ethical, and trustworthy in all business dealings","Charging the highest price possible","Copying other businesses"],a:1},
+ {q:"What is 'networking' in entrepreneurship?",opts:["Setting up a Wi-Fi system","Building relationships with other business people and potential customers for mutual benefit","Advertising products on TV","Monitoring business accounts"],a:1},
+ {q:"What does 'adaptability' mean for a business owner?",opts:["Refusing to change business methods","Making the same product forever","The ability to adjust and respond to new situations, challenges, or market changes","Hiring more workers"],a:2},
+ {q:"What is 'social entrepreneurship'?",opts:["A business that only sells social media services","Starting a business primarily to solve social or community problems, not just to make profit","A government programme","A type of bank loan"],a:1},
+ {q:"How does entrepreneurship help reduce poverty in a community?",opts:["By reducing the number of goods available","By creating jobs and generating income for community members","By increasing taxes","By closing government offices"],a:1},
+ {q:"What is meant by 'corporate social responsibility' (CSR)?",opts:["A business strategy to earn more profit","When businesses contribute positively to society and the environment beyond just making money","A type of government tax","A marketing campaign"],a:1},
+ {q:"What is 'environmental sustainability' in business?",opts:["Using as many natural resources as possible","Running a business in a way that protects the environment for future generations","Ignoring waste produced by the business","Increasing pollution to reduce costs"],a:1},
+ {q:"What is a 'franchise'?",opts:["A type of government licence","A business model where someone buys the right to use another company's brand and system","A type of bank account","A sole trader business"],a:1},
+ {q:"What does 'e-commerce' mean?",opts:["Electronic communication within a company","Buying and selling goods or services using the internet","A type of business tax","An electronic payroll system"],a:1},
+ {q:"What is a 'cooperative'?",opts:["A business owned entirely by one person","A business owned and operated by a group of people for their mutual benefit","A government ministry","A type of NGO"],a:1},
+ {q:"What does 'ethical business practice' mean?",opts:["Maximising profit by any means necessary","Running a business honestly, fairly, and responsibly towards all stakeholders","Hiding financial information","Paying workers as little as possible"],a:1},
+ {q:"What is the role of government in supporting entrepreneurship?",opts:["Discouraging new businesses","Providing policies, funding, training, and infrastructure that help businesses grow","Controlling all businesses directly","Taxing businesses out of existence"],a:1},
+ {q:"What is 'value addition' in business?",opts:["Increasing the price without reason","Improving a raw product to make it more useful or appealing so it can be sold at a higher price","Reducing the quality of a product","Removing packaging from products"],a:1},
+ {q:"What is a 'youth entrepreneur'?",opts:["A young person who works for a large company","A young person who starts and runs their own business","A student who studies business in school only","A young government official"],a:1},
+ {q:"What is 'globalisation' in business?",opts:["Only selling products locally","The process by which businesses and economies become more connected across different countries","A government import restriction","Closing businesses to outsiders"],a:1},
+ {q:"What is the 'informal sector' in business?",opts:["Large companies listed on the stock exchange","Small, unregistered businesses operating without formal licences or regulations","Government-owned enterprises","International trading companies"],a:1},
+ {q:"Why is entrepreneurship education important for students?",opts:["It teaches students to avoid work","It shows students how to depend on government jobs","It equips students with skills to create businesses, solve problems, and be self-reliant","It prepares students to be employees only"],a:2},
+ {q:"What does 'scalability' mean for a business?",opts:["Making a smaller version of a product","The ability of a business to grow and handle increased demand without losing performance or quality","Reducing the price of products","Hiring fewer employees"],a:1},
+]
+
+}; // end Q
+
+// ══════════════════ LEVEL META ══════════════════
+const LEVEL_META = {
+  1:{name:"What is Entrepreneurship?",  badge:"badge-1", emoji:"🌱"},
+  2:{name:"Business Planning & Ideas",  badge:"badge-2", emoji:"📋"},
+  3:{name:"Marketing, Sales & Money",   badge:"badge-3", emoji:"💰"},
+  4:{name:"Skills & Society",           badge:"badge-4", emoji:"🌍"},
+};
+
+// ══════════════════ STATE ══════════════════
+let curLevel=1, curQ=0, score=0, correct=0, wrong=0;
+let timer=null, timeLeft=30, answered=false;
+let shuffled=[];
+let stars={1:0,2:0,3:0,4:0};
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+// ── RENDER LEVELS ──
+function renderLevels(){
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  for(let l=1;l<=4;l++){
+    const m=LEVEL_META[l];
+    const hasStar=(stars[l]>0);
+    const c=document.createElement('div');
+    c.className='level-card'+(hasStar?' completed':'');
+    const stHtml=hasStar?'⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]):'☆☆☆';
+    c.innerHTML=
+      '<span class="level-badge '+m.badge+'">'+m.emoji+' Level '+l+'</span>'+
+      '<span class="lnum">'+l+'</span>'+
+      '<div class="lname">'+m.name+'</div>'+
+      '<div class="lq">25 Questions</div>'+
+      '<div class="level-stars">'+stHtml+'</div>';
+    (function(lv){c.onclick=function(){startLevel(lv);};})(l);
+    g.appendChild(c);
+  }
+}
+
+// ── START LEVEL ──
+function startLevel(l){
+  curLevel=l; curQ=0; score=0; correct=0; wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  const m=LEVEL_META[l];
+  document.getElementById('game-level-label').textContent=m.emoji+' Level '+l+' · '+m.name;
+  loadQ();
+}
+
+// ── LOAD QUESTION ──
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+// ── TIMER ──
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8) tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered) return;
+  answered=true; wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Time's up! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+// ── PICK ANSWER ──
+function pick(chosen,ans,btn){
+  if(answered) return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4; correct++;
+    feedback(true,'✅ Correct! Well done!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Wrong! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length) showResults();
+  else loadQ();
+};
+
+// ── RESULTS ──
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  const m=LEVEL_META[curLevel];
+  document.getElementById('res-emoji').textContent=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('res-title').textContent=pct>=90?'Outstanding!':pct>=70?'Great Job!':pct>=50?'Good Effort!':'Keep Practising!';
+  document.getElementById('res-level-name').textContent=m.emoji+' Level '+curLevel+' · '+m.name;
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goHome(){clearInterval(timer);renderLevels();show('screen-levels');}
+function retryLevel(){startLevel(curLevel);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── INIT ──
+renderLevels();
+</script>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maabara Bora+ | Lab Apparatus & Safety Quiz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --sci-deep:   #003322;
+  --sci-dark:   #005533;
+  --sci-main:   #007744;
+  --sci-mid:    #009955;
+  --sci-warm:   #00bb66;
+  --sci-light:  #66ddaa;
+  --sci-pale:   #dff7ed;
+  --sci-cream:  #f2fcf7;
+  --red-ke:     #bb0000;
+  --red-lt:     #ff4444;
+  --black-ke:   #111111;
+  --gold:       #cc9900;
+  --gold-lt:    #ffcc33;
+  --white:      #ffffff;
+  --purple:     #5b2d8e;
+  --purple-lt:  #9c6fcc;
+  --orange:     #cc5500;
+  --orange-lt:  #ff8833;
+  --red-err:    #b71c1c;
+  --green-ok:   #1b5e20;
+  --shadow:     0 6px 28px rgba(0,50,30,0.16);
+  --shadow-lg:  0 14px 48px rgba(0,50,30,0.22);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--sci-cream);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(160deg,var(--sci-deep) 0%,var(--sci-dark) 50%,#004428 100%);
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 60%,rgba(0,187,102,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 20%,rgba(187,0,0,0.08) 0%,transparent 50%),
+    repeating-linear-gradient(
+      70deg,transparent,transparent 20px,
+      rgba(255,255,255,0.025) 20px,rgba(255,255,255,0.025) 40px
+    );
+}
+
+/* Kenya flag stripe bar */
+.ke-bar{
+  width:100%;height:6px;
+  background:linear-gradient(90deg,
+    var(--black-ke) 0%,var(--black-ke) 20%,
+    var(--red-ke) 20%,var(--red-ke) 40%,
+    var(--white) 40%,var(--white) 60%,
+    var(--red-ke) 60%,var(--red-ke) 80%,
+    var(--sci-dark) 80%,var(--sci-dark) 100%
+  );
+}
+.header-inner{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;padding:20px 20px 16px;
+}
+/* Game Title badge */
+.game-title-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(0,187,102,0.15);
+  border:1.5px solid rgba(0,187,102,0.4);
+  border-radius:30px;padding:6px 18px;margin-bottom:10px;
+}
+.badge-flask{font-size:22px;}
+.badge-text{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(18px,4vw,26px);
+  font-weight:900;color:var(--sci-light);letter-spacing:1px;
+}
+.badge-plus{color:var(--gold-lt);}
+.brand-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.brand-small{
+  font-size:11px;font-weight:700;color:rgba(255,255,255,0.55);
+  letter-spacing:2px;text-transform:uppercase;
+}
+.shule-brand{color:var(--sci-light);font-weight:800;}
+.header-sub{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.header-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(13px,2.8vw,18px);
+  color:rgba(255,255,255,0.75);font-weight:700;text-align:center;line-height:1.4;
+}
+.ke-motto{
+  font-size:10px;color:var(--gold-lt);letter-spacing:2px;
+  text-transform:uppercase;margin-top:5px;font-weight:700;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:800px;padding:24px 16px 50px;}
+.screen.active{display:block;}
+
+/* ── LEVEL SELECT ── */
+.section-title{
+  font-family:'Playfair Display',serif;font-size:23px;font-weight:900;
+  color:var(--sci-dark);text-align:center;margin-bottom:5px;margin-top:4px;
+}
+.section-sub{
+  text-align:center;font-size:13px;color:var(--sci-mid);
+  margin-bottom:26px;font-weight:500;line-height:1.6;
+}
+
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+@media(min-width:560px){.levels-grid{grid-template-columns:repeat(3,1fr);}}
+
+.level-card{
+  background:var(--white);border:2.5px solid #b3e8d0;
+  border-radius:20px;padding:24px 12px 20px;
+  text-align:center;cursor:pointer;
+  transition:transform .22s,box-shadow .22s,border-color .22s;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+/* colour top stripe per topic */
+.lc-apparatus::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--sci-main),var(--sci-light));opacity:0;transition:opacity .2s;}
+.lc-safety::after   {content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--red-ke),var(--red-lt));opacity:0;transition:opacity .2s;}
+.lc-mixed::after    {content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--purple),var(--purple-lt));opacity:0;transition:opacity .2s;}
+.level-card:hover::after{opacity:1;}
+.level-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--sci-warm);}
+.level-card.completed{border-color:var(--gold);}
+.level-card.completed .lnum{color:var(--gold);}
+
+.lvl-icon{font-size:34px;margin-bottom:8px;display:block;}
+.topic-tag{
+  display:inline-block;font-size:9px;font-weight:800;
+  padding:3px 10px;border-radius:20px;margin-bottom:8px;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.tt-app{background:#dff7ed;color:var(--sci-dark);}
+.tt-saf{background:#fdecea;color:#880000;}
+.tt-mix{background:#f0eaf8;color:var(--purple);}
+
+.lnum{
+  font-family:'Press Start 2P',monospace;font-size:11px;
+  color:var(--sci-main);margin-bottom:7px;display:block;line-height:1.6;
+}
+.lname{font-weight:800;font-size:12px;color:var(--sci-deep);margin-bottom:3px;line-height:1.35;min-height:34px;display:flex;align-items:center;justify-content:center;}
+.lq{font-size:10px;color:#bbb;margin-bottom:7px;}
+.level-stars{font-size:15px;min-height:20px;}
+
+/* ── GAME TOPBAR ── */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;gap:8px;flex-wrap:wrap;
+}
+.game-level-tag{
+  background:linear-gradient(135deg,var(--sci-dark),var(--sci-deep));
+  color:#ccffee;border-radius:22px;
+  padding:6px 15px;font-weight:700;font-size:11px;
+  flex:1;text-align:center;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-pill{
+  background:var(--gold);color:var(--sci-deep);
+  border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;
+  min-width:74px;text-align:center;flex-shrink:0;transition:background .3s;
+}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{
+  background:linear-gradient(135deg,var(--sci-main),var(--sci-deep));
+  color:white;border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;flex-shrink:0;
+}
+
+/* Progress */
+.prog-wrap{width:100%;height:12px;background:#c8f0df;border-radius:99px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--sci-main),var(--sci-light));
+  border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);
+}
+
+/* ── QUESTION ── */
+.question-card{
+  background:var(--white);border-radius:18px;
+  padding:24px 22px 20px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border:2px solid #c8f0df;
+  border-left:6px solid var(--sci-warm);
+}
+.q-num{font-size:11px;font-weight:700;color:var(--sci-mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.q-text{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:var(--sci-deep);line-height:1.6;}
+
+/* ── OPTIONS ── */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--white);border:2px solid #c8f0df;border-radius:14px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--sci-deep);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){
+  background:var(--sci-pale);border-color:var(--sci-warm);
+  transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,100,60,.12);
+}
+.opt-letter{
+  background:var(--sci-pale);color:var(--sci-main);
+  border-radius:8px;min-width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+  border:1.5px solid #c8f0df;
+}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;border-color:var(--green-ok);}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;border-color:var(--red-err);}
+.opt-btn:disabled{cursor:default;}
+
+/* ── FEEDBACK ── */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#e8f5e9;border:2px solid var(--green-ok);border-radius:13px;
+  padding:12px 16px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:22px;flex-shrink:0;}
+
+/* ── NEXT BTN ── */
+.next-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--sci-warm),var(--sci-deep));
+  color:white;border:none;border-radius:14px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 18px rgba(0,50,30,.3);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(0,50,30,.38);}
+.next-btn.show{display:block;}
+
+/* ── RESULTS ── */
+.result-box{
+  background:var(--white);border-radius:24px;padding:34px 26px 30px;
+  box-shadow:var(--shadow-lg);text-align:center;
+  border:2.5px solid #c8f0df;border-top:7px solid var(--sci-warm);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:68px;margin-bottom:8px;}
+.res-title{font-family:'Playfair Display',serif;font-size:27px;font-weight:900;color:var(--sci-dark);margin-bottom:4px;}
+.res-level-name{font-size:13px;color:var(--sci-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:42px;margin:12px 0;}
+.res-big{font-family:'Press Start 2P',monospace;font-size:30px;color:var(--sci-main);margin-bottom:4px;}
+.res-sub{font-size:13px;color:#aaa;margin-bottom:22px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.stat-box{background:var(--sci-pale);border-radius:13px;padding:14px 8px;}
+.stat-n{font-size:26px;font-weight:900;color:var(--sci-dark);}
+.stat-l{font-size:11px;color:#aaa;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{
+  background:linear-gradient(135deg,var(--sci-warm),var(--sci-dark));color:white;
+  border:none;border-radius:13px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,50,30,.22);transition:transform .15s;
+}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{
+  background:white;color:var(--sci-dark);border:2.5px solid var(--sci-warm);
+  border-radius:13px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform .15s,background .15s;
+}
+.btn-border:hover{transform:translateY(-2px);background:var(--sci-pale);}
+
+footer{
+  text-align:center;font-size:11px;color:#aaa;
+  padding:16px 20px 32px;letter-spacing:.5px;
+}
+footer a{color:var(--sci-main);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ke-bar"></div>
+  <div class="header-inner">
+    <!-- GAME TITLE -->
+    <div class="game-title-badge">
+      <span class="badge-flask">🔬</span>
+      <span class="badge-text">MAABARA BORA<span class="badge-plus">+</span></span>
+    </div>
+    <!-- Sub brand -->
+    <div class="brand-row">
+      <span class="brand-small">Powered by <span class="shule-brand">Shule AI Plus+</span> · Shule.memeyai.com</span>
+    </div>
+    <div class="header-sub">Science · Laboratory Studies · Kenya</div>
+    <div class="header-title">🧪 Lab Apparatus, Instruments &amp; Safety</div>
+    <div class="ke-motto">🦁 Harambee ya Sayansi — Science Together! 🦁</div>
+  </div>
+  <div class="ke-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="section-title">Choose Your Topic</div>
+    <div class="section-sub">
+      🔬 <strong>Maabara Bora+</strong> · 3 Topics · 25 Questions Each · All Open — Chagua Yako!
+    </div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Topic 1</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 25</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Bora Kabisa!</div>
+      <div class="res-level-name" id="res-level-name"></div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Sahihi</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Kosa</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Alama</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Topics</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Jaribu Tena</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> ·
+  <strong>Maabara Bora+</strong> powered by Shule AI Plus+ · Science Laboratory Studies
+</footer>
+
+<script>
+// ════════════════════════════════════════════
+//  QUESTIONS  —  3 Topics × 25 Questions each
+// ════════════════════════════════════════════
+const Q = {
+
+// ── TOPIC 1 : Laboratory Apparatus ───────────────────────────────
+1:[
+ {q:"What is a BEAKER used for in the laboratory?",opts:["Measuring exact volumes of liquids","Holding and heating liquids — not for precise measurement","Storing concentrated acids","Filtering solid particles"],a:1},
+ {q:"What is a CONICAL FLASK (Erlenmeyer flask) mainly used for?",opts:["Measuring exact volumes","Burning substances","Mixing chemicals and swirling liquids safely without spilling","Storing gases"],a:2},
+ {q:"What is a MEASURING CYLINDER used for?",opts:["Heating liquids over a flame","Measuring accurate volumes of liquids","Mixing chemicals quickly","Storing solid chemicals"],a:1},
+ {q:"What is a BURETTE used for?",opts:["Measuring the temperature of a liquid","Accurately delivering variable volumes of liquid during titration","Holding liquids for general use","Filtering solutions"],a:1},
+ {q:"What is a PIPETTE used for?",opts:["Transferring an exact fixed volume of liquid from one container to another","Heating solutions","Measuring the mass of substances","Filtering solid particles"],a:0},
+ {q:"What is a ROUND-BOTTOM FLASK used for?",opts:["Measuring volumes accurately","Heating liquids evenly and distillation experiments","Filtering mixtures","Storing concentrated alkalis"],a:1},
+ {q:"What is a TEST TUBE used for?",opts:["Measuring exact volumes","Only storing solids","Holding small amounts of substances for reactions, heating, and testing","Weighing chemicals"],a:2},
+ {q:"What is a BOILING TUBE?",opts:["A smaller version of a test tube used for micro-reactions","A large, thick-walled tube used for strong heating and reactions requiring larger volumes","A glass rod for stirring","A tube used to filter liquids"],a:1},
+ {q:"What is a BUNSEN BURNER used for?",opts:["Measuring temperature","Providing a controllable flame as a heat source in the laboratory","Filtering mixtures","Storing flammable chemicals"],a:1},
+ {q:"What is the BLUE FLAME of a Bunsen burner called, and what does it indicate?",opts:["Safety flame — it burns cooler with excess fuel","Roaring flame — it is the hottest flame with maximum air supply","Yellow flame — it is the safest flame to use","Cold flame — used only for gentle heating"],a:1},
+ {q:"What is a TRIPOD STAND used for in the lab?",opts:["Supporting a beaker or flask above a Bunsen burner for heating","Measuring volumes of liquids","Filtering solutions","Holding test tubes upright"],a:0},
+ {q:"What is a WIRE GAUZE used for?",opts:["Filtering liquids","Measuring temperature","Placed on a tripod to support glassware and distribute heat evenly from the Bunsen burner","Covering test tubes"],a:2},
+ {q:"What is a CRUCIBLE used for?",opts:["Filtering liquids","Measuring exact volumes","Heating substances to very high temperatures and combustion experiments","Storing acids"],a:2},
+ {q:"What is a WATCH GLASS used for?",opts:["Telling time in the lab","Covering beakers, evaporating small amounts of liquid, or holding small solid samples","Filtering solutions","Measuring liquids"],a:1},
+ {q:"What is a FUNNEL used for?",opts:["Measuring volumes","Heating liquids","Directing liquids or fine-grained solids into containers with narrow openings, or for filtration with filter paper","Stirring solutions"],a:2},
+ {q:"What is FILTER PAPER used for?",opts:["Measuring the mass of solids","Separating solid particles from a liquid (filtration)","Covering laboratory benches","Absorbing spilled chemicals"],a:1},
+ {q:"What is a GLASS ROD (stirring rod) used for?",opts:["Heating substances","Measuring volumes","Stirring liquids, guiding liquid during pouring, and helping in filtration","Supporting glassware"],a:2},
+ {q:"What is a DROPPER (Pasteur pipette) used for?",opts:["Measuring large volumes of liquid","Transferring small drops of liquid precisely","Heating solutions","Storing concentrated chemicals"],a:1},
+ {q:"What is a RETORT STAND (clamp stand) used for?",opts:["Heating substances","Holding and supporting apparatus such as burettes, condensers, and flasks at the required height","Measuring volume","Filtering liquids"],a:1},
+ {q:"What is a SPATULA used for?",opts:["Measuring volumes of liquids","Transferring or scooping solid chemicals from containers","Heating solutions","Filtering mixtures"],a:1},
+ {q:"What is a MORTAR AND PESTLE used for?",opts:["Measuring liquids","Heating substances","Filtering solutions","Grinding and crushing solid substances into powder"],a:3},
+ {q:"What is a CONDENSER used for in distillation?",opts:["Heating a liquid to boiling point","Measuring the volume of gas","Cooling and condensing vapour back into liquid during distillation","Filtering the distillate"],a:2},
+ {q:"What is a THERMOMETER used for?",opts:["Measuring the volume of liquids","Measuring atmospheric pressure","Measuring the temperature of substances","Measuring the mass of objects"],a:2},
+ {q:"What is a WASH BOTTLE used for?",opts:["Washing hands in the lab","Storing acid solutions","Dispensing small streams of distilled water to rinse equipment or wash precipitates","Heating liquids gently"],a:2},
+ {q:"What is a VOLUMETRIC FLASK used for?",opts:["General mixing and heating","Preparing a precise volume of solution of exact known concentration","Filtering solutions","Measuring approximate volumes"],a:1},
+],
+
+// ── TOPIC 2 : Laboratory Instruments ────────────────────────────
+2:[
+ {q:"What is an ANALYTICAL BALANCE (laboratory balance) used for?",opts:["Measuring volume of liquids","Measuring temperature","Measuring the mass of substances with high precision","Measuring atmospheric pressure"],a:2},
+ {q:"What is the difference between a BALANCE and a SCALE?",opts:["They are exactly the same","A balance measures mass by comparison; a scale measures weight using a spring or load cell","A scale measures mass; a balance measures volume","A balance is only used for large objects"],a:1},
+ {q:"What instrument is used to measure TEMPERATURE in the laboratory?",opts:["Barometer","Voltmeter","Thermometer","Hydrometer"],a:2},
+ {q:"What does a BAROMETER measure?",opts:["Temperature","Volume of liquids","Mass of solids","Atmospheric (air) pressure"],a:3},
+ {q:"What does a MANOMETER measure?",opts:["Mass of solids","The pressure of a gas or liquid in a container","Temperature of a gas","Volume of liquids"],a:1},
+ {q:"What is a MICROSCOPE used for?",opts:["Measuring temperature","Viewing objects too small to be seen with the naked eye by magnifying them","Measuring mass of specimens","Measuring the volume of cells"],a:1},
+ {q:"What are the TWO main types of microscope used in school science?",opts:["Electron and laser microscopes","Digital and analogue microscopes","Light (optical) microscope and electron microscope","Compound and scanning microscopes only"],a:2},
+ {q:"What is a VOLTMETER used for?",opts:["Measuring current in a circuit","Measuring resistance","Measuring the voltage (potential difference) across a component in a circuit","Measuring power output"],a:2},
+ {q:"What is an AMMETER used for?",opts:["Measuring voltage in a circuit","Measuring temperature","Measuring the electric current flowing through a circuit","Measuring resistance"],a:2},
+ {q:"What is an OHMMETER used for?",opts:["Measuring current","Measuring voltage","Measuring temperature","Measuring the electrical resistance of a component"],a:3},
+ {q:"What is a MULTIMETER?",opts:["A microscope with multiple lenses","A type of thermometer","An instrument that can measure voltage, current, and resistance in one device","A type of balance"],a:2},
+ {q:"What is a pH METER used for?",opts:["Measuring temperature","Measuring atmospheric pressure","Measuring the exact pH (acidity or alkalinity) of a solution electronically","Measuring electrical resistance"],a:2},
+ {q:"What is a STOP CLOCK (stopwatch) used for in experiments?",opts:["Measuring temperature changes","Measuring the volume of gas produced","Measuring the time taken for a reaction or event","Measuring electrical current"],a:2},
+ {q:"What is a HYDROMETER used for?",opts:["Measuring humidity in the air","Measuring the density or relative density of a liquid","Measuring water temperature","Measuring water volume"],a:1},
+ {q:"What is a HYGROMETER used for?",opts:["Measuring liquid density","Measuring temperature","Measuring the humidity (moisture content) of the air","Measuring atmospheric pressure"],a:2},
+ {q:"What is a COLORIMETER used for in chemistry?",opts:["Measuring colour temperature of flames","Measuring the concentration of a coloured solution by analysing how much light it absorbs","Measuring pH of solutions","Measuring temperature of solutions"],a:1},
+ {q:"What is a SPECTROMETER used for?",opts:["Measuring mass spectra of atoms","Measuring atmospheric pressure","Analysing the spectrum of light emitted or absorbed by substances","Measuring electrical resistance"],a:2},
+ {q:"What is a GAS SYRINGE used for?",opts:["Injecting liquids into solutions","Collecting and measuring the volume of gas produced in a chemical reaction","Measuring the mass of gases","Filtering gas mixtures"],a:1},
+ {q:"What is a DENSITY BOTTLE (pycnometer) used for?",opts:["Measuring temperature of dense liquids","Heating dense substances","Accurately measuring the density of liquids or fine solids","Storing concentrated chemicals"],a:2},
+ {q:"What is a CALORIMETER used for?",opts:["Measuring the colour of a substance","Measuring temperature change only","Measuring the amount of heat energy released or absorbed during chemical reactions","Measuring electrical energy"],a:2},
+ {q:"What is a CENTRIFUGE used for in the laboratory?",opts:["Heating samples to high temperatures","Filtering large particles","Separating mixtures of different densities by spinning them at high speed","Measuring the mass of samples"],a:2},
+ {q:"What is a FORCE METER (Newton meter / spring balance) used for?",opts:["Measuring mass in grams","Measuring the mass of liquids","Measuring temperature","Measuring the weight or force acting on an object in Newtons"],a:3},
+ {q:"What is a GEIGER-MÜLLER TUBE (Geiger counter) used for?",opts:["Measuring pH","Measuring atmospheric pressure","Detecting and measuring ionising radiation (alpha, beta, gamma)","Measuring electrical voltage"],a:2},
+ {q:"What is a POTENTIOMETER used for?",opts:["Measuring temperature","Measuring atmospheric pressure","Measuring pH of solutions","Measuring or controlling voltage in an electrical circuit"],a:3},
+ {q:"What does a LIGHT METER (lux meter) measure?",opts:["The colour wavelength of light","The temperature of a light source","The intensity of light (illuminance) in a given area in lux","The electrical power of a lamp"],a:2},
+],
+
+// ── TOPIC 3 : Laboratory Safety ──────────────────────────────────
+3:[
+ {q:"What is the FIRST thing you should do before starting any experiment?",opts:["Put on your lab coat and goggles","Start the Bunsen burner immediately","Read and understand the experimental procedure and safety precautions","Pick up all the apparatus first"],a:0},
+ {q:"What does this safety symbol ☠️ (skull and crossbones) mean on a chemical bottle?",opts:["The chemical is flammable","The chemical is corrosive","The chemical is radioactive","The substance is TOXIC — it can cause serious injury or death if swallowed, inhaled, or absorbed"],a:3},
+ {q:"What does the FLAMMABLE hazard symbol (flame) warn you about?",opts:["The chemical reacts with water","The chemical causes skin burns","The substance can easily catch fire","The substance is toxic"],a:2},
+ {q:"What does the CORROSIVE hazard symbol warn about?",opts:["The substance is explosive","The substance easily catches fire","The substance causes burns or destroys living tissue and materials it contacts","The substance is radioactive"],a:2},
+ {q:"What does the OXIDISING hazard symbol (flame over circle) mean?",opts:["The substance catches fire easily","The substance releases oxygen and can intensify or start fires in other materials","The substance is toxic","The substance is corrosive"],a:1},
+ {q:"What should you do if a chemical splashes into your EYES?",opts:["Rub your eyes to remove the chemical","Flush the eye immediately with plenty of clean water for at least 15 minutes and seek medical help","Wait and see if it feels better","Put a bandage over the eye"],a:1},
+ {q:"What is the correct way to SMELL a chemical in the laboratory?",opts:["Put your nose directly over the container and inhale deeply","Never smell any chemical under any circumstances","Gently waft the vapour towards your nose with your hand — do not inhale directly","Ask a friend to smell it first"],a:2},
+ {q:"What should you do if a FIRE breaks out in the laboratory?",opts:["Try to put it out yourself with water regardless of the type of fire","Alert the teacher immediately, use the appropriate fire extinguisher if trained, and evacuate if necessary","Continue the experiment","Throw water on all fires"],a:1},
+ {q:"Which type of fire extinguisher should NEVER be used on an electrical fire?",opts:["CO₂ extinguisher","Dry powder extinguisher","Water extinguisher — water conducts electricity and can electrocute you","All extinguishers are safe for electrical fires"],a:2},
+ {q:"What is a SAFETY DATA SHEET (SDS/MSDS)?",opts:["A record of experiment results","A document providing detailed information about a chemical's properties, hazards, handling, and emergency procedures","A list of equipment in the lab","A student safety test"],a:1},
+ {q:"Why must you NEVER eat or drink in the laboratory?",opts:["It is impolite to eat in class","Food and drinks can become contaminated with toxic chemicals, causing poisoning","It slows down the experiment","Laboratory benches are too high for eating"],a:1},
+ {q:"What is the correct way to HEAT a liquid in a test tube?",opts:["Point the test tube mouth towards yourself for easy observation","Heat the test tube from the bottom only while it is stationary","Point the open end away from yourself and others and move the tube gently in the flame","Seal the test tube before heating"],a:2},
+ {q:"What Personal Protective Equipment (PPE) MUST be worn in a chemistry lab?",opts:["Only school uniform","Safety goggles only","Safety goggles, lab coat, and gloves when handling chemicals","Only closed shoes"],a:2},
+ {q:"What should you do with broken glass in the laboratory?",opts:["Pick it up with your bare hands carefully","Sweep it under the bench","Leave it for the cleaner","Report it to the teacher and use tongs or a dustpan and brush — never use bare hands"],a:3},
+ {q:"What does MSDS stand for?",opts:["Material Safety Data Sheet","Maximum Safety Distance Standard","Multiple Safety Disposal Steps","Material Standard Disposal System"],a:0},
+ {q:"Why should long hair be tied back in the laboratory?",opts:["It looks untidy","To prevent hair from catching fire from a Bunsen burner or getting into chemicals","It is a school rule only","So everyone can see the board"],a:1},
+ {q:"What should you do IMMEDIATELY after handling chemicals?",opts:["Dry your hands on your lab coat","Wipe hands on paper","Wash your hands thoroughly with soap and water","Put on fresh gloves"],a:2},
+ {q:"What does this symbol ⚡ mean on laboratory equipment?",opts:["The equipment is very fast","Flammable material inside","Electrical hazard — risk of electric shock","The equipment gets very hot"],a:2},
+ {q:"Where should you NEVER store chemicals in the laboratory?",opts:["In labelled storage cabinets","In a cool, ventilated area","In the refrigerator used for food or drink","On designated chemical shelves"],a:2},
+ {q:"What is the first step when DILUTING a concentrated acid?",opts:["Add water to the acid","Mix both at once","Always add the ACID slowly to the water — never water to acid, as this causes violent splashing","Heat the water first then add acid"],a:2},
+ {q:"What is the correct way to DISPOSE of chemical waste?",opts:["Pour everything down the sink","Throw it in the dustbin","Follow the teacher's instructions and specific disposal procedures for each type of chemical","Leave waste in open beakers on the bench"],a:3},
+ {q:"What does the RADIOACTIVE symbol (trefoil ☢️) warn about?",opts:["The substance is flammable","The substance is corrosive","The substance is an oxidiser","The substance emits ionising radiation that can be harmful to living tissue"],a:3},
+ {q:"What should you do if a classmate is INJURED in the lab?",opts:["Ignore it and continue your experiment","Handle the injury yourself without telling anyone","Laugh it off if it seems minor","Inform the teacher immediately and apply first aid if trained while sending for help"],a:3},
+ {q:"What does 'NO OPEN FLAMES' mean near some chemicals?",opts:["The experiment requires cold conditions","The chemicals are not needed","The chemicals are flammable and a naked flame could cause a fire or explosion","The Bunsen burner is broken"],a:2},
+ {q:"What is the purpose of a FUME CUPBOARD (fume hood) in the laboratory?",opts:["To store chemicals safely","To cool down hot apparatus","To contain and extract toxic, harmful, or unpleasant vapours and gases so that the scientist does not inhale them","To heat chemicals evenly"],a:2},
+]
+
+}; // end Q
+
+// ════════════ TOPIC META ════════════
+const T_META = {
+  1:{label:"Laboratory Apparatus",     sub:"Glassware & Equipment",    icon:"🧪",tag:"tt-app",cardcls:"lc-apparatus"},
+  2:{label:"Laboratory Instruments",   sub:"Measuring & Testing Tools", icon:"⚗️",tag:"tt-app",cardcls:"lc-apparatus"},
+  3:{label:"Laboratory Safety",        sub:"Hazards, PPE & Procedures", icon:"🦺",tag:"tt-saf",cardcls:"lc-safety"},
+};
+
+// ════════════ STATE ════════════
+let curLevel=1,curQ=0,score=0,correct=0,wrong=0;
+let timer=null,timeLeft=30,answered=false;
+let shuffled=[];
+let stars={1:0,2:0,3:0};
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+// ── RESULT TITLES (Kiswahili flavour) ──
+const resultTitles=[
+  {min:90, emoji:"🏆", title:"Bora Kabisa! — Outstanding!"},
+  {min:70, emoji:"🎉", title:"Vizuri Sana! — Great Job!"},
+  {min:50, emoji:"👍", title:"Jaribu Zaidi! — Good Effort!"},
+  {min:0,  emoji:"💪", title:"Endelea Kujifunza! — Keep Practising!"}
+];
+
+function getResult(pct){
+  return resultTitles.find(r=>pct>=r.min);
+}
+
+// ── RENDER LEVELS ──
+function renderLevels(){
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  for(let l=1;l<=3;l++){
+    const m=T_META[l];
+    const hasStar=(stars[l]>0);
+    const c=document.createElement('div');
+    c.className='level-card '+m.cardcls+(hasStar?' completed':'');
+    const stHtml=hasStar?'⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]):'☆☆☆';
+    c.innerHTML=
+      '<span class="lvl-icon">'+m.icon+'</span>'+
+      '<span class="topic-tag '+m.tag+'">Topic '+l+'</span>'+
+      '<span class="lnum">'+m.icon+' T'+l+'</span>'+
+      '<div class="lname">'+m.label+'</div>'+
+      '<div class="lq" style="font-size:10px;color:#999;">'+m.sub+'</div>'+
+      '<div class="lq">25 Questions</div>'+
+      '<div class="level-stars">'+stHtml+'</div>';
+    (function(lv){c.onclick=function(){startLevel(lv);};})(l);
+    g.appendChild(c);
+  }
+}
+
+// ── START ──
+function startLevel(l){
+  curLevel=l;curQ=0;score=0;correct=0;wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  const m=T_META[l];
+  document.getElementById('game-level-label').textContent=m.icon+' '+m.label+' · '+m.sub;
+  loadQ();
+}
+
+// ── LOAD Q ──
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8)tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered)return;
+  answered=true;wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Muda umeisha! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function pick(chosen,ans,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4;correct++;
+    feedback(true,'✅ Sahihi! — Correct!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Kosa! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length)showResults();
+  else loadQ();
+};
+
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  const m=T_META[curLevel];
+  const r=getResult(pct);
+  document.getElementById('res-emoji').textContent=r.emoji;
+  document.getElementById('res-title').textContent=r.title;
+  document.getElementById('res-level-name').textContent=m.icon+' '+m.label+' · '+m.sub;
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goHome(){clearInterval(timer);renderLevels();show('screen-levels');}
+function retryLevel(){startLevel(curLevel);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+renderLevels();
+</script>
+</body>
+</html>
