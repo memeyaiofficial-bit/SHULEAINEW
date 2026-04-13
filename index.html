@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,564 @@
 
     <!-- External CSS -->
     <link rel="stylesheet" href="css/styles.css" />
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Inline critical functions: defined here so they work before auth-shared.js loads -->
+    <script>
+      function openPaymentWithPlan(planValue) {
+        // Use auth-shared.js version if loaded, otherwise open modal directly
+        if (typeof openSignInModal === 'function') {
+          openSignInModal();
+        } else {
+          var modal = document.getElementById('signInModal');
+          if (modal) modal.style.display = 'flex';
+          var payStep = document.getElementById('paymentInfoStep');
+          var signStep = document.getElementById('signInStep');
+          var verifyStep = document.getElementById('verifyCodeStep');
+          if (payStep) payStep.style.display = 'block';
+          if (signStep) signStep.style.display = 'none';
+          if (verifyStep) verifyStep.style.display = 'none';
+        }
+        // Set the plan — use a small delay to ensure the modal DOM is visible
+        setTimeout(function () {
+          var select = document.getElementById('planType');
+          if (select) select.value = planValue;
+        }, 50);
+      }
+    </script>
+
+    <!-- Critical inline styles: moved to <head> to prevent Flash of Unstyled Content (FOUC) -->
+    <style>
+      /* Landing Page Styles */
+      @keyframes bgZoomPan {
+        0%   { transform: scale(1.00) translate(0%, 0%); }
+        33%  { transform: scale(1.10) translate(-3%, 2%); }
+        66%  { transform: scale(1.08) translate(3%, -2%); }
+        100% { transform: scale(1.00) translate(0%, 0%); }
+      }
+      .landing-page {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 9999;
+      }
+      .landing-page::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(135deg, rgba(30,15,70,0.78) 0%, rgba(20,80,50,0.72) 100%),
+          url('public/image1.png');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        animation: bgZoomPan 18s ease-in-out infinite;
+        z-index: -1;
+      }
+
+      .landing-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .landing-content {
+        text-align: center;
+        color: white;
+      }
+
+      .landing-header {
+        margin-bottom: 3rem;
+        padding-top: 2rem;
+      }
+
+      .landing-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .logo-icon {
+        font-size: 4rem;
+      }
+
+      .landing-logo h1 {
+        font-size: 4rem;
+        margin: 0;
+        font-weight: bold;
+      }
+
+      .landing-tagline {
+        font-size: 1.5rem;
+        opacity: 0.9;
+      }
+
+      .landing-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .feature-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        text-align: center;
+        transition: transform 0.3s ease, background 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-6px);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .feature-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1rem;
+        background: rgba(255,255,255,0.18);
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.3);
+        color: #fff;
+      }
+
+      .feature-icon i {
+        font-size: 1.8rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .pricing-section {
+        margin: 4rem 0;
+      }
+
+      .pricing-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .pricing-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .pricing-card {
+        background: white;
+        color: #333;
+        border-radius: 20px;
+        padding: 2rem;
+        position: relative;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .pricing-card.featured {
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .pricing-card.weekly {
+        background: linear-gradient(135deg, #eceff1, #b0bec5);
+        color: #333;
+        border: 2px solid #90a4ae;
+      }
+
+      .pricing-card.weekly h3 { color: #455a64; }
+      .pricing-card.weekly .price { color: #37474f; }
+      .pricing-card.weekly .features-list li { border-bottom-color: rgba(0,0,0,0.1); }
+
+      .pricing-card.termly {
+        background: linear-gradient(135deg, #fff8e1, #ffe082);
+        color: #4a3700;
+        border: 2px solid #ffc107;
+        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.35);
+      }
+
+      .pricing-card.termly h3 { color: #7c5800; }
+      .pricing-card.termly .price { color: #b8860b; }
+      .pricing-card.termly .features-list li { border-bottom-color: rgba(180,130,0,0.2); }
+
+      .pricing-cta-btn {
+        width: 100%;
+        margin-top: 1.2rem;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .pricing-card.featured .pricing-cta-btn {
+        background: rgba(255,255,255,0.25);
+        border: 2px solid white;
+      }
+
+      .pricing-card.termly .pricing-cta-btn {
+        background: linear-gradient(135deg, #b8860b, #ffc107);
+        color: #fff;
+      }
+
+      .pricing-cta-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: -15px;
+        right: 20px;
+        background: #ff9800;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+      }
+
+      .pricing-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .price {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 1rem 0;
+      }
+
+      .features-list {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        margin: 1.5rem 0;
+      }
+
+      .features-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .pricing-card.featured .features-list li {
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .cta-section {
+        margin: 4rem 0;
+      }
+
+      .signin-cta-btn {
+        background: white;
+        color: #667eea;
+        border: none;
+        padding: 1.5rem 3rem;
+        font-size: 1.3rem;
+        font-weight: bold;
+        border-radius: 50px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .signin-cta-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .signin-cta-btn .arrow {
+        font-size: 1.5rem;
+        transition: transform 0.3s ease;
+      }
+
+      .signin-cta-btn:hover .arrow {
+        transform: translateX(10px);
+      }
+
+      .signin-note {
+        margin-top: 1rem;
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      /* Auth Modal Styles */
+      .auth-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+      }
+
+      .auth-modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 2rem;
+        border-radius: 20px;
+        max-width: 500px;
+        position: relative;
+        animation: slideDown 0.3s ease;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .auth-close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 20px;
+      }
+
+      .auth-close:hover,
+      .auth-close:focus {
+        color: #000;
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .auth-header h2 {
+        color: #333;
+        margin-bottom: 0.5rem;
+      }
+
+      .auth-header p {
+        color: #666;
+      }
+
+      .auth-form {
+        margin: 2rem 0;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 600;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .auth-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 10px;
+        cursor: pointer;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .auth-note {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #666;
+      }
+
+      .auth-note a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .auth-note a:hover {
+        text-decoration: underline;
+      }
+
+      #sentTo {
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .payment-options {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+      }
+
+      .payment-options h3 {
+        color: #333;
+        margin-bottom: 1rem;
+      }
+
+      .payment-options ol {
+        text-align: left;
+        color: #666;
+        line-height: 1.8;
+      }
+
+      .payment-options strong {
+        color: #4caf50;
+      }
+
+      .pricing-quick {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .price-item {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .price-item strong {
+        display: block;
+        font-size: 1.3rem;
+        color: #4caf50;
+        margin-top: 0.5rem;
+      }
+
+      /* See All Games */
+      .hidden-games {
+        display: none;
+      }
+
+      .see-all-container {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+
+      .see-all-btn {
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 25px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+      }
+
+      .see-all-btn:hover {
+        background: linear-gradient(135deg, #45a049, #4caf50);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+      }
+
+      .see-all-arrow {
+        transition: transform 0.3s ease;
+        font-size: 0.8em;
+      }
+
+      .see-all-btn.expanded .see-all-arrow {
+        transform: rotate(180deg);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .landing-logo h1 {
+          font-size: 2.5rem;
+        }
+
+        .landing-tagline {
+          font-size: 1.2rem;
+        }
+
+        .pricing-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .pricing-card.featured {
+          transform: scale(1);
+        }
+
+        .pricing-quick {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
   <body>
     <!-- Landing Page / Sign In Gate -->
@@ -23,17 +581,17 @@
 
           <div class="landing-features">
             <div class="feature-card">
-              <div class="feature-icon">🎮</div>
+              <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
               <h3>54+ Educational Games</h3>
               <p>Interactive games aligned with CBC curriculum</p>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">📚</div>
+              <div class="feature-icon"><i class="fas fa-book-open"></i></div>
               <h3>All Subjects Covered</h3>
-              <p>Mathematics, Science, English, Kiswahili & more</p>
+              <p>Mathematics, Science, English, Kiswahili &amp; more</p>
             </div>
             <div class="feature-card">
-              <div class="feature-icon">🏆</div>
+              <div class="feature-icon"><i class="fas fa-trophy"></i></div>
               <h3>Track Progress</h3>
               <p>Monitor learning achievements and improvements</p>
             </div>
@@ -42,16 +600,7 @@
           <div class="pricing-section">
             <h2>Choose Your Plan</h2>
             <div class="pricing-cards">
-              <div class="pricing-card" style="opacity: 0.85; border: 2px dashed #999;">
-                <h3>Test Plan</h3>
-                <div class="price">KES 5</div>
-                <ul class="features-list">
-                  <li>✓ Test M-Pesa</li>
-                  <li>✓ 1 day access</li>
-                  <li>✓ Demo purposes</li>
-                </ul>
-              </div>
-              <div class="pricing-card">
+              <div class="pricing-card weekly" onclick="openPaymentWithPlan('weekly')" style="cursor:pointer">
                 <h3>Weekly Access</h3>
                 <div class="price">KES 200</div>
                 <ul class="features-list">
@@ -60,8 +609,9 @@
                   <li>✓ 7 days full access</li>
                   <li>✓ Progress tracking</li>
                 </ul>
+                <button class="pricing-cta-btn" onclick="event.stopPropagation(); openPaymentWithPlan('weekly')">Get Started →</button>
               </div>
-              <div class="pricing-card featured">
+              <div class="pricing-card featured" onclick="openPaymentWithPlan('monthly')" style="cursor:pointer">
                 <div class="popular-badge">Most Popular</div>
                 <h3>Monthly Access</h3>
                 <div class="price">KES 600</div>
@@ -72,8 +622,9 @@
                   <li>✓ Progress tracking</li>
                   <li>✓ Priority support</li>
                 </ul>
+                <button class="pricing-cta-btn" onclick="event.stopPropagation(); openPaymentWithPlan('monthly')">Get Started →</button>
               </div>
-              <div class="pricing-card">
+              <div class="pricing-card termly" onclick="openPaymentWithPlan('termly')" style="cursor:pointer">
                 <h3>Termly Access</h3>
                 <div class="price">KES 1650</div>
                 <ul class="features-list">
@@ -84,19 +635,11 @@
                   <li>✓ Priority support</li>
                   <li>✓ Certificates</li>
                 </ul>
+                <button class="pricing-cta-btn" onclick="event.stopPropagation(); openPaymentWithPlan('termly')">Get Started →</button>
               </div>
             </div>
           </div>
 
-          <div class="cta-section">
-            <button class="signin-cta-btn" onclick="openSignInModal()">
-              <span>Sign In to Get Started</span>
-              <span class="arrow">→</span>
-            </button>
-            <p class="signin-note">
-              Already have an access code? Sign in to continue learning
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -223,7 +766,6 @@
                 <label for="planType">Subscription Plan *</label>
                 <select id="planType" name="planType" required style="width: 100%; padding: 1rem; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; background: white;">
                   <option value="">Select a plan</option>
-                  <option value="test">Test Plan - KES 5 (1 day)</option>
                   <option value="weekly">Weekly - KES 200</option>
                   <option value="monthly">Monthly - KES 600</option>
                   <option value="termly">Termly (3 Months) - KES 1650</option>
@@ -11437,10 +11979,10 @@
     <!-- STK Push frontend handler -->
     <script>
       (function () {
-        // Configure backend API URL - UPDATE THIS FOR YOUR ENVIRONMENT
-        // For development: use http://localhost:5000 (local backend)
-        // For production: use your backend URL (e.g., https://shuleaibackend-0fcq.onrender.com)
-        const API_BASE_URL = 'http://localhost:5000';  // ← CHANGE THIS to your backend URL
+        // Auto-detect environment: use production backend on live site, localhost in dev
+        const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+          ? 'http://localhost:5000'
+          : 'https://shuleaibackend-0fcq.onrender.com';
         
         console.log('🔗 API Base URL configured as:', API_BASE_URL);
 
@@ -11647,17 +12189,37 @@
     <!-- Landing Page & Authentication Styles -->
     <style>
       /* Landing Page Styles */
+      @keyframes bgZoomPan {
+        0%   { transform: scale(1.00) translate(0%, 0%); }
+        33%  { transform: scale(1.10) translate(-3%, 2%); }
+        66%  { transform: scale(1.08) translate(3%, -2%); }
+        100% { transform: scale(1.00) translate(0%, 0%); }
+      }
       .landing-page {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         overflow-y: auto;
         z-index: 9999;
       }
-
+      .landing-page::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(135deg, rgba(30,15,70,0.78) 0%, rgba(20,80,50,0.72) 100%),
+          url('public/image1.png');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        animation: bgZoomPan 18s ease-in-out infinite;
+        z-index: -1;
+      }
       .landing-container {
         max-width: 1200px;
         margin: 0 auto;

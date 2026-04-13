@@ -72,6 +72,13 @@ function openSignInModal() {
   document.getElementById("verifyCodeStep").style.display = "none";
 }
 
+function openPaymentWithPlan(planValue) {
+  openSignInModal();
+  // Pre-select the chosen plan in the dropdown
+  var select = document.getElementById("planType");
+  if (select) select.value = planValue;
+}
+
 function closeSignInModal() {
   document.getElementById("signInModal").style.display = "none";
 }
