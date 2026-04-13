@@ -22,7 +22,7 @@ app.use(
       "http://127.0.0.1:5502",
       "https://shule.memeyai.com",
       "https://shuleaiadmin.memeyai.com",
-      "https://shuleaibackend-0fcq.onrender.com",
+      "https://shuleaibackend-rpe3.onrender.com",
     ],
     credentials: true,
   }),
