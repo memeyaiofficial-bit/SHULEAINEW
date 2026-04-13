@@ -21,6 +21,7 @@ app.use(
       "https://your-frontend-domain.com",
       "http://127.0.0.1:5502",
       "https://shule.memeyai.com",
+      "https://shuleaiadmin.memeyai.com",
       "https://shuleaibackend-0fcq.onrender.com",
     ],
     credentials: true,

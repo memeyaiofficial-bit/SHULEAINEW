@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Computer Hardware Quiz</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --brown-deep:   #2c1a0e;
+  --brown-dark:   #4a2c14;
+  --brown-main:   #7b4a21;
+  --brown-mid:    #a0622a;
+  --brown-warm:   #c4813d;
+  --brown-light:  #dba96a;
+  --brown-pale:   #f5ead8;
+  --brown-cream:  #fdf5ec;
+  --gold:         #d4a017;
+  --gold-light:   #f0c94d;
+  --amber:        #e07b1a;
+  --red-err:      #c0392b;
+  --green-ok:     #2e7d32;
+  --white:        #ffffff;
+  --shadow:       0 6px 24px rgba(44,26,14,0.22);
+  --shadow-lg:    0 12px 40px rgba(44,26,14,0.28);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--brown-cream);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── HEADER ─────────────────────────────── */
+header {
+  width: 100%;
+  background: linear-gradient(135deg, var(--brown-deep) 0%, var(--brown-dark) 60%, var(--brown-main) 100%);
+  padding: 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 18px,
+    rgba(255,255,255,0.03) 18px,
+    rgba(255,255,255,0.03) 36px
+  );
+}
+.header-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 20px 16px;
+}
+.brand-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.brand-icon {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+.brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.brand-plus {
+  color: var(--gold-light);
+}
+.header-sub {
+  font-size: 12px;
+  color: var(--brown-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(15px, 3vw, 20px);
+  color: var(--brown-pale);
+  font-weight: 700;
+  text-align: center;
+}
+.gold-bar {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+}
+
+/* ── SCREENS ────────────────────────────── */
+.screen { display: none; width: 100%; max-width: 700px; padding: 24px 16px 40px; }
+.screen.active { display: block; }
+
+/* ── LEVEL SELECT ───────────────────────── */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--brown-dark);
+  text-align: center;
+  margin-bottom: 4px;
+}
+.section-sub {
+  text-align: center;
+  font-size: 13px;
+  color: var(--brown-mid);
+  margin-bottom: 26px;
+  font-weight: 500;
+}
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.level-card {
+  background: var(--white);
+  border: 3px solid var(--brown-light);
+  border-radius: 18px;
+  padding: 22px 10px 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.level-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--brown-warm), var(--gold));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.level-card:hover:not(.locked)::after { opacity: 1; }
+.level-card:hover:not(.locked) {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--brown-warm);
+}
+.level-card.completed { border-color: var(--gold); }
+.level-card.locked { opacity: 0.45; cursor: not-allowed; }
+.lnum {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 30px;
+  color: var(--brown-main);
+  margin-bottom: 10px;
+  display: block;
+}
+.level-card.completed .lnum { color: var(--gold); }
+.lname { font-weight: 800; font-size: 14px; color: var(--brown-dark); margin-bottom: 3px; }
+.lq { font-size: 11px; color: #999; margin-bottom: 6px; }
+.level-stars { font-size: 17px; min-height: 22px; }
+.lock-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+
+/* ── GAME HEADER ────────────────────────── */
+.game-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.game-level-tag {
+  background: var(--brown-dark);
+  color: var(--brown-pale);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.timer-pill {
+  background: var(--gold);
+  color: var(--brown-deep);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-weight: 800;
+  font-size: 13px;
+  min-width: 72px;
+  text-align: center;
+  transition: background 0.3s;
+}
+.timer-pill.danger {
+  background: var(--red-err);
+  color: white;
+  animation: throb 0.55s infinite alternate;
+}
+@keyframes throb { from {transform:scale(1)} to {transform:scale(1.08)} }
+
+.score-pill {
+  background: linear-gradient(135deg, var(--brown-main), var(--brown-dark));
+  color: white;
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+/* Progress */
+.prog-wrap {
+  width: 100%;
+  height: 10px;
+  background: #e5d5c0;
+  border-radius: 99px;
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+.prog-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brown-warm), var(--gold));
+  border-radius: 99px;
+  transition: width 0.45s cubic-bezier(.4,2,.6,1);
+}
+
+/* ── QUESTION CARD ──────────────────────── */
+.question-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  border-left: 6px solid var(--brown-warm);
+  position: relative;
+}
+.q-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brown-warm);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+.q-text {
+  font-size: clamp(14px, 2.5vw, 17px);
+  font-weight: 700;
+  color: var(--brown-deep);
+  line-height: 1.5;
+}
+
+/* ── OPTIONS ────────────────────────────── */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.opt-btn {
+  background: var(--white);
+  border: 2.5px solid #ddc9ae;
+  border-radius: 13px;
+  padding: 13px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brown-dark);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+.opt-btn:hover:not(:disabled) {
+  background: var(--brown-pale);
+  border-color: var(--brown-warm);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(122,74,33,0.15);
+}
+.opt-letter {
+  background: var(--brown-pale);
+  color: var(--brown-main);
+  border-radius: 7px;
+  min-width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.opt-btn.correct { background: #e8f5e9; border-color: var(--green-ok); color: var(--green-ok); }
+.opt-btn.correct .opt-letter { background: var(--green-ok); color: white; }
+.opt-btn.wrong   { background: #fdecea; border-color: var(--red-err); color: var(--red-err); }
+.opt-btn.wrong .opt-letter { background: var(--red-err); color: white; }
+.opt-btn:disabled { cursor: default; }
+
+/* ── FEEDBACK ───────────────────────────── */
+.feedback-strip {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: #e8f5e9;
+  border: 2px solid var(--green-ok);
+  border-radius: 12px;
+  padding: 11px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green-ok);
+  margin-bottom: 12px;
+}
+.feedback-strip.show { display: flex; }
+.feedback-strip.bad { background: #fdecea; border-color: var(--red-err); color: var(--red-err); }
+.fb-icon { font-size: 20px; flex-shrink: 0; }
+
+/* ── NEXT BUTTON ────────────────────────── */
+.next-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--brown-warm), var(--brown-dark));
+  color: white;
+  border: none;
+  border-radius: 13px;
+  padding: 15px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 5px 16px rgba(122,74,33,0.35);
+  letter-spacing: 0.3px;
+}
+.next-btn:hover { transform: translateY(-2px); box-shadow: 0 9px 22px rgba(122,74,33,0.4); }
+.next-btn.show { display: block; }
+
+/* ── RESULTS ────────────────────────────── */
+.result-box {
+  background: var(--white);
+  border-radius: 22px;
+  padding: 32px 24px 28px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+  border-top: 6px solid var(--gold);
+  animation: popIn 0.4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  70% { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.res-emoji { font-size: 64px; margin-bottom: 8px; }
+.res-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--brown-dark);
+  margin-bottom: 4px;
+}
+.res-stars { font-size: 38px; margin: 12px 0; }
+.res-big {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 34px;
+  color: var(--brown-main);
+  margin-bottom: 4px;
+}
+.res-sub { font-size: 13px; color: #888; margin-bottom: 20px; }
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-box {
+  background: var(--brown-pale);
+  border-radius: 12px;
+  padding: 14px 8px;
+}
+.stat-n { font-size: 24px; font-weight: 900; color: var(--brown-dark); }
+.stat-l { font-size: 11px; color: #888; margin-top: 2px; }
+.btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-fill {
+  background: linear-gradient(135deg, var(--brown-warm), var(--brown-dark));
+  color: white; border: none; border-radius: 12px;
+  padding: 13px 26px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(122,74,33,0.3);
+  transition: transform 0.15s;
+}
+.btn-fill:hover { transform: translateY(-2px); }
+.btn-border {
+  background: white; color: var(--brown-dark);
+  border: 2.5px solid var(--brown-warm);
+  border-radius: 12px; padding: 13px 26px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+}
+.btn-border:hover { transform: translateY(-2px); background: var(--brown-pale); }
+
+/* ── FOOTER ─────────────────────────────── */
+footer {
+  text-align: center;
+  font-size: 11px;
+  color: #aaa;
+  padding: 16px 20px 30px;
+  letter-spacing: 0.5px;
+}
+footer a { color: var(--brown-warm); text-decoration: none; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gold-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">🧠</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Grade 7 · Pre Technical Studies</div>
+    <div class="header-title">💻 Computer Hardware Quiz</div>
+  </div>
+  <div class="gold-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="section-title" style="margin-top:8px;">Choose Your Level</div>
+    <div class="section-sub">3 Levels · 25 Questions Each · Score 50%+ to unlock next level</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Level 1</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 25</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:700px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Excellent!</div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Levels</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Retry</button>
+        <button class="btn-fill" id="next-level-btn" onclick="nextLevel()" style="display:none">Next Level ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Grade 7 Computer Hardware
+</footer>
+
+<script>
+// ══════════════════ QUESTIONS ══════════════════
+const Q = {
+ 1: [
+  {q:"What is computer hardware?",opts:["The operating system of a computer","Internet connection settings","Physical components that make up a computer","Software programs installed on a PC"],a:2},
+  {q:"Which of the following is an example of hardware?",opts:["A web browser","A keyboard","Microsoft Word","An antivirus program"],a:1},
+  {q:"What is the 'brain' of the computer called?",opts:["Monitor","RAM","Hard Disk","CPU (Central Processing Unit)"],a:3},
+  {q:"What does RAM stand for?",opts:["Random Access Memory","Read Access Memory","Rapid Application Module","Remote Access Memory"],a:0},
+  {q:"Which hardware component stores data permanently even when the computer is off?",opts:["RAM","Monitor","CPU","Hard Disk Drive (HDD)"],a:3},
+  {q:"A monitor is an example of which type of device?",opts:["Storage device","Processing device","Output device","Input device"],a:2},
+  {q:"Which of these is an INPUT device?",opts:["Projector","Printer","Speaker","Mouse"],a:3},
+  {q:"Which of these is an OUTPUT device?",opts:["Keyboard","Printer","Scanner","Webcam"],a:1},
+  {q:"What does the motherboard do?",opts:["Stores permanent data","Prints documents","Displays images","Connects all computer components together"],a:3},
+  {q:"What is the function of a Power Supply Unit (PSU)?",opts:["It connects to Wi-Fi","It displays the screen","It stores files","It converts electricity to power all computer components"],a:3},
+  {q:"Which component cools the CPU to prevent overheating?",opts:["Graphics card","Hard drive","RAM","Heat sink and fan"],a:3},
+  {q:"What is a keyboard used for?",opts:["To print documents","To display output","To enter text and commands into a computer","To store data"],a:2},
+  {q:"What unit is used to measure computer storage capacity?",opts:["Watts (W)","Megahertz (MHz)","Gigabytes (GB)","Pixels"],a:2},
+  {q:"What does a printer do?",opts:["Stores data on disk","Connects to the internet","Captures images","Produces physical printed copies of documents"],a:3},
+  {q:"Which device captures physical images and converts them to digital?",opts:["Scanner","Projector","Speaker","Printer"],a:0},
+  {q:"What does USB stand for?",opts:["United System Board","Universal Software Bridge","Unified Storage Block","Universal Serial Bus"],a:3},
+  {q:"Which component is responsible for TEMPORARY storage while a computer is running?",opts:["DVD Drive","Hard Disk","ROM","RAM"],a:3},
+  {q:"What does ROM stand for?",opts:["Remote Online Memory","Rapid Operation Module","Read Only Memory","Random Output Memory"],a:2},
+  {q:"What is the function of a graphics card (GPU)?",opts:["Provides internet access","Connects devices via USB","Stores permanent data","Handles visual output and rendering of images on screen"],a:3},
+  {q:"Which device is used to point and click on a computer screen?",opts:["Touchpad or Mouse","Keyboard","Scanner","Joystick"],a:0},
+  {q:"What is a CPU socket on a motherboard?",opts:["A memory slot","A power connector","A USB port","A slot that holds the CPU processor"],a:3},
+  {q:"Which of these is a type of portable storage device?",opts:["CPU","Monitor","RAM","USB Flash Drive"],a:3},
+  {q:"What is the purpose of a webcam?",opts:["To connect to Wi-Fi","To print photos","To capture live video images for online communication","To store files"],a:2},
+  {q:"What does a speaker output?",opts:["Data","Images","Text","Sound/Audio"],a:3},
+  {q:"Which part stores the operating system for long-term use?",opts:["CPU registers","Cache","RAM","Hard Disk Drive or SSD"],a:3},
+ ],
+ 2: [
+  {q:"What is the main difference between HDD and SSD?",opts:["SSD is older than HDD","HDD is faster than SSD","They are the same thing","HDD uses spinning disks; SSD uses flash memory chips — making SSD faster"],a:3},
+  {q:"What does GPU stand for?",opts:["Global Power Unit","Gigabyte Processing Upgrade","Graphics Processing Unit","General Processing Unit"],a:2},
+  {q:"Which bus connects the CPU to RAM on the motherboard?",opts:["SATA bus","USB bus","PCI bus","Memory / Front Side Bus"],a:3},
+  {q:"What is BIOS?",opts:["An operating system","A graphics driver","A type of RAM","Basic Input Output System — firmware that initialises hardware at startup"],a:3},
+  {q:"What is cache memory?",opts:["A type of USB storage","External hard drive memory","Slow permanent storage","Very fast small memory inside or near the CPU for quick data access"],a:3},
+  {q:"What does SATA stand for?",opts:["Simple Analogue Technology Access","System Attachment Transfer Array","Standard Audio Transfer Adapter","Serial Advanced Technology Attachment"],a:3},
+  {q:"Which port is commonly used to connect a monitor to a computer?",opts:["3.5mm audio jack","USB-A","Ethernet","HDMI or VGA"],a:3},
+  {q:"What is the function of the NIC (Network Interface Card)?",opts:["It displays images","It processes graphics","It connects the computer to a network","It stores data permanently"],a:2},
+  {q:"What correctly defines 'clock speed' of a CPU?",opts:["The capacity of the hard disk","The size of the monitor screen","The number of USB ports on a PC","The rate at which the CPU executes instructions, measured in GHz"],a:3},
+  {q:"What is a PCI slot used for?",opts:["To connect the power supply","To hold the CPU","To insert RAM modules","To connect expansion cards like graphics or sound cards"],a:3},
+  {q:"What does HDMI stand for?",opts:["Hard Drive Media Interface","Hybrid Display Monitor Interface","High Data Memory Input","High Definition Multimedia Interface"],a:3},
+  {q:"What is the role of the chipset on a motherboard?",opts:["To render 3D graphics","To supply power to components","To store the BIOS settings","To manage data flow between the CPU, RAM, and peripherals"],a:3},
+  {q:"Which of these is a pointing device besides a mouse?",opts:["Optical drive","Microphone","Scanner","Touchpad (trackpad)"],a:3},
+  {q:"What is the purpose of a heat sink?",opts:["To speed up internet connection","To display graphics","To store data","To absorb and dissipate heat away from the CPU"],a:3},
+  {q:"Which hardware converts analogue voice to digital signals for VoIP calls?",opts:["USB hub","Ethernet card","Graphics card","Sound card"],a:3},
+  {q:"What is a multi-core processor?",opts:["A hard drive with multiple partitions","A motherboard with multiple CPU sockets","A processor with multiple fans","A CPU that has two or more processing cores on a single chip"],a:3},
+  {q:"Which port connects a wired internet cable to a computer?",opts:["USB-C","HDMI","VGA","Ethernet / RJ-45 port"],a:3},
+  {q:"What is virtual memory?",opts:["Memory stored in the cloud","RAM that does not exist","A type of flash storage","Disk space used as extra RAM when physical RAM is full"],a:3},
+  {q:"What does an optical drive use to read data from discs?",opts:["Sound waves","Electric pulses","Magnetic fields","Laser beams"],a:3},
+  {q:"What is the primary purpose of a UPS (Uninterruptible Power Supply)?",opts:["To connect multiple devices via USB","To cool the computer","To increase internet speed","To provide backup power and prevent data loss during outages"],a:3},
+  {q:"Which type of RAM is most common in modern computers?",opts:["Flash RAM","EEPROM","SRAM","DDR4 or DDR5 SDRAM"],a:3},
+  {q:"What is 'form factor' of a motherboard?",opts:["Its bus width","Its clock speed","Its colour","Its physical size and shape standard e.g. ATX, Micro-ATX"],a:3},
+  {q:"What is a hardware 'driver'?",opts:["A cooling fan","A type of hard disk","The person who operates the computer","Software that allows the OS to communicate with a hardware device"],a:3},
+  {q:"What does an expansion card do?",opts:["Cools the CPU","Increases RAM directly","Expands the screen size","Adds functionality such as better graphics or sound to a computer"],a:3},
+  {q:"Which storage device has NO moving mechanical parts?",opts:["Floppy disk drive","CD-ROM drive","HDD","SSD (Solid State Drive)"],a:3},
+ ],
+ 3: [
+  {q:"What is the Von Neumann architecture principle?",opts:["A graphics rendering method","A type of processor design","A network topology","A computer stores both data and program instructions in the same memory"],a:3},
+  {q:"What does overclocking a CPU mean?",opts:["Formatting the hard drive","Replacing it with a newer model","Running it below its rated speed","Running it at a higher speed than its rated specification to gain performance"],a:3},
+  {q:"What is the key advantage of 64-bit over 32-bit processors?",opts:["32-bit is faster","They refer to hard drive capacity","They differ only in physical size","64-bit handles more data and addresses far more memory per clock cycle"],a:3},
+  {q:"What is ECC RAM?",opts:["Embedded Control Cache","Extended Controller Circuit memory","Extra-Capacity Cache","Error-Correcting Code RAM that detects and corrects data corruption automatically"],a:3},
+  {q:"What is the role of the ALU (Arithmetic Logic Unit) inside a CPU?",opts:["It stores long-term data","It manages power consumption","It fetches instructions from RAM","It performs arithmetic calculations and logical operations"],a:3},
+  {q:"What is NVMe in the context of storage?",opts:["An external USB storage standard","A type of magnetic hard disk","Network Video Media encoder","A high-speed interface protocol for SSDs that uses the PCIe bus"],a:3},
+  {q:"What is RAM 'latency'?",opts:["The voltage required by RAM","The total storage capacity of RAM","The physical size of the RAM module","The delay between a request for data and when data is actually delivered"],a:3},
+  {q:"What is a RAID array?",opts:["A network interface technology","A graphics rendering algorithm","A type of CPU cooling system","Multiple drives used together for improved performance or data redundancy"],a:3},
+  {q:"What is the difference between parallel and serial data transmission?",opts:["Parallel is newer than serial","They are identical","Parallel is slower and serial is faster in modern systems","Serial sends one bit at a time; parallel sends multiple bits simultaneously"],a:3},
+  {q:"What is the CMOS battery on a motherboard used for?",opts:["To power the cooling fan","To charge USB devices","To power the graphics card","To maintain BIOS settings and keep the real-time clock running when the PC is off"],a:3},
+  {q:"What does the Control Unit (CU) inside a CPU do?",opts:["Manages the power supply","Stores data permanently","Performs calculations","Directs and coordinates all CPU operations by interpreting instructions"],a:3},
+  {q:"What is Hyper-Threading / SMT technology in processors?",opts:["An overclocking feature","A type of RAM technology","A method of cooling the CPU with liquid","Allowing a single physical CPU core to handle two instruction threads simultaneously"],a:3},
+  {q:"What is the purpose of thermal paste between CPU and heat sink?",opts:["To lubricate the CPU fan","To insulate the CPU from electricity","To stick the heat sink to the motherboard","To fill microscopic gaps and improve heat conduction from CPU to heat sink"],a:3},
+  {q:"What is PCIe (PCI Express) used for?",opts:["Supplying power to the motherboard","Providing USB connectivity","Connecting to the internet","A high-speed expansion interface for GPUs, NVMe SSDs, and add-in cards"],a:3},
+  {q:"What does TDP mean in CPU/GPU specifications?",opts:["Total Drive Performance","Transfer Data Protocol","Total Data Processing","Thermal Design Power — the maximum heat output a cooler must handle"],a:3},
+  {q:"What is a POST (Power-On Self-Test)?",opts:["A network connection test","A type of RAM test software","A hardware performance benchmark","A diagnostic routine run by BIOS at startup to verify all hardware is functioning"],a:3},
+  {q:"What is the key difference between UEFI and legacy BIOS?",opts:["UEFI is only used in laptops","BIOS is faster than UEFI","They are identical","UEFI is modern firmware with a GUI, faster boot times, and support for large disks"],a:3},
+  {q:"What is the Northbridge chipset responsible for?",opts:["Managing keyboard and mouse input","Controlling hard drive connections","Managing USB and audio devices","High-speed communication between CPU, RAM, and GPU"],a:3},
+  {q:"What is liquid cooling in a computer system?",opts:["Cooling the power supply with air","A type of storage cooling","Cooling using a fan that blows cold air","Using coolant circulated through a closed loop to remove heat from CPU or GPU"],a:3},
+  {q:"What does 'bus width' refer to in computer hardware?",opts:["The number of USB ports","The speed of the processor","The physical length of the motherboard","The number of bits that can be transmitted simultaneously along a data bus"],a:3},
+  {q:"What does a DMA (Direct Memory Access) controller do?",opts:["A graphics processing unit","A memory error correction system","A type of external SSD","Allows peripherals to transfer data directly to/from RAM without CPU involvement"],a:3},
+  {q:"What is SMART technology in hard drives?",opts:["Solid Memory Advanced Recording Technology","A type of SSD interface","Super Magnetic Advanced Recording Technology","Self-Monitoring, Analysis and Reporting Technology that monitors drive health"],a:3},
+  {q:"What is a CPU register?",opts:["A power management unit","A type of RAM module","A type of large external storage","Very small, extremely fast storage locations inside the CPU used during processing"],a:3},
+  {q:"What is the purpose of a sound card?",opts:["To boost internet speed","To store audio files","To display high-quality graphics","To process audio, converting digital data to analogue sound and vice versa"],a:3},
+  {q:"What is 'hot-swapping' a hardware component?",opts:["Installing RAM modules","Applying thermal paste","Overclocking a component","Adding or replacing hardware while the computer is running without powering off"],a:3},
+ ]
+};
+
+// ══════════════════ STATE ══════════════════
+let curLevel=1, curQ=0, score=0, correct=0, wrong=0;
+let timer=null, timeLeft=30, answered=false;
+let shuffled=[];
+let stars={1:0,2:0,3:0};
+let unlocked={1:true,2:false,3:false};
+
+function shuffle(a){ return a.slice().sort(()=>Math.random()-0.5); }
+
+// RENDER LEVELS
+function renderLevels(){
+  const names={1:"Beginner",2:"Intermediate",3:"Advanced"};
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  for(let l=1;l<=3;l++){
+    const isOpen = (unlocked[l] === true);
+    const hasStar = (stars[l] > 0);
+    let cls = 'level-card';
+    if(hasStar) cls += ' completed';
+    if(!isOpen) cls += ' locked';
+    const c = document.createElement('div');
+    c.className = cls;
+    const starsHtml = hasStar ? '⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]) : '☆☆☆';
+    if(isOpen){
+      c.innerHTML = '<span class="lnum">'+l+'</span><div class="lname">'+names[l]+'</div><div class="lq">25 Questions</div><div class="level-stars">'+starsHtml+'</div>';
+      (function(lv){ c.onclick = function(){ startLevel(lv); }; })(l);
+    } else {
+      c.innerHTML = '<span class="lock-icon">🔒</span><div class="lname">'+names[l]+'</div><div class="lq">Complete Level '+(l-1)+' first</div>';
+    }
+    g.appendChild(c);
+  }
+}
+
+function startLevel(l){
+  curLevel=l; curQ=0; score=0; correct=0; wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  document.getElementById('game-level-label').textContent=`Level ${l} · Computer Hardware`;
+  loadQ();
+}
+
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent=`Question ${curQ+1} of ${shuffled.length}`;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent=`Score: ${score}`;
+  document.getElementById('prog-bar').style.width=`${(curQ/shuffled.length)*100}%`;
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent=`⏱ ${timeLeft}s`;
+
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach((lt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML=`<span class="opt-letter">${lt}</span><span>${q.opts[i]}</span>`;
+    btn.onclick=()=>pick(i,q.a,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(()=>{
+    timeLeft--;
+    tp.textContent=`⏱ ${timeLeft}s`;
+    if(timeLeft<=8) tp.className='timer-pill danger';
+    if(timeLeft<=0){ clearInterval(timer); timesUp(); }
+  },1000);
+}
+
+function timesUp(){
+  if(answered) return;
+  answered=true; wrong++;
+  const q=shuffled[curQ];
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.opt-btn')[q.a].classList.add('correct');
+  feedback(false,`⏰ Time's up! Answer: ${q.opts[q.a]}`);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function pick(chosen,ans,btn){
+  if(answered) return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(b=>b.disabled=true);
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4; correct++;
+    feedback(true,'✅ Correct! Great work!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,`❌ Wrong! Correct: ${shuffled[curQ].opts[ans]}`);
+  }
+  document.getElementById('score-display').textContent=`Score: ${score}`;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=()=>{
+  curQ++;
+  if(curQ>=shuffled.length) showResults();
+  else loadQ();
+};
+
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  let st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  if(st >= 1 && curLevel < 3){ unlocked[curLevel+1] = true; }
+
+  document.getElementById('res-emoji').textContent=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('res-title').textContent=pct>=90?'Outstanding!':pct>=70?'Great Job!':pct>=50?'Good Effort!':'Keep Practising!';
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent=`out of ${total*4} possible points · ${pct}%`;
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  const nb=document.getElementById('next-level-btn');
+  nb.style.display=(curLevel<3&&st>=1)?'inline-block':'none';
+  show('screen-results');
+}
+
+function goHome(){ clearInterval(timer); renderLevels(); show('screen-levels'); }
+function retryLevel(){ startLevel(curLevel); }
+function nextLevel(){ if(curLevel<3) startLevel(curLevel+1); }
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+renderLevels();
+</script>
+</body>
+</html>

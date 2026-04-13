@@ -307,23 +307,27 @@ class PaymentController {
       }
 
       console.log("✅ Subscription activated!");
+      console.log(
+        "🎯 User has IMMEDIATE ACCESS to site - status set to 'active' in database",
+      );
 
-      // Send activation confirmation email with immediate access
-      try {
-        console.log(
-          "📧 Sending activation confirmation to:",
-          result.payment.email,
-        );
-        await emailService.sendActivationConfirmation(result.payment);
-        console.log("✅ Activation email sent");
-      } catch (emailError) {
-        console.error("⚠️ Activation email failed:", emailError.message);
-      }
+      // Send activation confirmation email (non-blocking - access is already granted)
+      // Email is optional and does not affect access
+      emailService
+        .sendActivationConfirmation(result.payment)
+        .catch((emailError) => {
+          console.error(
+            "⚠️ Activation email failed (non-critical):",
+            emailError.message,
+          );
+          // Continue - user already has access even if email fails
+        });
 
       res.json({
         success: true,
         message:
-          "Subscription activated successfully. You now have immediate access!",
+          "✅ Subscription activated! You now have IMMEDIATE ACCESS to all content. Email confirmation sent separately.",
+        hasAccess: true,
         subscription: updateResult.payment,
       });
     } catch (error) {
@@ -408,11 +412,18 @@ class PaymentController {
   // Admin: Get payment by ID
   async getPaymentById(req, res) {
     try {
-      const { adminKey } = req.headers;
+      const { adminkey, "admin-key": adminKeyHeader } = req.headers;
+      const adminKey = adminkey || adminKeyHeader;
       const { paymentId } = req.params;
 
       // Admin authentication
-      if (adminKey !== process.env.ADMIN_SECRET) {
+      if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
+        console.log("❌ Unauthorized attempt to get payment:", {
+          providedKey: adminKey ? "***" + adminKey.slice(-3) : "none",
+          expectedKey: process.env.ADMIN_SECRET
+            ? "***" + process.env.ADMIN_SECRET.slice(-3)
+            : "none",
+        });
         return res.status(401).json({
           success: false,
           message: "Unauthorized",
@@ -506,7 +517,7 @@ class PaymentController {
     }
   }
 
-  async getPaymentById(paymentId) {
+  async _getPaymentByIdFromDB(paymentId) {
     try {
       const payment = await this.databases.getDocument(
         this.databaseId,
@@ -606,42 +617,6 @@ class PaymentController {
     }
   }
 
-  // Admin: Get payment by ID
-  async getPaymentById(req, res) {
-    try {
-      const { adminKey } = req.headers;
-      const { paymentId } = req.params;
-
-      // Admin authentication
-      if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized: Invalid admin key",
-        });
-      }
-
-      const result = await appwriteService.getPaymentById(paymentId);
-
-      if (!result.success) {
-        return res.status(404).json({
-          success: false,
-          message: "Payment not found",
-        });
-      }
-
-      res.json({
-        success: true,
-        payment: result.payment,
-      });
-    } catch (error) {
-      console.error("Get Payment By ID Error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
-    }
-  }
-
   async verifyPayment(req, res) {
     try {
       const { paymentId, status } = req.body;
@@ -687,88 +662,227 @@ class PaymentController {
 
       console.log("✅ Payment status updated:", result.payment.$id);
 
-      // If payment is activated, send activation email with access code
+      // If payment is activated, user gets IMMEDIATE ACCESS to the site
       if (status === "active") {
-        try {
-          console.log("📧 Payment approved - generating access code...");
+        console.log(
+          "🎯 Payment verified and activated - User has IMMEDIATE ACCESS",
+        );
 
-          // Generate 6-digit access code
-          const accessCode = Math.floor(
-            100000 + Math.random() * 900000,
-          ).toString();
-          const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-
-          // Store access code in database
-          const { Query, ID } = require("node-appwrite");
-
+        // Send confirmation email asynchronously (non-blocking)
+        // Email failure does not affect user access
+        (async () => {
           try {
-            // Delete any existing codes for this email
-            const existingCodes = await this.databases.listDocuments(
-              this.databaseId,
-              process.env.SESSIONS_COLLECTION_ID,
-              [
-                Query.equal("contact", result.payment.email),
-                Query.equal("type", "access_code"),
-              ],
-            );
+            console.log("📧 Sending confirmation email...");
 
-            for (const doc of existingCodes.documents) {
-              await this.databases.deleteDocument(
+            // Generate 6-digit access code for email reference
+            const accessCode = Math.floor(
+              100000 + Math.random() * 900000,
+            ).toString();
+            const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+            // Store access code in database
+            const { Query, ID } = require("node-appwrite");
+
+            try {
+              // Delete any existing codes for this email
+              const existingCodes = await this.databases.listDocuments(
                 this.databaseId,
                 process.env.SESSIONS_COLLECTION_ID,
-                doc.$id,
+                [
+                  Query.equal("contact", result.payment.email),
+                  Query.equal("type", "access_code"),
+                ],
+              );
+
+              for (const doc of existingCodes.documents) {
+                await this.databases.deleteDocument(
+                  this.databaseId,
+                  process.env.SESSIONS_COLLECTION_ID,
+                  doc.$id,
+                );
+              }
+
+              // Create new access code
+              await this.databases.createDocument(
+                this.databaseId,
+                process.env.SESSIONS_COLLECTION_ID,
+                ID.unique(),
+                {
+                  contact: result.payment.email,
+                  code: accessCode,
+                  type: "access_code",
+                  expiresAt: expiresAt.toISOString(),
+                  attempts: 0,
+                  createdAt: new Date().toISOString(),
+                },
+              );
+
+              console.log("✅ Access code stored:", accessCode);
+            } catch (codeError) {
+              console.error(
+                "⚠️ Error storing access code (non-critical):",
+                codeError,
               );
             }
 
-            // Create new access code
-            await this.databases.createDocument(
-              this.databaseId,
-              process.env.SESSIONS_COLLECTION_ID,
-              ID.unique(),
-              {
-                contact: result.payment.email,
-                code: accessCode,
-                type: "access_code",
-                expiresAt: expiresAt.toISOString(),
-                attempts: 0,
-                createdAt: new Date().toISOString(),
-              },
+            // Send activation email with access code
+            await emailService.sendActivationWithAccessCode(
+              result.payment,
+              accessCode,
             );
-
-            console.log("✅ Access code stored:", accessCode);
-          } catch (codeError) {
-            console.error("⚠️ Error storing access code:", codeError);
-          }
-
-          // Send activation email with access code
-          const emailResult = await emailService.sendActivationWithAccessCode(
-            result.payment,
-            accessCode,
-          );
-
-          if (!emailResult.success) {
-            console.warn("⚠️ Activation email failed:", emailResult.error);
-          } else {
-            console.log(
-              "✅ Activation email with access code sent successfully",
+            console.log("✅ Confirmation email sent successfully");
+          } catch (emailError) {
+            console.error(
+              "⚠️ Confirmation email failed (non-critical):",
+              emailError.message,
             );
+            // DON'T block user access - email is optional
           }
-        } catch (emailError) {
-          console.error(
-            "⚠️ Activation email error (non-critical):",
-            emailError.message,
-          );
-          // Continue even if email fails
-        }
+        })();
       }
 
       res.json({
         success: true,
-        message: `Payment ${status} successfully`,
+        message:
+          status === "active"
+            ? `✅ Payment verified successfully! You now have IMMEDIATE ACCESS to all content.`
+            : `Payment status updated to ${status}`,
+        hasAccess: status === "active",
         payment: result.payment,
       });
     } catch (error) {
       console.error("Verify Payment Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  }
+
+  // Admin: Generate access code for user with payment issues
+  async generateAccessCode(req, res) {
+    try {
+      const { adminkey, "admin-key": adminKeyHeader } = req.headers;
+      const adminKey = adminkey || adminKeyHeader;
+
+      // Admin authentication
+      if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
+        console.log("❌ Unauthorized admin attempt to generate access code");
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized: Invalid admin key",
+        });
+      }
+
+      const { paymentId } = req.params;
+
+      if (!paymentId) {
+        return res.status(400).json({
+          success: false,
+          message: "Payment ID is required",
+        });
+      }
+
+      // Get payment details
+      const paymentResult = await appwriteService.getPaymentById(paymentId);
+
+      if (!paymentResult.success || !paymentResult.payment) {
+        return res.status(404).json({
+          success: false,
+          message: "Payment not found",
+        });
+      }
+
+      const payment = paymentResult.payment;
+      const planType = payment.plan_type || "monthly";
+
+      console.log(
+        `🔐 Generating access code for payment ${paymentId} - Plan: ${planType}`,
+      );
+
+      // Generate 6-digit access code
+      const accessCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+      // Store access code in database
+      const { Query, ID } = require("node-appwrite");
+
+      try {
+        // Delete any existing codes for this email
+        const existingCodes = await this.databases.listDocuments(
+          this.databaseId,
+          process.env.SESSIONS_COLLECTION_ID,
+          [
+            Query.equal("contact", payment.email),
+            Query.equal("type", "access_code"),
+          ],
+        );
+
+        for (const doc of existingCodes.documents) {
+          await this.databases.deleteDocument(
+            this.databaseId,
+            process.env.SESSIONS_COLLECTION_ID,
+            doc.$id,
+          );
+        }
+
+        // Create new access code
+        const codeDocument = await this.databases.createDocument(
+          this.databaseId,
+          process.env.SESSIONS_COLLECTION_ID,
+          ID.unique(),
+          {
+            contact: payment.email,
+            code: accessCode,
+            type: "access_code",
+            expiresAt: expiresAt.toISOString(),
+            attempts: 0,
+            createdAt: new Date().toISOString(),
+            paymentId: paymentId,
+            planType: planType,
+            generatedByAdmin: true,
+          },
+        );
+
+        console.log("✅ Access code generated:", accessCode);
+
+        // Send response immediately - email will be sent in background
+        res.json({
+          success: true,
+          message: `✅ Access code generated successfully for ${payment.full_name}`,
+          accessCode,
+          email: payment.email,
+          planType,
+          expiresAt: expiresAt.toISOString(),
+          expiresIn: "24 hours",
+          instructions: `Share this code with the user. They can use it to sign in: ${accessCode}`,
+        });
+
+        // Send email asynchronously in background (non-blocking)
+        setImmediate(async () => {
+          try {
+            await emailService.sendActivationWithAccessCode(
+              payment,
+              accessCode,
+            );
+            console.log("📧 Access code email sent to:", payment.email);
+          } catch (emailError) {
+            console.error(
+              "⚠️ Email send failed (non-critical):",
+              emailError.message,
+            );
+          }
+        });
+      } catch (codeError) {
+        console.error("❌ Error generating access code:", codeError.message);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to generate access code",
+          error: codeError.message,
+        });
+      }
+    } catch (error) {
+      console.error("Generate Access Code Error:", error);
       res.status(500).json({
         success: false,
         message: "Internal server error",

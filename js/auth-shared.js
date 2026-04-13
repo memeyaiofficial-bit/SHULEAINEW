@@ -314,13 +314,18 @@ function handleSpecialCode(
   // ADMIN ONLY: Single master access code
   // This code grants unlimited access to admin email only
   const ADMIN_EMAIL = "shuleaiadmin@memeyai.com";
+  const NGO_EMAIL = "shuleaingo@memeyai.com";
   const ADMIN_CODE = "SHULEAI-ADMIN-2025";
+  const NGO_CODE = "SHULEAI-NGO-2026";
 
-  // Check if email is admin email
-  if (phoneOrEmail.toLowerCase() !== ADMIN_EMAIL) {
+  // Check if email is admin or NGO email
+  const emailLower = phoneOrEmail.toLowerCase();
+  if (emailLower !== ADMIN_EMAIL && emailLower !== NGO_EMAIL) {
     alert(
-      "❌ This access code is for admin use only.\n\nPlease contact admin at " +
+      "❌ This access code is for admin or NGO use only.\n\nPlease contact admin at " +
         ADMIN_EMAIL +
+        " or NGO at " +
+        NGO_EMAIL +
         " for valid access codes.",
     );
     submitBtn.disabled = false;
@@ -328,27 +333,35 @@ function handleSpecialCode(
     return true; // Handled
   }
 
-  // Check if code matches admin code
-  if (accessCode !== ADMIN_CODE) {
-    alert("❌ Invalid admin code. Please enter the correct admin access code.");
+  // Check if code matches admin or NGO code
+  if (
+    (emailLower === ADMIN_EMAIL && accessCode !== ADMIN_CODE) ||
+    (emailLower === NGO_EMAIL && accessCode !== NGO_CODE)
+  ) {
+    alert(
+      "❌ Invalid code. Please enter the correct admin or NGO access code.",
+    );
     submitBtn.disabled = false;
     submitBtn.textContent = originalBtnText;
     return true; // Handled
   }
 
-  // Admin code is valid - grant unlimited access
-  console.log("🔐 ADMIN ACCESS GRANTED");
+  // Admin or NGO code is valid - grant unlimited access
+  console.log("🔐 SPECIAL ACCESS GRANTED");
 
   // Set permanent access (no expiry)
   const permanentExpiry = new Date(
     Date.now() + 365 * 24 * 60 * 60 * 1000,
-  ).getTime(); // 1 year (effectively permanent for admin)
+  ).getTime(); // 1 year (effectively permanent)
 
   localStorage.setItem("shuleai_signed_in", "true");
-  localStorage.setItem("shuleai_access_code", ADMIN_CODE);
-  localStorage.setItem("shuleai_contact", ADMIN_EMAIL);
+  localStorage.setItem("shuleai_access_code", accessCode);
+  localStorage.setItem("shuleai_contact", phoneOrEmail);
   localStorage.setItem("shuleai_access_expiry", permanentExpiry);
-  localStorage.setItem("shuleai_access_type", "admin");
+  localStorage.setItem(
+    "shuleai_access_type",
+    emailLower === ADMIN_EMAIL ? "admin" : "ngo",
+  );
   localStorage.setItem(
     "shuleai_user_data",
     JSON.stringify({

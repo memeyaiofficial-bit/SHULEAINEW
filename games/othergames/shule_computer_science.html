@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shule AI - Computer Science Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 25%, #2c5364 50%, #1e3c72 75%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.5);
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 5px solid #2575fc;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            color: white;
+            padding: 45px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💻🖥️⌨️🖱️💾🔌📱🌐';
+            position: absolute;
+            font-size: 4.5em;
+            opacity: 0.1;
+            top: -10px;
+            left: 0;
+            right: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        .header h1 {
+            font-size: 3.2em;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-area {
+            padding: 45px;
+        }
+
+        .menu-screen, .game-screen, .results-screen {
+            display: none;
+        }
+
+        .menu-screen.active, .game-screen.active, .results-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-title {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 45px;
+            font-size: 2.8em;
+            font-weight: bold;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 32px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #2575fc;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .level-card:hover::after {
+            left: 100%;
+        }
+
+        .level-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(37, 117, 252, 0.5);
+            border-color: #1e3c72;
+        }
+
+        .level-card.level1 {
+            background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%);
+        }
+
+        .level-card.level2 {
+            background: linear-gradient(135deg, #bbdefb 0%, #64b5f6 100%);
+        }
+
+        .level-card.level3 {
+            background: linear-gradient(135deg, #90caf9 0%, #42a5f5 100%);
+        }
+
+        .level-card.level4 {
+            background: linear-gradient(135deg, #64b5f6 0%, #2196f3 100%);
+        }
+
+        .level-card.level5 {
+            background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%);
+        }
+
+        .level-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .level-card h3 {
+            color: #1e3c72;
+            font-size: 1.9em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .level-card p {
+            color: #0d47a1;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(30, 60, 114, 0.9);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(37, 117, 252, 0.2);
+            border: 3px solid #2575fc;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-item span {
+            display: block;
+            font-size: 2.6em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-item label {
+            color: #1e3c72;
+            font-size: 1.05em;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 4px solid #bbdefb;
+            border-radius: 25px;
+            padding: 38px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 35px rgba(37, 117, 252, 0.15);
+        }
+
+        .question-text {
+            font-size: 1.55em;
+            color: #1e3c72;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        .options {
+            display: grid;
+            gap: 18px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #bbdefb;
+            padding: 22px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.15em;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            color: #1e3c72;
+            font-weight: 500;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #2575fc;
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(37, 117, 252, 0.3);
+        }
+
+        .option-btn:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #4caf50;
+            animation: correctPulse 0.6s;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border-color: #f44336;
+            animation: wrongShake 0.6s;
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            50% { transform: scale(0.95); }
+            75% { transform: scale(1.05); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-12px); }
+            20%, 40%, 60%, 80% { transform: translateX(12px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 1.25em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 12px 8px;
+            box-shadow: 0 8px 25px rgba(37, 117, 252, 0.5);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(37, 117, 252, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.5);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 12px 35px rgba(13, 71, 161, 0.7);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .results-emoji {
+            font-size: 7em;
+            margin-bottom: 30px;
+            animation: spin 2.5s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.15); }
+            50% { transform: rotate(15deg) scale(1.25); }
+            75% { transform: rotate(-15deg) scale(1.15); }
+        }
+
+        .results-card h2 {
+            font-size: 3.2em;
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+        }
+
+        .results-stats {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 40px;
+            border-radius: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 35px rgba(37, 117, 252, 0.2);
+            border: 3px solid #2575fc;
+        }
+
+        .results-stats p {
+            font-size: 1.6em;
+            margin: 18px 0;
+            color: #1e3c72;
+            font-weight: 600;
+        }
+
+        .feedback {
+            font-size: 1.35em;
+            color: #1e3c72;
+            margin: 30px 0;
+            padding: 28px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 20px;
+            border-left: 8px solid #2575fc;
+            box-shadow: 0 5px 20px rgba(37, 117, 252, 0.2);
+        }
+
+        .progress-bar {
+            background: #e3f2fd;
+            height: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.2);
+            border: 2px solid #bbdefb;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #1e3c72 0%, #2575fc 50%, #64b5f6 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(37, 117, 252, 0.8);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .level-title {
+            text-align: center;
+            font-size: 2.4em;
+            background: linear-gradient(135deg, #1e3c72 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💻 Computer Science Quest</h1>
+            <p>Grade 4-6 • Master the Digital World!</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Menu Screen -->
+            <div class="menu-screen active">
+                <h2 class="menu-title">Choose Your Programming Level 🚀</h2>
+                
+                <div class="level-grid">
+                    <div class="level-card level1" onclick="startGame(1)">
+                        <span class="level-emoji">🖥️</span>
+                        <h3>Level 1: Computer Basics</h3>
+                        <p>Learn about computers, devices, and basic operations</p>
+                        <span class="level-badge">Grade 4 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level2" onclick="startGame(2)">
+                        <span class="level-emoji">🌐</span>
+                        <h3>Level 2: Internet & Safety</h3>
+                        <p>Explore the internet, browsers, and online safety</p>
+                        <span class="level-badge">Grade 4-5 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level3" onclick="startGame(3)">
+                        <span class="level-emoji">💾</span>
+                        <h3>Level 3: Software & Files</h3>
+                        <p>Understand software, files, and applications</p>
+                        <span class="level-badge">Grade 5 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level4" onclick="startGame(4)">
+                        <span class="level-emoji">🤖</span>
+                        <h3>Level 4: Coding Concepts</h3>
+                        <p>Introduction to programming and algorithms</p>
+                        <span class="level-badge">Grade 5-6 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level5" onclick="startGame(5)">
+                        <span class="level-emoji">🚀</span>
+                        <h3>Level 5: Advanced Topics</h3>
+                        <p>Digital citizenship, AI, and future tech</p>
+                        <span class="level-badge">Grade 6 • 24 Questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div class="game-screen">
+                <h3 class="level-title" id="levelTitle"></h3>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <div class="score-board">
+                    <div class="score-item">
+                        <span id="currentScore">0</span>
+                        <label>🏆 Score</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="questionNumber">1</span>
+                        <label>📝 Question</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="totalQuestions">24</span>
+                        <label>📊 Total</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options" id="optionsContainer"></div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-secondary" onclick="goToMenu()">🏠 Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen">
+                <div class="results-card">
+                    <div class="results-emoji" id="resultsEmoji">🎉</div>
+                    <h2 id="resultsTitle">Amazing Performance!</h2>
+                    <div class="results-stats">
+                        <p><strong>🏆 Final Score:</strong> <span id="finalScore"></span></p>
+                        <p><strong>✅ Correct Answers:</strong> <span id="correctAnswers"></span></p>
+                        <p><strong>📝 Total Questions:</strong> <span id="totalQuestionsResult"></span></p>
+                        <p><strong>📊 Percentage:</strong> <span id="percentage"></span>%</p>
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button class="btn" onclick="goToMenu()">🎮 Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            level1: [
+                { q: "💻 What is a computer?", options: ["A toy", "An electronic device that processes information", "A book", "A television"], correct: 1 },
+                { q: "⌨️ What device do we use to type on a computer?", options: ["Mouse", "Monitor", "Keyboard", "Speaker"], correct: 2 },
+                { q: "🖱️ What is used to click and point on the screen?", options: ["Keyboard", "Mouse", "Printer", "Webcam"], correct: 1 },
+                { q: "🖥️ What displays the computer's output?", options: ["Keyboard", "CPU", "Monitor/Screen", "Mouse"], correct: 2 },
+                { q: "🔌 What provides power to a computer?", options: ["Water", "Electricity", "Wind", "Sunlight only"], correct: 1 },
+                { q: "💾 What is RAM in a computer?", options: ["Random Access Memory - temporary storage", "A game", "A type of mouse", "A printer"], correct: 0 },
+                { q: "🖨️ Which device prints documents?", options: ["Scanner", "Printer", "Webcam", "Speaker"], correct: 1 },
+                { q: "📱 Is a smartphone a type of computer?", options: ["No, never", "Yes, it's a mobile computer", "Only if it's big", "Only tablets are computers"], correct: 1 },
+                { q: "🎮 What type of software are games?", options: ["Hardware", "Application software", "Operating system", "None of these"], correct: 1 },
+                { q: "🔊 What outputs sound from a computer?", options: ["Monitor", "Keyboard", "Speakers", "Mouse"], correct: 2 },
+                { q: "💿 What is a CD used for?", options: ["Eating", "Storing data", "Typing", "Printing"], correct: 1 },
+                { q: "🖼️ What does CPU stand for?", options: ["Computer Personal Unit", "Central Processing Unit", "Central Power Unit", "Computer Printing Unit"], correct: 1 },
+                { q: "📷 What device captures images for the computer?", options: ["Printer", "Speaker", "Webcam/Camera", "Monitor"], correct: 2 },
+                { q: "🔋 What is a laptop's portable power source?", options: ["Battery", "Water", "Solar panel only", "Wind"], correct: 0 },
+                { q: "📂 Where do we store our files?", options: ["In folders", "In the printer", "In the mouse", "In the speaker"], correct: 0 },
+                { q: "🎯 What is the 'brain' of the computer?", options: ["Mouse", "Monitor", "CPU", "Keyboard"], correct: 2 },
+                { q: "💽 What is storage in a computer?", options: ["Where data is kept", "The screen", "The keyboard", "The mouse"], correct: 0 },
+                { q: "🔢 What does a computer use to process information?", options: ["Water", "Binary code (0s and 1s)", "Letters only", "Colors"], correct: 1 },
+                { q: "🎨 What software is used for drawing?", options: ["Calculator", "Paint/Drawing apps", "Notepad", "File explorer"], correct: 1 },
+                { q: "📊 Which is an input device?", options: ["Monitor", "Speaker", "Keyboard", "Printer"], correct: 2 },
+                { q: "🖥️ Which is an output device?", options: ["Mouse", "Keyboard", "Scanner", "Monitor"], correct: 3 },
+                { q: "⚡ What happens when you press the power button?", options: ["Computer explodes", "Computer turns on/off", "Nothing", "It types automatically"], correct: 1 },
+                { q: "📝 What is used to store documents temporarily while working?", options: ["Hard disk only", "RAM", "Printer", "Mouse"], correct: 1 },
+                { q: "🔄 What does 'reboot' mean?", options: ["Buy new boots", "Restart the computer", "Turn off forever", "Install games"], correct: 1 }
+            ],
+            level2: [
+                { q: "🌐 What is the Internet?", options: ["A type of computer", "A global network of connected computers", "A game", "A phone"], correct: 1 },
+                { q: "🔍 What is a web browser?", options: ["A game", "Software to access websites", "A printer", "A keyboard"], correct: 1 },
+                { q: "🌍 Which is a web browser?", options: ["Microsoft Word", "Google Chrome", "Paint", "Calculator"], correct: 1 },
+                { q: "🔐 What is a password used for?", options: ["Playing games", "Protecting accounts", "Typing documents", "Printing"], correct: 1 },
+                { q: "📧 What is email?", options: ["A type of computer", "Electronic mail", "A game", "A virus"], correct: 1 },
+                { q: "🔗 What does URL stand for?", options: ["Universal Resource Locator", "Uniform Resource Locator", "United Resource Link", "Universal Reading Link"], correct: 1 },
+                { q: "⚠️ What should you never share online?", options: ["Your favorite color", "Personal information like address", "Your favorite subject", "Your age group"], correct: 1 },
+                { q: "🛡️ What is cyberbullying?", options: ["A computer game", "Bullying someone online", "A type of virus", "A web browser"], correct: 1 },
+                { q: "🔒 Why should passwords be strong?", options: ["To remember them easily", "To protect accounts from hackers", "To share with friends", "To make typing fun"], correct: 1 },
+                { q: "📱 What is social media?", options: ["A computer part", "Online platforms to connect with people", "A game", "An operating system"], correct: 1 },
+                { q: "🌐 What does WWW stand for?", options: ["World Wide Web", "World Wide Work", "Wide Web World", "Wonder Web World"], correct: 0 },
+                { q: "🔎 What is Google?", options: ["An operating system", "A search engine", "A computer brand", "A game"], correct: 1 },
+                { q: "💬 What is instant messaging?", options: ["Sending letters", "Real-time text communication", "Making phone calls", "Printing messages"], correct: 1 },
+                { q: "📥 What does 'download' mean?", options: ["Delete files", "Save files from internet to computer", "Upload pictures", "Print documents"], correct: 1 },
+                { q: "📤 What does 'upload' mean?", options: ["Delete files", "Download files", "Send files from computer to internet", "Print files"], correct: 2 },
+                { q: "🦠 What is a computer virus?", options: ["A sick computer", "Harmful software that damages systems", "A good program", "An antivirus"], correct: 1 },
+                { q: "🛡️ What protects your computer from viruses?", options: ["Games", "Antivirus software", "More viruses", "Turning it off"], correct: 1 },
+                { q: "👤 What is an avatar?", options: ["A movie", "Your online profile picture/character", "A virus", "A browser"], correct: 1 },
+                { q: "🔄 What is 'refresh' in a browser?", options: ["Turn off computer", "Reload the webpage", "Delete the page", "Print the page"], correct: 1 },
+                { q: "🏠 What is a homepage?", options: ["Your house", "The starting page of a website", "A game", "An email"], correct: 1 },
+                { q: "🔖 What are bookmarks in a browser?", options: ["Physical books", "Saved website links", "Games", "Viruses"], correct: 1 },
+                { q: "🌐 What is Wi-Fi?", options: ["A game", "Wireless internet connection", "A cable", "A monitor"], correct: 1 },
+                { q: "🔐 What is two-factor authentication?", options: ["Two passwords", "Extra security step to verify identity", "Two computers", "Two browsers"], correct: 1 },
+                { q: "⚠️ What should you do if you see inappropriate content online?", options: ["Share it", "Tell a trusted adult", "Ignore safety", "Download it"], correct: 1 }
+            ],
+            level3: [
+                { q: "💾 What is software?", options: ["Physical computer parts", "Programs and applications", "The monitor", "The keyboard"], correct: 1 },
+                { q: "🔧 What is hardware?", options: ["Programs", "Physical parts of a computer", "Games", "Websites"], correct: 1 },
+                { q: "🖥️ What is an operating system?", options: ["A game", "System software that manages hardware and software", "A web browser", "A document"], correct: 1 },
+                { q: "🪟 Which is an operating system?", options: ["Google Chrome", "Microsoft Word", "Windows", "Adobe Reader"], correct: 2 },
+                { q: "📄 What type of file is .docx?", options: ["Image", "Document", "Video", "Music"], correct: 1 },
+                { q: "🖼️ What type of file is .jpg?", options: ["Document", "Image", "Video", "Audio"], correct: 1 },
+                { q: "🎵 What type of file is .mp3?", options: ["Document", "Image", "Video", "Audio"], correct: 3 },
+                { q: "🎬 What type of file is .mp4?", options: ["Document", "Image", "Video", "Text"], correct: 2 },
+                { q: "📁 What is a folder?", options: ["A file", "A container to organize files", "A program", "A website"], correct: 1 },
+                { q: "💾 What does 'save' do?", options: ["Delete file", "Store file to memory", "Print file", "Close file"], correct: 1 },
+                { q: "📋 What does 'copy' do?", options: ["Delete text", "Duplicate text/files", "Print text", "Bold text"], correct: 1 },
+                { q: "✂️ What does 'cut' do?", options: ["Copy and leave original", "Remove and place in clipboard", "Delete permanently", "Print"], correct: 1 },
+                { q: "📌 What does 'paste' do?", options: ["Delete", "Insert copied/cut content", "Save", "Print"], correct: 1 },
+                { q: "🗑️ What is the Recycle Bin?", options: ["A game", "Temporary storage for deleted files", "A folder for pictures", "A program"], correct: 1 },
+                { q: "💿 What is the difference between RAM and Hard Drive?", options: ["No difference", "RAM is temporary, Hard Drive is permanent storage", "RAM is bigger", "Hard Drive is faster"], correct: 1 },
+                { q: "🔤 What is a font?", options: ["A game", "Style of text", "A picture", "A program"], correct: 1 },
+                { q: "📊 What is Microsoft Excel used for?", options: ["Drawing", "Spreadsheets and data", "Playing music", "Browsing internet"], correct: 1 },
+                { q: "📝 What is Microsoft Word used for?", options: ["Calculations", "Word processing", "Image editing", "Gaming"], correct: 1 },
+                { q: "🎨 What is Microsoft PowerPoint used for?", options: ["Spreadsheets", "Documents", "Presentations", "Gaming"], correct: 2 },
+                { q: "🔄 What does 'update' mean for software?", options: ["Delete it", "Install newer version", "Make it slower", "Break it"], correct: 1 },
+                { q: "💻 What is application software?", options: ["Operating system", "Programs for specific tasks", "Hardware", "Internet"], correct: 1 },
+                { q: "🖱️ What is a double-click?", options: ["One click", "Pressing mouse button twice quickly", "Right-click", "Scroll"], correct: 1 },
+                { q: "👉 What is a right-click?", options: ["Left mouse button", "Right mouse button for menu", "Double-click", "Scroll"], correct: 1 },
+                { q: "📦 What is file compression?", options: ["Deleting files", "Making files smaller", "Copying files", "Opening files"], correct: 1 }
+            ],
+            level4: [
+                { q: "🤖 What is an algorithm?", options: ["A robot", "Step-by-step instructions to solve a problem", "A game", "A virus"], correct: 1 },
+                { q: "🔢 What is coding?", options: ["Playing games", "Writing instructions for computers", "Typing documents", "Browsing internet"], correct: 1 },
+                { q: "🐍 Which is a programming language?", options: ["Microsoft Word", "Python", "Google Chrome", "Windows"], correct: 1 },
+                { q: "🔁 What is a loop in programming?", options: ["A mistake", "Repeating instructions multiple times", "Stopping program", "Printing"], correct: 1 },
+                { q: "❓ What is a condition in programming?", options: ["A loop", "Making decisions (if-then)", "A variable", "An error"], correct: 1 },
+                { q: "📦 What is a variable?", options: ["A loop", "A container to store data", "An error", "A game"], correct: 1 },
+                { q: "🐛 What is debugging?", options: ["Creating bugs", "Finding and fixing errors", "Writing code", "Deleting programs"], correct: 1 },
+                { q: "⚙️ What is a function?", options: ["An error", "Reusable block of code", "A loop", "A virus"], correct: 1 },
+                { q: "➕ What does this code do: print(5 + 3)?", options: ["Displays 53", "Displays 8", "Error", "Displays 5 3"], correct: 1 },
+                { q: "🎯 What is Scratch?", options: ["A bug", "Visual programming language for kids", "A game", "A virus"], correct: 1 },
+                { q: "🏃 What does 'run' mean in programming?", options: ["Exercise", "Execute the code", "Delete code", "Save code"], correct: 1 },
+                { q: "💬 What does print() do?", options: ["Prints on paper", "Displays output on screen", "Saves file", "Deletes code"], correct: 1 },
+                { q: "🔤 What is a string?", options: ["A rope", "Text data in programming", "A number", "A loop"], correct: 1 },
+                { q: "🔢 What is an integer?", options: ["A string", "A whole number", "A decimal", "An error"], correct: 1 },
+                { q: "✅ What is a boolean?", options: ["A loop", "True or False value", "A string", "A function"], correct: 1 },
+                { q: "📝 What is pseudocode?", options: ["Real code", "Planning code in plain language", "An error", "A programming language"], correct: 1 },
+                { q: "🎲 What is input in programming?", options: ["Output", "Data received from user", "An error", "A loop"], correct: 1 },
+                { q: "📤 What is output in programming?", options: ["Input", "Result displayed to user", "An error", "A variable"], correct: 1 },
+                { q: "🔄 What does iteration mean?", options: ["One time", "Repetition/looping", "Stopping", "Saving"], correct: 1 },
+                { q: "🌳 What is a sequence in programming?", options: ["Random order", "Instructions executed in order", "A loop", "An error"], correct: 1 },
+                { q: "🎮 What is a sprite in Scratch?", options: ["A bug", "An object/character", "An error", "A variable"], correct: 1 },
+                { q: "🎨 What are blocks in Scratch?", options: ["Walls", "Visual code pieces that snap together", "Errors", "Games"], correct: 1 },
+                { q: "⏯️ What does the green flag do in Scratch?", options: ["Stops program", "Starts program", "Deletes program", "Saves program"], correct: 1 },
+                { q: "🛑 What does the red stop button do in Scratch?", options: ["Starts program", "Stops program", "Deletes program", "Speeds up program"], correct: 1 }
+            ],
+            level5: [
+                { q: "🤖 What is Artificial Intelligence (AI)?", options: ["A robot", "Machines that can learn and think", "A game", "A virus"], correct: 1 },
+                { q: "🧠 What is Machine Learning?", options: ["Teaching humans", "AI learning from data", "A game", "A programming language"], correct: 1 },
+                { q: "🌐 What is the Cloud?", options: ["Weather", "Servers storing data on the internet", "A game", "A program"], correct: 1 },
+                { q: "🔐 What is encryption?", options: ["Deleting data", "Converting data into secret code", "Copying data", "Printing data"], correct: 1 },
+                { q: "🌍 What is digital citizenship?", options: ["A passport", "Responsible behavior online", "A game", "A browser"], correct: 1 },
+                { q: "📊 What is data?", options: ["A game", "Information collected and stored", "A virus", "A program"], correct: 1 },
+                { q: "🔍 What is a database?", options: ["A game", "Organized collection of data", "A browser", "A virus"], correct: 1 },
+                { q: "🌐 What is IoT (Internet of Things)?", options: ["A game", "Devices connected to internet", "A browser", "A virus"], correct: 1 },
+                { q: "🤝 What is collaboration software?", options: ["Gaming software", "Tools for working together online", "Antivirus", "Operating system"], correct: 1 },
+                { q: "📱 What is an app?", options: ["A computer", "Application program", "Hardware", "A virus"], correct: 1 },
+                { q: "🎮 What is Virtual Reality (VR)?", options: ["Real life", "Computer-generated 3D environment", "A game only", "A browser"], correct: 1 },
+                { q: "👓 What is Augmented Reality (AR)?", options: ["VR", "Digital elements added to real world", "A game", "A browser"], correct: 1 },
+                { q: "🔗 What is a hyperlink?", options: ["A chain", "Clickable link to another page", "A virus", "A game"], correct: 1 },
+                { q: "💾 What is backup?", options: ["Going backwards", "Copying data for safety", "Deleting data", "Playing games"], correct: 1 },
+                { q: "☁️ What is cloud storage?", options: ["Weather storage", "Storing files on internet servers", "Local storage", "Printing"], correct: 1 },
+                { q: "🔐 What is digital footprint?", options: ["Foot size", "Trail of data you leave online", "A game", "A program"], correct: 1 },
+                { q: "🎯 What is phishing?", options: ["Fishing sport", "Tricking people to share information", "A game", "A browser"], correct: 1 },
+                { q: "🛡️ What is a firewall?", options: ["A wall of fire", "Security system blocking threats", "A game", "A browser"], correct: 1 },
+                { q: "📧 What is spam?", options: ["A food", "Unwanted junk emails", "Important emails", "A program"], correct: 1 },
+                { q: "🔄 What is synchronization?", options: ["Swimming", "Keeping data same across devices", "Deleting data", "A game"], correct: 1 },
+                { q: "🎨 What is multimedia?", options: ["One medium", "Content using text, audio, video, images", "Only text", "Only images"], correct: 1 },
+                { q: "🌐 What is a domain name?", options: ["A person's name", "Website address", "A game", "A program"], correct: 1 },
+                { q: "🤖 What is a chatbot?", options: ["A person", "AI program that chats", "A game", "A virus"], correct: 1 },
+                { q: "🔮 What is the future of computing?", options: ["It will disappear", "AI, quantum computing, advanced tech", "Only games", "Nothing new"], correct: 1 }
+            ]
+        };
+
+        const levelTitles = {
+            1: "🖥️ Level 1: Computer Basics",
+            2: "🌐 Level 2: Internet & Safety",
+            3: "💾 Level 3: Software & Files",
+            4: "🤖 Level 4: Coding Concepts",
+            5: "🚀 Level 5: Advanced Topics"
+        };
+
+        let currentLevel = 1;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+
+        function startGame(level) {
+            currentLevel = level;
+            currentQuestionIndex = 0;
+            score = 0;
+            correctCount = 0;
+
+            currentQuestions = questions[`level${level}`];
+
+            document.querySelector('.menu-screen').classList.remove('active');
+            document.querySelector('.game-screen').classList.add('active');
+            
+            document.getElementById('levelTitle').textContent = levelTitles[level];
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.q;
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = currentQuestions.length;
+            document.getElementById('currentScore').textContent = score;
+
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btn) {
+            const question = currentQuestions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            allButtons.forEach(button => button.disabled = true);
+
+            if (selectedIndex === question.correct) {
+                btn.classList.add('correct');
+                score += 10;
+                correctCount++;
+                document.getElementById('currentScore').textContent = score;
+            } else {
+                btn.classList.add('wrong');
+                allButtons[question.correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1800);
+        }
+
+        function showResults() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.add('active');
+
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('totalQuestionsResult').textContent = currentQuestions.length;
+            document.getElementById('percentage').textContent = percentage;
+
+            let title, feedback, emoji;
+            if (percentage >= 95) {
+                title = "🌟 Perfect Programmer!";
+                feedback = "You're a computer science genius! Outstanding mastery of all concepts! 💻🏆";
+                emoji = "👑";
+            } else if (percentage >= 85) {
+                title = "🎉 Excellent Coder!";
+                feedback = "Amazing work! You have excellent understanding of computer science! Keep coding! 🚀";
+                emoji = "🏅";
+            } else if (percentage >= 75) {
+                title = "👍 Great Tech Skills!";
+                feedback = "Very good! You're developing strong computing knowledge! Keep learning! 💪";
+                emoji = "🎯";
+            } else if (percentage >= 65) {
+                title = "👏 Good Progress!";
+                feedback = "Well done! You're building your computer skills steadily! Practice more! 📚";
+                emoji = "📖";
+            } else if (percentage >= 50) {
+                title = "🌱 Keep Practicing!";
+                feedback: "You're on the right track! Review the concepts and try again! 💻";
+                emoji = "💡";
+            } else {
+                title = "🔄 Try Again!";
+                feedback = "Don't give up! Every programmer starts somewhere. Keep learning! 🌟";
+                emoji = "🎮";
+            }
+
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('feedback').textContent = feedback;
+            document.getElementById('resultsEmoji').textContent = emoji;
+        }
+
+        function goToMenu() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.remove('active');
+            document.querySelector('.menu-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shule AI - Business Studies Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 25%, #fbb034 50%, #ff8c42 75%, #ff6b35 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 90px rgba(255, 107, 53, 0.5);
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 5px solid #ff6b35;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 45px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💰🏪📊💼🏦🛒📈💳';
+            position: absolute;
+            font-size: 4.5em;
+            opacity: 0.15;
+            top: -10px;
+            left: 0;
+            right: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        .header h1 {
+            font-size: 3.2em;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-area {
+            padding: 45px;
+        }
+
+        .menu-screen, .game-screen, .results-screen {
+            display: none;
+        }
+
+        .menu-screen.active, .game-screen.active, .results-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-title {
+            text-align: center;
+            color: #ff6b35;
+            margin-bottom: 45px;
+            font-size: 2.8em;
+            font-weight: bold;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #ffe8d6 0%, #ffd4a8 100%);
+            padding: 32px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #ff6b35;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .level-card:hover::after {
+            left: 100%;
+        }
+
+        .level-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(255, 107, 53, 0.5);
+            border-color: #f7931e;
+        }
+
+        .level-card.level1 {
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+        }
+
+        .level-card.level2 {
+            background: linear-gradient(135deg, #ffecb3 0%, #ffd54f 100%);
+        }
+
+        .level-card.level3 {
+            background: linear-gradient(135deg, #ffe082 0%, #ffca28 100%);
+        }
+
+        .level-card.level4 {
+            background: linear-gradient(135deg, #ffd54f 0%, #ffc107 100%);
+        }
+
+        .level-card.level5 {
+            background: linear-gradient(135deg, #ffca28 0%, #ffb300 100%);
+        }
+
+        .level-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .level-card h3 {
+            color: #e65100;
+            font-size: 1.9em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .level-card p {
+            color: #ff6f00;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(230, 81, 0, 0.9);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.2);
+            border: 3px solid #ff6b35;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-item span {
+            display: block;
+            font-size: 2.6em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-item label {
+            color: #e65100;
+            font-size: 1.05em;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 4px solid #ffe0b2;
+            border-radius: 25px;
+            padding: 38px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 35px rgba(255, 107, 53, 0.15);
+        }
+
+        .question-text {
+            font-size: 1.55em;
+            color: #e65100;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        .options {
+            display: grid;
+            gap: 18px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #ffe0b2;
+            padding: 22px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.15em;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            color: #e65100;
+            font-weight: 500;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+            border-color: #ff6b35;
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .option-btn:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #4caf50;
+            animation: correctPulse 0.6s;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border-color: #f44336;
+            animation: wrongShake 0.6s;
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            50% { transform: scale(0.95); }
+            75% { transform: scale(1.05); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-12px); }
+            20%, 40%, 60%, 80% { transform: translateX(12px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 1.25em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 12px 8px;
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(255, 107, 53, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #e65100 0%, #ff6f00 100%);
+            box-shadow: 0 8px 25px rgba(230, 81, 0, 0.5);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 12px 35px rgba(230, 81, 0, 0.7);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .results-emoji {
+            font-size: 7em;
+            margin-bottom: 30px;
+            animation: spin 2.5s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.15); }
+            50% { transform: rotate(15deg) scale(1.25); }
+            75% { transform: rotate(-15deg) scale(1.15); }
+        }
+
+        .results-card h2 {
+            font-size: 3.2em;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+        }
+
+        .results-stats {
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+            padding: 40px;
+            border-radius: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 35px rgba(255, 107, 53, 0.2);
+            border: 3px solid #ff6b35;
+        }
+
+        .results-stats p {
+            font-size: 1.6em;
+            margin: 18px 0;
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        .feedback {
+            font-size: 1.35em;
+            color: #e65100;
+            margin: 30px 0;
+            padding: 28px;
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+            border-radius: 20px;
+            border-left: 8px solid #ff6b35;
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.2);
+        }
+
+        .progress-bar {
+            background: #fff4e6;
+            height: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.2);
+            border: 2px solid #ffe0b2;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b35 0%, #f7931e 50%, #ffc107 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .level-title {
+            text-align: center;
+            font-size: 2.4em;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💼 Business Studies Quest</h1>
+            <p>Grade 4-6 • Learn Business with Kenyan Examples!</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Menu Screen -->
+            <div class="menu-screen active">
+                <h2 class="menu-title">Choose Your Business Level 🚀</h2>
+                
+                <div class="level-grid">
+                    <div class="level-card level1" onclick="startGame(1)">
+                        <span class="level-emoji">🏪</span>
+                        <h3>Level 1: Business Basics</h3>
+                        <p>Learn about shops, money, buying and selling</p>
+                        <span class="level-badge">Grade 4 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level2" onclick="startGame(2)">
+                        <span class="level-emoji">💰</span>
+                        <h3>Level 2: Money & Banking</h3>
+                        <p>Explore savings, banks, and financial basics</p>
+                        <span class="level-badge">Grade 4-5 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level3" onclick="startGame(3)">
+                        <span class="level-emoji">📊</span>
+                        <h3>Level 3: Trade & Markets</h3>
+                        <p>Understand markets, trade, and business activities</p>
+                        <span class="level-badge">Grade 5 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level4" onclick="startGame(4)">
+                        <span class="level-emoji">🏢</span>
+                        <h3>Level 4: Business Operations</h3>
+                        <p>Learn about production, services, and entrepreneurship</p>
+                        <span class="level-badge">Grade 5-6 • 24 Questions</span>
+                    </div>
+
+                    <div class="level-card level5" onclick="startGame(5)">
+                        <span class="level-emoji">🚀</span>
+                        <h3>Level 5: Advanced Business</h3>
+                        <p>Master business planning, marketing, and economics</p>
+                        <span class="level-badge">Grade 6 • 24 Questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div class="game-screen">
+                <h3 class="level-title" id="levelTitle"></h3>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <div class="score-board">
+                    <div class="score-item">
+                        <span id="currentScore">0</span>
+                        <label>🏆 Score</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="questionNumber">1</span>
+                        <label>📝 Question</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="totalQuestions">24</span>
+                        <label>📊 Total</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options" id="optionsContainer"></div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-secondary" onclick="goToMenu()">🏠 Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen">
+                <div class="results-card">
+                    <div class="results-emoji" id="resultsEmoji">🎉</div>
+                    <h2 id="resultsTitle">Amazing Performance!</h2>
+                    <div class="results-stats">
+                        <p><strong>🏆 Final Score:</strong> <span id="finalScore"></span></p>
+                        <p><strong>✅ Correct Answers:</strong> <span id="correctAnswers"></span></p>
+                        <p><strong>📝 Total Questions:</strong> <span id="totalQuestionsResult"></span></p>
+                        <p><strong>📊 Percentage:</strong> <span id="percentage"></span>%</p>
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button class="btn" onclick="goToMenu()">🎮 Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            level1: [
+                { q: "🏪 Mama Njeri sells vegetables at Gikomba Market. What is she called?", options: ["Customer", "Trader/Vendor", "Buyer", "Consumer"], correct: 1 },
+                { q: "💰 What is the Kenyan currency called?", options: ["Dollar", "Shilling", "Pound", "Rand"], correct: 1 },
+                { q: "🛒 Kamau goes to Nakumatt to buy sugar. What is Kamau?", options: ["Seller", "Trader", "Customer/Buyer", "Shopkeeper"], correct: 2 },
+                { q: "🏬 What do we call a place where goods are bought and sold?", options: ["School", "Market/Shop", "Hospital", "Park"], correct: 1 },
+                { q: "💵 If a loaf of bread costs 50 shillings, how much for 2 loaves?", options: ["50 shillings", "75 shillings", "100 shillings", "150 shillings"], correct: 2 },
+                { q: "🍎 Akinyi has 200 shillings. An apple costs 30 shillings. Can she buy 7 apples?", options: ["Yes", "No", "Maybe", "Not enough information"], correct: 1 },
+                { q: "🏪 What is the difference between goods and services?", options: ["No difference", "Goods are things, services are actions", "Services are things", "Goods are actions"], correct: 1 },
+                { q: "💼 Baba Mwangi runs a barbershop in Eastleigh. What does he provide?", options: ["Goods only", "Services", "Neither", "Both equally"], correct: 1 },
+                { q: "🥛 Wanjiku sells milk. Is milk a good or service?", options: ["Good", "Service", "Neither", "Both"], correct: 0 },
+                { q: "🚕 A matatu ride from Nairobi to Thika. Is this a good or service?", options: ["Good", "Service", "Both", "Neither"], correct: 1 },
+                { q: "💰 What is profit?", options: ["Total sales", "Money left after expenses", "Total costs", "Total goods"], correct: 1 },
+                { q: "🏪 Mama Njoki buys tomatoes for 500 shillings and sells them for 800 shillings. What is her profit?", options: ["500 shillings", "300 shillings", "800 shillings", "1300 shillings"], correct: 1 },
+                { q: "📱 Safaricom is an example of what type of business?", options: ["Small business", "Large company/Corporation", "Market stall", "Home business"], correct: 1 },
+                { q: "🏪 A duka (small shop) in your estate is an example of?", options: ["Large business", "Small business", "Government business", "Foreign business"], correct: 1 },
+                { q: "🤝 What is a customer?", options: ["Someone who sells", "Someone who buys", "Someone who makes", "Someone who delivers"], correct: 1 },
+                { q: "💵 Which note is the highest in Kenya?", options: ["50 shillings", "100 shillings", "500 shillings", "1000 shillings"], correct: 3 },
+                { q: "🪙 What is the smallest coin in Kenya?", options: ["1 shilling", "5 shillings", "10 shillings", "20 shillings"], correct: 0 },
+                { q: "🛍️ When you buy something, you are the?", options: ["Seller", "Consumer", "Producer", "Manufacturer"], correct: 1 },
+                { q: "🏪 When you sell something, you are the?", options: ["Consumer", "Buyer", "Vendor/Seller", "Customer"], correct: 2 },
+                { q: "💰 Exchanging goods or services for money is called?", options: ["Playing", "Trading/Selling", "Giving", "Borrowing"], correct: 1 },
+                { q: "🏪 Tuskys and Naivas are examples of?", options: ["Banks", "Supermarkets", "Schools", "Hospitals"], correct: 1 },
+                { q: "📦 Things we can touch and see like books and shoes are called?", options: ["Services", "Goods", "Ideas", "Skills"], correct: 1 },
+                { q: "✂️ A haircut is an example of a?", options: ["Good", "Service", "Product only", "Item"], correct: 1 },
+                { q: "🏪 What makes a business successful?", options: ["Good location only", "Good products, service, and management", "Low prices only", "Being big only"], correct: 1 }
+            ],
+            level2: [
+                { q: "🏦 What is a bank?", options: ["A shop", "A place to save and borrow money", "A market", "A school"], correct: 1 },
+                { q: "💳 Equity Bank and KCB are examples of?", options: ["Supermarkets", "Banks", "Schools", "Hospitals"], correct: 1 },
+                { q: "💰 What is saving?", options: ["Spending all money", "Keeping money for future use", "Borrowing money", "Giving money away"], correct: 1 },
+                { q: "📱 What is M-PESA?", options: ["A bank", "Mobile money service", "A shop", "A market"], correct: 1 },
+                { q: "💵 If you save 100 shillings every week for 4 weeks, how much will you have?", options: ["100 shillings", "200 shillings", "300 shillings", "400 shillings"], correct: 3 },
+                { q: "🏦 What is a loan?", options: ["Free money", "Borrowed money that must be repaid", "Saved money", "Found money"], correct: 1 },
+                { q: "💰 What is interest on savings?", options: ["Money you lose", "Extra money the bank pays you", "A loan", "A fee"], correct: 1 },
+                { q: "🏪 Mama Wambui wants to start a business but has no money. Where can she get help?", options: ["Steal it", "Get a loan from bank/SACCO", "Give up", "Wait forever"], correct: 1 },
+                { q: "💳 What is a debit card?", options: ["A game card", "Card to access your bank money", "A credit card", "An ID card"], correct: 1 },
+                { q: "📱 Kamau sends 500 shillings via M-PESA to his mother in Kisumu. This is an example of?", options: ["Saving", "Money transfer", "Loan", "Interest"], correct: 1 },
+                { q: "🏦 What does ATM stand for?", options: ["Automatic Transfer Machine", "Automated Teller Machine", "All Time Money", "Any Time Machine"], correct: 1 },
+                { q: "💰 Why is it important to save money?", options: ["To waste it", "For emergencies and future needs", "To show off", "No reason"], correct: 1 },
+                { q: "🐷 What is a piggy bank used for?", options: ["Keeping pigs", "Saving coins at home", "Cooking", "Playing"], correct: 1 },
+                { q: "💵 Mwangi earns 1000 shillings. He saves 300 shillings and spends 700 shillings. What is he practicing?", options: ["Wasting money", "Budgeting", "Borrowing", "Stealing"], correct: 1 },
+                { q: "🏦 What is a budget?", options: ["Random spending", "A plan for spending money", "Borrowing money", "Wasting money"], correct: 1 },
+                { q: "💳 Which is safer: carrying lots of cash or using M-PESA?", options: ["Cash is always safer", "M-PESA is safer", "Both equally safe", "Neither is safe"], correct: 1 },
+                { q: "🏦 What is a bank account?", options: ["A book", "A record of your money in a bank", "A loan", "A card"], correct: 1 },
+                { q: "💰 Auma has 5000 shillings. She wants to buy a phone for 4000 shillings. Should she?", options: ["Yes, buy immediately", "Save more for emergencies first", "Borrow more to buy", "Spend it all"], correct: 1 },
+                { q: "📱 What does Safaricom's M-PESA stand for?", options: ["M for Mail, PESA for Money", "M for Mobile, PESA for Money (Swahili)", "M for Market, PESA for People", "M for Machine, PESA for Phone"], correct: 1 },
+                { q: "🏦 What is a SACCO?", options: ["A dance", "Savings and Credit Cooperative", "A market", "A school"], correct: 1 },
+                { q: "💵 If bread costs 45 shillings and you have 200 shillings, how many can you buy?", options: ["2", "3", "4", "5"], correct: 2 },
+                { q: "💰 What is income?", options: ["Money spent", "Money earned/received", "Money borrowed", "Money lost"], correct: 1 },
+                { q: "🏪 What are expenses?", options: ["Money earned", "Money spent", "Money saved", "Money found"], correct: 1 },
+                { q: "💳 Why do people use banks instead of keeping money at home?", options: ["Banks are closer", "Banks are safer and pay interest", "To waste money", "No reason"], correct: 1 }
+            ],
+            level3: [
+                { q: "🏪 What is a market?", options: ["A school", "A place where buyers and sellers meet", "A bank", "A hospital"], correct: 1 },
+                { q: "📊 Gikomba, Marikiti, and Wakulima are examples of?", options: ["Banks", "Schools", "Markets", "Hospitals"], correct: 2 },
+                { q: "🌍 What is trade?", options: ["Playing", "Buying and selling goods/services", "Sleeping", "Studying"], correct: 1 },
+                { q: "🚚 Moving goods from one place to another is called?", options: ["Trade", "Transport", "Market", "Banking"], correct: 1 },
+                { q: "💼 What is import?", options: ["Selling locally", "Bringing goods into a country", "Taking goods out", "Making goods"], correct: 1 },
+                { q: "📦 What is export?", options: ["Bringing goods in", "Sending goods to other countries", "Making goods", "Buying goods"], correct: 1 },
+                { q: "🌍 Kenya exports tea and coffee to other countries. These are our?", options: ["Imports", "Exports", "Services", "Debts"], correct: 1 },
+                { q: "📱 Kenya imports phones from China. These are our?", options: ["Exports", "Imports", "Services", "Products"], correct: 1 },
+                { q: "🏪 What is supply?", options: ["What buyers want", "Amount of goods available to sell", "A bank", "A market"], correct: 1 },
+                { q: "🛒 What is demand?", options: ["Amount available to sell", "What buyers want to buy", "A shop", "A service"], correct: 1 },
+                { q: "💰 When demand is high and supply is low, prices usually?", options: ["Stay same", "Go up", "Go down", "Disappear"], correct: 1 },
+                { q: "📉 When supply is high and demand is low, prices usually?", options: ["Go up", "Go down", "Stay same", "Double"], correct: 1 },
+                { q: "🌾 Farmers take maize to Wakulima Market in Nairobi. This is an example of?", options: ["Import", "Export", "Domestic trade", "Service"], correct: 2 },
+                { q: "🚢 The Port of Mombasa is important for Kenya's?", options: ["Domestic trade", "International trade", "Banking", "Education"], correct: 1 },
+                { q: "✈️ JKIA (Jomo Kenyatta International Airport) helps Kenya's?", options: ["Farming", "Trade and transport", "Banking", "Education only"], correct: 1 },
+                { q: "🏪 What is a wholesaler?", options: ["Buys small, sells small", "Buys large quantities, sells to retailers", "Final consumer", "Manufacturer"], correct: 1 },
+                { q: "🛍️ What is a retailer?", options: ["Buys from wholesaler, sells to consumers", "Makes products", "Grows crops", "Provides banking"], correct: 1 },
+                { q: "👥 What is a middleman?", options: ["The consumer", "Person between producer and consumer", "The manufacturer", "The farmer"], correct: 1 },
+                { q: "💼 Mama Njeri buys tomatoes from farmers and sells to Naivas Supermarket. She is a?", options: ["Consumer", "Wholesaler/Middleman", "Retailer", "Manufacturer"], correct: 1 },
+                { q: "🏪 Nakumatt buys from wholesalers and sells to you. Nakumatt is a?", options: ["Wholesaler", "Producer", "Retailer", "Manufacturer"], correct: 2 },
+                { q: "🚚 What role does transport play in trade?", options: ["No role", "Moves goods from sellers to buyers", "Makes goods", "Stores money"], correct: 1 },
+                { q: "🌍 EAC (East African Community) promotes?", options: ["War", "Trade between East African countries", "Isolation", "Competition only"], correct: 1 },
+                { q: "💰 What is a trade fair?", options: ["A playground", "Event where businesses showcase products", "A bank", "A school"], correct: 1 },
+                { q: "📊 Nairobi International Trade Fair is held at?", options: ["Uhuru Park", "ASK Showground (Jamhuri)", "KICC", "Nyayo Stadium"], correct: 1 }
+            ],
+            level4: [
+                { q: "🏭 What is production?", options: ["Buying goods", "Making or creating goods", "Selling goods", "Transporting goods"], correct: 1 },
+                { q: "👨‍🌾 A farmer who grows maize is involved in?", options: ["Manufacturing", "Agriculture/Primary production", "Trade", "Banking"], correct: 1 },
+                { q: "🏭 Bidco and Unga Limited process goods. They are involved in?", options: ["Primary production", "Manufacturing/Secondary production", "Trade only", "Farming"], correct: 1 },
+                { q: "✈️ Kenya Airways provides transport services. This is?", options: ["Primary production", "Secondary production", "Tertiary production/Services", "None"], correct: 2 },
+                { q: "💼 What is an entrepreneur?", options: ["An employee only", "Person who starts and runs a business", "A consumer", "A student"], correct: 1 },
+                { q: "🚀 Chris Kirubi and Tabitha Karanja are famous Kenyan?", options: ["Athletes", "Entrepreneurs", "Teachers", "Doctors"], correct: 1 },
+                { q: "🍺 Tabitha Karanja is the founder of?", options: ["Safaricom", "Keroche Breweries", "KCB", "Equity Bank"], correct: 1 },
+                { q: "💼 What is a business plan?", options: ["A building plan", "Document outlining business goals and strategies", "A shopping list", "A school timetable"], correct: 1 },
+                { q: "🏪 What factors should Mama Wambui consider when starting a business?", options: ["Location only", "Location, capital, customers, competition", "Name only", "Color only"], correct: 1 },
+                { q: "💰 What is capital in business?", options: ["The city", "Money/resources to start business", "Profit", "Loss"], correct: 1 },
+                { q: "📊 What is a business record?", options: ["A music record", "Written account of business transactions", "A game", "A photo"], correct: 1 },
+                { q: "📝 Why should businesses keep records?", options: ["No reason", "Track sales, expenses, and profit", "To waste paper", "For decoration"], correct: 1 },
+                { q: "🏪 What is stock?", options: ["A stick", "Goods available for sale", "A loan", "A bank"], correct: 1 },
+                { q: "💼 What is insurance?", options: ["A game", "Protection against loss/damage", "A bank", "A loan"], correct: 1 },
+                { q: "🚗 Jubilee Insurance and Britam provide what service?", options: ["Banking", "Insurance", "Transport", "Retail"], correct: 1 },
+                { q: "🏪 What is competition in business?", options: ["Sports only", "Rivalry between businesses for customers", "Cooperation", "Friendship"], correct: 1 },
+                { q: "📱 Safaricom, Airtel, and Telkom compete for?", options: ["Nothing", "Mobile phone customers", "Banking customers", "Transport customers"], correct: 1 },
+                { q: "💼 What is quality in business?", options: ["Quantity", "How good a product/service is", "Price only", "Size only"], correct: 1 },
+                { q: "🏪 Why do customers prefer good quality products?", options: ["They're expensive", "They last longer and work better", "They look old", "No reason"], correct: 1 },
+                { q: "💰 What is loss in business?", options: ["Finding money", "When expenses exceed income", "Profit", "Savings"], correct: 1 },
+                { q: "📊 Kamau spent 10,000 shillings on his business but only earned 7,000 shillings. He made a?", options: ["Profit of 3,000", "Loss of 3,000", "Profit of 17,000", "Break even"], correct: 1 },
+                { q: "🤝 What is a partnership?", options: ["Being alone", "Business owned by 2+ people", "A game", "A school"], correct: 1 },
+                { q: "🏢 What is a company?", options: ["A person", "Business registered as separate legal entity", "A market", "A school"], correct: 1 },
+                { q: "💼 Safaricom, KCB, and Equity Bank are examples of?", options: ["Small businesses", "Limited companies/Corporations", "Sole proprietorships", "Partnerships"], correct: 1 }
+            ],
+            level5: [
+                { q: "📈 What is marketing?", options: ["Going to market only", "Promoting and selling products/services", "Buying only", "Manufacturing"], correct: 1 },
+                { q: "📺 Safaricom advertisements on TV are examples of?", options: ["Wasting money", "Marketing/Advertising", "Production", "Banking"], correct: 1 },
+                { q: "🎯 What are the 4 Ps of marketing?", options: ["People, Places, Prices, Products", "Product, Price, Place, Promotion", "Profit, People, Power, Products", "Production, Pricing, People, Places"], correct: 1 },
+                { q: "💰 Setting the right price for products is part of?", options: ["Production", "Marketing strategy", "Banking", "Transport"], correct: 1 },
+                { q: "📱 What is a brand?", options: ["A product type", "Unique identity of a product/company", "A price", "A market"], correct: 1 },
+                { q: "🏪 Coca-Cola, Tusker, and Safaricom are examples of strong?", options: ["Markets", "Brands", "Banks", "Schools"], correct: 1 },
+                { q: "🤝 What is customer service?", options: ["Ignoring customers", "How businesses treat and help customers", "Manufacturing", "Pricing"], correct: 1 },
+                { q: "💼 Why is good customer service important?", options: ["It's not important", "Keeps customers happy and loyal", "To waste time", "No reason"], correct: 1 },
+                { q: "📊 What is market research?", options: ["Shopping", "Gathering information about customers/competitors", "Manufacturing", "Banking"], correct: 1 },
+                { q: "🎯 Before starting a business, why should you research?", options: ["No need", "To understand customer needs and competition", "To waste time", "To spend money"], correct: 1 },
+                { q: "💼 What is business ethics?", options: ["Business mathematics", "Moral principles in business", "Business location", "Business size"], correct: 1 },
+                { q: "🤝 Paying taxes honestly is an example of?", options: ["Waste", "Business ethics/responsibility", "Bad business", "Loss"], correct: 1 },
+                { q: "🌍 What is corporate social responsibility (CSR)?", options: ["Ignoring society", "Business helping community/environment", "Only making profit", "Avoiding taxes"], correct: 1 },
+                { q: "🏥 Safaricom Foundation building hospitals is an example of?", options: ["Wasting money", "Corporate Social Responsibility", "Bad business", "Competition"], correct: 1 },
+                { q: "📈 What is economic growth?", options: ["Country getting poorer", "Increase in country's wealth/production", "Staying same", "Economic decline"], correct: 1 },
+                { q: "💰 What is GDP?", options: ["Good Daily Practice", "Gross Domestic Product", "Great Data Project", "General Development Plan"], correct: 1 },
+                { q: "🏪 What is monopoly?", options: ["Many sellers", "One seller controlling market", "A game only", "Perfect competition"], correct: 1 },
+                { q: "⚡ Kenya Power is an example of a?", options: ["Perfect competition", "Monopoly/Near-monopoly", "Small business", "Partnership"], correct: 1 },
+                { q: "🌍 What is globalization?", options: ["Local trade only", "World becoming interconnected through trade", "Isolation", "National trade only"], correct: 1 },
+                { q: "📱 Selling Kenyan products online to customers worldwide uses?", options: ["Local trade only", "E-commerce and globalization", "Traditional methods only", "No technology"], correct: 1 },
+                { q: "💼 What is entrepreneurship?", options: ["Being employed", "Starting and managing businesses with innovation", "Buying only", "Consuming only"], correct: 1 },
+                { q: "🚀 Innovation in business means?", options: ["Copying others", "Introducing new ideas/methods", "Staying same", "Avoiding change"], correct: 1 },
+                { q: "📊 What is market saturation?", options: ["Empty market", "Market full of similar products/competitors", "New market", "Growing market"], correct: 1 },
+                { q: "💰 Why do businesses need to adapt to market changes?", options: ["They don't need to", "To remain competitive and profitable", "To waste money", "To fail"], correct: 1 }
+            ]
+        };
+
+        const levelTitles = {
+            1: "🏪 Level 1: Business Basics",
+            2: "💰 Level 2: Money & Banking",
+            3: "📊 Level 3: Trade & Markets",
+            4: "🏢 Level 4: Business Operations",
+            5: "🚀 Level 5: Advanced Business"
+        };
+
+        let currentLevel = 1;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+
+        function startGame(level) {
+            currentLevel = level;
+            currentQuestionIndex = 0;
+            score = 0;
+            correctCount = 0;
+
+            currentQuestions = questions[`level${level}`];
+
+            document.querySelector('.menu-screen').classList.remove('active');
+            document.querySelector('.game-screen').classList.add('active');
+            
+            document.getElementById('levelTitle').textContent = levelTitles[level];
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.q;
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = currentQuestions.length;
+            document.getElementById('currentScore').textContent = score;
+
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btn) {
+            const question = currentQuestions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            allButtons.forEach(button => button.disabled = true);
+
+            if (selectedIndex === question.correct) {
+                btn.classList.add('correct');
+                score += 10;
+                correctCount++;
+                document.getElementById('currentScore').textContent = score;
+            } else {
+                btn.classList.add('wrong');
+                allButtons[question.correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1800);
+        }
+
+        function showResults() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.add('active');
+
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('totalQuestionsResult').textContent = currentQuestions.length;
+            document.getElementById('percentage').textContent = percentage;
+
+            let title, feedback, emoji;
+            if (percentage >= 95) {
+                title = "🌟 Business Tycoon!";
+                feedback = "Outstanding! You're a future business leader! Your understanding is exceptional! 💼🏆";
+                emoji = "👑";
+            } else if (percentage >= 85) {
+                title = "🎉 Excellent Entrepreneur!";
+                feedback = "Amazing work! You have excellent business knowledge! Keep building your empire! 🚀";
+                emoji = "💰";
+            } else if (percentage >= 75) {
+                title = "👍 Great Business Mind!";
+                feedback = "Very good! You're developing strong business skills! Keep learning! 💪";
+                emoji = "📈";
+            } else if (percentage >= 65) {
+                title = "👏 Good Progress!";
+                feedback = "Well done! You're building your business knowledge steadily! Practice more! 📚";
+                emoji = "🏪";
+            } else if (percentage >= 50) {
+                title = "🌱 Keep Growing!";
+                feedback = "You're on the right track! Review the concepts and try again! 💼";
+                emoji = "💡";
+            } else {
+                title = "🔄 Try Again!";
+                feedback = "Don't give up! Every successful entrepreneur starts somewhere. Keep learning! 🌟";
+                emoji = "📖";
+            }
+
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('feedback').textContent = feedback;
+            document.getElementById('resultsEmoji').textContent = emoji;
+        }
+
+        function goToMenu() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.remove('active');
+            document.querySelector('.menu-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>

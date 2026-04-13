@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>African Diaspora Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a2c2a 50%, #8b4513 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.4);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .africa-icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #8b4513;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #8b4513, #d2691e);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(139,69,19,0.4);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            background: linear-gradient(135deg, #8b4513, #d2691e);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 110px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #8b4513, #d2691e);
+            transition: width 0.5s;
+        }
+        .question-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #8b4513;
+        }
+        .question-box h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #8b4513;
+            background: #fff8f0;
+            transform: translateX(5px);
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .option.wrong {
+            border-color: #f44336;
+            background: #FFEBEE;
+        }
+        .explanation {
+            background: #FFF9C4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #FBC02D;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #8b4513, #d2691e);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #666, #999);
+        }
+        .hidden {
+            display: none;
+        }
+        .results {
+            text-align: center;
+            padding: 30px;
+        }
+        .results h2 {
+            color: #8b4513;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .trophy {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+        .score-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #8b4513;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 24px;
+        }
+        .message {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #2e7d32;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 24px; }
+            .africa-icon { font-size: 60px; }
+            .start-btn { padding: 15px 30px; font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start">
+            <div class="header">
+                <div class="africa-icon">🌍</div>
+                <h1>African Diaspora Quiz</h1>
+                <p class="subtitle">Explore the Global African Experience</p>
+            </div>
+            <p style="text-align: center; color: #666; font-size: 16px; margin: 20px 0;">
+                Test your knowledge about African people, culture, and contributions around the world. 
+                30 engaging questions covering history, achievements, and cultural impact.
+            </p>
+            <button class="start-btn" onclick="start()">🚀 Start Quiz</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-label">🏆 Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="qnum">1</span>
+                    <span class="stat-label">📝 Question</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">30</span>
+                    <span class="stat-label">📊 Total</span>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <h2 id="qtext"></h2>
+                <div id="options"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="restart()">🔄 Restart</button>
+                <button class="btn" id="next" onclick="next()" style="display:none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="results">
+                <div class="trophy">🏆</div>
+                <h2>Quiz Complete!</h2>
+                
+                <div class="score-box">
+                    <div class="score-item">
+                        <span>🏆 Final Score:</span>
+                        <span class="score-value" id="final">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>✅ Correct Answers:</span>
+                        <span class="score-value" id="correct">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>❌ Wrong Answers:</span>
+                        <span class="score-value" id="wrong">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📊 Percentage:</span>
+                        <span class="score-value" id="percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <button class="btn" onclick="restart()">🎮 Take Quiz Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var questions = [
+            {
+                q: "What does 'African Diaspora' mean?",
+                opts: ["Africans living in Africa", "People of African descent living outside Africa", "African tourists", "African languages"],
+                ans: 1,
+                exp: "The African Diaspora refers to communities of people of African descent living outside the African continent, spread across the Americas, Europe, Asia, and other regions."
+            },
+            {
+                q: "Which tragic historical event led to the largest forced migration of Africans?",
+                opts: ["World War II", "The Transatlantic Slave Trade", "The Great Migration", "Colonization"],
+                ans: 1,
+                exp: "The Transatlantic Slave Trade (1500s-1800s) forcibly transported millions of Africans to the Americas, creating the African Diaspora in the Western Hemisphere."
+            },
+            {
+                q: "Which country in the Americas has the largest population of African descent outside Africa?",
+                opts: ["United States", "Brazil", "Jamaica", "Haiti"],
+                ans: 1,
+                exp: "Brazil has the largest population of African descent outside Africa, with over 100 million people. It was the last country in the Americas to abolish slavery (1888)."
+            },
+            {
+                q: "Who was the first African American President of the United States?",
+                opts: ["Martin Luther King Jr.", "Barack Obama", "Nelson Mandela", "Malcolm X"],
+                ans: 1,
+                exp: "Barack Obama became the first African American President of the United States in 2009, serving two terms until 2017."
+            },
+            {
+                q: "Which musical genre originated from African diaspora communities in the United States?",
+                opts: ["Classical", "Jazz", "Opera", "Country"],
+                ans: 1,
+                exp: "Jazz originated in African American communities in New Orleans in the late 19th and early 20th centuries, blending African rhythms with European instruments."
+            },
+            {
+                q: "Who was the famous Jamaican-born activist who led the 'Back to Africa' movement?",
+                opts: ["Bob Marley", "Marcus Garvey", "Usain Bolt", "Harry Belafonte"],
+                ans: 1,
+                exp: "Marcus Garvey (1887-1940) was a Jamaican political activist who promoted Pan-Africanism and founded the Universal Negro Improvement Association (UNIA)."
+            },
+            {
+                q: "Which Caribbean country was the first to gain independence through a successful slave revolt?",
+                opts: ["Jamaica", "Barbados", "Haiti", "Cuba"],
+                ans: 2,
+                exp: "Haiti gained independence in 1804 after a successful slave revolution led by Toussaint Louverture and Jean-Jacques Dessalines, becoming the first Black republic."
+            },
+            {
+                q: "What is Juneteenth celebrating in the United States?",
+                opts: ["Independence Day", "End of slavery", "Civil Rights Act", "First Black President"],
+                ans: 1,
+                exp: "Juneteenth (June 19) celebrates the emancipation of enslaved African Americans in the United States, marking when the news reached Texas in 1865."
+            },
+            {
+                q: "Which African diaspora poet wrote 'I Know Why the Caged Bird Sings'?",
+                opts: ["Maya Angelou", "Langston Hughes", "Toni Morrison", "James Baldwin"],
+                ans: 0,
+                exp: "Maya Angelou (1928-2014) was an American poet and civil rights activist who wrote the autobiography 'I Know Why the Caged Bird Sings' in 1969."
+            },
+            {
+                q: "What music style originated in Jamaica and was popularized globally by Bob Marley?",
+                opts: ["Hip Hop", "Reggae", "Soul", "Blues"],
+                ans: 1,
+                exp: "Reggae music originated in Jamaica in the 1960s. Bob Marley became its global ambassador, spreading messages of peace, love, and resistance."
+            },
+            {
+                q: "Which African American woman refused to give up her bus seat, sparking the Civil Rights Movement?",
+                opts: ["Harriet Tubman", "Rosa Parks", "Sojourner Truth", "Coretta Scott King"],
+                ans: 1,
+                exp: "Rosa Parks refused to give up her seat to a white passenger in Montgomery, Alabama in 1955, sparking the Montgomery Bus Boycott and energizing the Civil Rights Movement."
+            },
+            {
+                q: "What is Kwanzaa?",
+                opts: ["An African country", "A cultural celebration for African Americans", "A type of food", "A dance style"],
+                ans: 1,
+                exp: "Kwanzaa is a week-long celebration (December 26-January 1) created in 1966 to honor African heritage in African American culture, celebrating seven principles."
+            },
+            {
+                q: "Which legendary boxer said 'I am the greatest' and refused to fight in the Vietnam War?",
+                opts: ["Mike Tyson", "Muhammad Ali", "Joe Frazier", "George Foreman"],
+                ans: 1,
+                exp: "Muhammad Ali (1942-2016), born Cassius Clay, was a legendary boxer and activist who refused military service during the Vietnam War on religious and ethical grounds."
+            },
+            {
+                q: "What does 'Pan-Africanism' promote?",
+                opts: ["Division among Africans", "Unity and solidarity among all people of African descent", "European colonization", "Tribal conflicts"],
+                ans: 1,
+                exp: "Pan-Africanism is a worldwide movement promoting unity and solidarity among all people of African descent, both in Africa and the diaspora."
+            },
+            {
+                q: "Which African American scientist invented over 300 uses for peanuts?",
+                opts: ["Neil deGrasse Tyson", "George Washington Carver", "Mae Jemison", "Benjamin Banneker"],
+                ans: 1,
+                exp: "George Washington Carver (1860s-1943) was an agricultural scientist who developed over 300 uses for peanuts, helping Southern farmers and revolutionizing agriculture."
+            },
+            {
+                q: "What is the 'Great Migration' in African American history?",
+                opts: ["Return to Africa", "Movement from rural South to urban North", "Migration to Europe", "Slave trade"],
+                ans: 1,
+                exp: "The Great Migration (1916-1970) was the movement of six million African Americans from the rural South to cities in the North, Midwest, and West seeking better opportunities."
+            },
+            {
+                q: "Which country celebrates 'Emancipation Day' on August 1st?",
+                opts: ["United States", "Trinidad and Tobago", "South Africa", "Ghana"],
+                ans: 1,
+                exp: "Trinidad and Tobago, along with other Caribbean nations, celebrates Emancipation Day on August 1st, marking the abolition of slavery in the British Empire in 1834."
+            },
+            {
+                q: "Who wrote the novel 'Things Fall Apart', depicting pre-colonial African society?",
+                opts: ["Chimamanda Adichie", "Chinua Achebe", "Wole Soyinka", "Ngugi wa Thiong'o"],
+                ans: 1,
+                exp: "Chinua Achebe (1930-2013), a Nigerian writer, wrote 'Things Fall Apart' in 1958, one of the most widely read African novels that depicts Igbo society and colonialism's impact."
+            },
+            {
+                q: "What dance style originated in African diaspora communities in New York?",
+                opts: ["Ballet", "Hip Hop", "Waltz", "Tango"],
+                ans: 1,
+                exp: "Hip Hop culture, including breakdancing, emerged in African American and Latino communities in the Bronx, New York in the 1970s."
+            },
+            {
+                q: "Which African American woman became the first self-made female millionaire in America?",
+                opts: ["Oprah Winfrey", "Madam C.J. Walker", "Michelle Obama", "Beyoncé"],
+                ans: 1,
+                exp: "Madam C.J. Walker (1867-1919) became the first female self-made millionaire in America through her hair care products for Black women."
+            },
+            {
+                q: "What is 'Afrobeat' music?",
+                opts: ["European classical music", "Music genre blending African rhythms with jazz and funk", "Country music", "Rock music"],
+                ans: 1,
+                exp: "Afrobeat is a music genre pioneered by Nigerian musician Fela Kuti in the 1960s, combining West African rhythms with jazz, funk, and highlife."
+            },
+            {
+                q: "Who was the first African American woman to travel to space?",
+                opts: ["Sally Ride", "Mae Jemison", "Katherine Johnson", "Dorothy Vaughan"],
+                ans: 1,
+                exp: "Dr. Mae Jemison became the first African American woman astronaut to travel to space in 1992 aboard the Space Shuttle Endeavour."
+            },
+            {
+                q: "What is the significance of the Underground Railroad?",
+                opts: ["A subway system", "A secret network helping enslaved people escape to freedom", "A train company", "A mining operation"],
+                ans: 1,
+                exp: "The Underground Railroad was a secret network of routes and safe houses used by enslaved African Americans to escape to free states and Canada, led by heroes like Harriet Tubman."
+            },
+            {
+                q: "Which Brazilian martial art was developed by enslaved Africans?",
+                opts: ["Karate", "Capoeira", "Taekwondo", "Judo"],
+                ans: 1,
+                exp: "Capoeira is an Afro-Brazilian martial art that combines dance, acrobatics, and music, developed by enslaved Africans in Brazil as a form of resistance and cultural preservation."
+            },
+            {
+                q: "Who delivered the famous 'I Have a Dream' speech?",
+                opts: ["Malcolm X", "Jesse Jackson", "Martin Luther King Jr.", "Frederick Douglass"],
+                ans: 2,
+                exp: "Dr. Martin Luther King Jr. delivered the iconic 'I Have a Dream' speech during the March on Washington in 1963, calling for civil and economic rights and an end to racism."
+            },
+            {
+                q: "What does the African proverb 'It takes a village to raise a child' emphasize?",
+                opts: ["Isolation", "Community responsibility", "Individual success", "Competition"],
+                ans: 1,
+                exp: "This African proverb emphasizes that raising children is a communal effort, highlighting the importance of community, shared responsibility, and collective care."
+            },
+            {
+                q: "Which African American author won the Nobel Prize in Literature in 1993?",
+                opts: ["Alice Walker", "Toni Morrison", "Maya Angelou", "Zora Neale Hurston"],
+                ans: 1,
+                exp: "Toni Morrison (1931-2019) won the Nobel Prize in Literature in 1993 for novels like 'Beloved', 'Song of Solomon', and 'The Bluest Eye'."
+            },
+            {
+                q: "What is 'Harlem Renaissance'?",
+                opts: ["A building project", "Cultural and artistic movement of African Americans in 1920s", "A dance", "A political party"],
+                ans: 1,
+                exp: "The Harlem Renaissance (1920s-1930s) was a cultural movement in Harlem, New York, featuring an explosion of African American literature, art, music, and intellectual thought."
+            },
+            {
+                q: "Which sport did Jesse Owens excel in, winning 4 gold medals at the 1936 Olympics?",
+                opts: ["Swimming", "Track and Field", "Boxing", "Basketball"],
+                ans: 1,
+                exp: "Jesse Owens won four gold medals in track and field at the 1936 Berlin Olympics, defying Adolf Hitler's ideology of Aryan supremacy."
+            },
+            {
+                q: "What traditional African concept means 'I am because we are'?",
+                opts: ["Sankofa", "Ubuntu", "Harambee", "Ujamaa"],
+                ans: 1,
+                exp: "Ubuntu is a Southern African philosophy meaning 'humanity towards others' or 'I am because we are', emphasizing community, sharing, and interconnectedness."
+            }
+        ];
+
+        var qidx = 0;
+        var sc = 0;
+
+        function start() {
+            qidx = 0;
+            sc = 0;
+            document.getElementById('start').className = 'hidden';
+            document.getElementById('quiz').className = '';
+            show();
+        }
+
+        function show() {
+            var q = questions[qidx];
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('qnum').textContent = qidx + 1;
+            document.getElementById('score').textContent = sc;
+            
+            var progress = ((qidx + 1) / 30) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            var opts = '';
+            for (var i = 0; i < q.opts.length; i++) {
+                opts += '<div class="option" onclick="pick(' + i + ')">' + q.opts[i] + '</div>';
+            }
+            document.getElementById('options').innerHTML = opts;
+            document.getElementById('explanation').className = 'explanation';
+            document.getElementById('next').style.display = 'none';
+        }
+
+        function pick(i) {
+            var q = questions[qidx];
+            var opts = document.querySelectorAll('.option');
+            
+            for (var j = 0; j < opts.length; j++) {
+                opts[j].style.pointerEvents = 'none';
+            }
+            
+            if (i === q.ans) {
+                opts[i].className = 'option correct';
+                sc++;
+                document.getElementById('score').textContent = sc;
+            } else {
+                opts[i].className = 'option wrong';
+                opts[q.ans].className = 'option correct';
+            }
+            
+            var expDiv = document.getElementById('explanation');
+            expDiv.innerHTML = '<strong>📖 Explanation:</strong> ' + q.exp;
+            expDiv.className = 'explanation show';
+            
+            document.getElementById('next').style.display = 'inline-block';
+        }
+
+        function next() {
+            qidx++;
+            if (qidx < 30) {
+                show();
+            } else {
+                end();
+            }
+        }
+
+        function end() {
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = '';
+            
+            var pct = Math.round((sc / 30) * 100);
+            var wrong = 30 - sc;
+            var msg = '';
+            
+            if (pct >= 90) msg = '🌟 Outstanding! You are an African Diaspora expert!';
+            else if (pct >= 75) msg = '👏 Excellent work! You have great knowledge of the African Diaspora!';
+            else if (pct >= 60) msg = '👍 Good job! You understand the African Diaspora well!';
+            else if (pct >= 40) msg = '📚 Not bad! Keep learning about the African Diaspora!';
+            else msg = '💪 Keep studying! There is so much to learn about the African Diaspora!';
+            
+            document.getElementById('final').textContent = sc;
+            document.getElementById('correct').textContent = sc;
+            document.getElementById('wrong').textContent = wrong;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('message').textContent = msg;
+        }
+
+        function restart() {
+            qidx = 0;
+            sc = 0;
+            document.getElementById('start').className = '';
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = 'hidden';
+        }
+    </script>
+</body>
+</html>

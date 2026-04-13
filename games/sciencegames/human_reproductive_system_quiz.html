@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Human Reproductive System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --pu-deep:   #1a0533;
+  --pu-dark:   #2d0a5e;
+  --pu-main:   #5b21b6;
+  --pu-mid:    #7c3aed;
+  --pu-warm:   #9d5cf0;
+  --pu-light:  #c4b5fd;
+  --pu-pale:   #ede9fe;
+  --pu-cream:  #f8f5ff;
+  --pink:      #c026d3;
+  --pink-lt:   #e879f9;
+  --rose:      #be185d;
+  --rose-lt:   #f472b6;
+  --gold:      #d97706;
+  --gold-lt:   #fbbf24;
+  --teal:      #0891b2;
+  --red-err:   #991b1b;
+  --green-ok:  #166534;
+  --white:     #ffffff;
+  --shadow:    0 6px 28px rgba(26,5,51,0.18);
+  --shadow-lg: 0 14px 48px rgba(26,5,51,0.26);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--pu-cream);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(160deg,var(--pu-deep) 0%,var(--pu-dark) 55%,var(--pu-main) 100%);
+  box-shadow:0 4px 24px rgba(0,0,0,0.4);
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 15% 60%,rgba(157,92,240,0.18) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 25%,rgba(192,38,211,0.14) 0%,transparent 50%),
+    repeating-linear-gradient(
+      60deg,transparent,transparent 22px,
+      rgba(255,255,255,0.025) 22px,rgba(255,255,255,0.025) 44px
+    );
+}
+.pu-bar{
+  width:100%;height:5px;
+  background:linear-gradient(90deg,var(--pu-deep),var(--pink),var(--pu-mid),var(--pink-lt),var(--pu-warm),var(--pink),var(--pu-deep));
+}
+.header-inner{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;padding:22px 20px 18px;
+}
+.brand-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.brand-icon{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--pink),var(--pu-main));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;box-shadow:0 4px 16px rgba(0,0,0,0.3);flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.2);
+}
+.brand-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,4.5vw,30px);
+  font-weight:900;color:var(--white);letter-spacing:.5px;line-height:1;
+}
+.brand-plus{color:var(--pink-lt);}
+.header-sub{font-size:11px;color:var(--pu-light);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.header-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(15px,3.2vw,22px);
+  color:#f0e6ff;font-weight:700;text-align:center;line-height:1.35;
+}
+.q-count-badge{
+  margin-top:8px;
+  display:inline-block;
+  background:rgba(255,255,255,0.12);
+  border:1.5px solid rgba(255,255,255,0.25);
+  border-radius:20px;padding:5px 18px;
+  font-size:12px;font-weight:700;color:var(--pu-light);
+  letter-spacing:.5px;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:720px;padding:28px 16px 50px;}
+.screen.active{display:block;}
+
+/* ── START CARD ── */
+.start-card{
+  background:var(--white);border-radius:24px;
+  padding:36px 28px 32px;
+  box-shadow:var(--shadow-lg);text-align:center;
+  border:2.5px solid var(--pu-light);
+  border-top:7px solid var(--pu-warm);
+}
+.start-emoji{font-size:72px;margin-bottom:10px;display:block;}
+.start-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(20px,4vw,26px);
+  font-weight:900;color:var(--pu-dark);margin-bottom:8px;
+}
+.start-desc{
+  font-size:14px;color:#666;line-height:1.7;
+  margin-bottom:26px;max-width:480px;margin-left:auto;margin-right:auto;
+}
+.info-pills{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;
+}
+.info-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--pu-pale);border:1.5px solid var(--pu-light);
+  border-radius:20px;padding:6px 14px;
+  font-size:12px;font-weight:700;color:var(--pu-main);
+}
+.start-btn{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--pu-warm),var(--pu-dark));
+  color:white;border:none;border-radius:14px;
+  padding:16px 48px;
+  font-family:'Poppins',sans-serif;font-size:17px;font-weight:800;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 6px 20px rgba(26,5,51,.32);letter-spacing:.3px;
+}
+.start-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(26,5,51,.4);}
+
+/* ── GAME ── */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;gap:8px;flex-wrap:wrap;
+}
+.game-level-tag{
+  background:linear-gradient(135deg,var(--pu-main),var(--pu-deep));
+  color:#e9d5ff;border-radius:22px;
+  padding:6px 16px;font-weight:700;font-size:11px;
+  flex:1;text-align:center;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-pill{
+  background:var(--gold-lt);color:var(--pu-deep);
+  border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;
+  min-width:74px;text-align:center;flex-shrink:0;transition:background .3s;
+}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{
+  background:linear-gradient(135deg,var(--pink),var(--pu-dark));
+  color:white;border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;flex-shrink:0;
+}
+
+/* Progress */
+.prog-wrap{width:100%;height:12px;background:#e9d5ff;border-radius:99px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--pu-main),var(--pink-lt));
+  border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);
+}
+
+/* Question */
+.question-card{
+  background:var(--white);border-radius:20px;
+  padding:24px 22px 20px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border:2px solid var(--pu-pale);
+  border-left:6px solid var(--pu-warm);
+}
+.q-num{font-size:11px;font-weight:700;color:var(--pu-mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;}
+.q-text{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:var(--pu-deep);line-height:1.6;}
+
+/* Options */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--white);border:2px solid var(--pu-light);border-radius:14px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--pu-dark);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){
+  background:var(--pu-pale);border-color:var(--pu-warm);
+  transform:translateY(-2px);box-shadow:0 5px 14px rgba(91,33,182,.14);
+}
+.opt-letter{
+  background:var(--pu-pale);color:var(--pu-main);
+  border-radius:8px;min-width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+  border:1.5px solid var(--pu-light);
+}
+.opt-btn.correct{background:#f0fdf4;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;border-color:var(--green-ok);}
+.opt-btn.wrong{background:#fff1f2;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;border-color:var(--red-err);}
+.opt-btn:disabled{cursor:default;}
+
+/* Feedback */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#f0fdf4;border:2px solid var(--green-ok);border-radius:13px;
+  padding:12px 16px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fff1f2;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:22px;flex-shrink:0;}
+
+/* Next btn */
+.next-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--pu-warm),var(--pu-dark));
+  color:white;border:none;border-radius:14px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 18px rgba(26,5,51,.3);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(26,5,51,.38);}
+.next-btn.show{display:block;}
+
+/* Results */
+.result-box{
+  background:var(--white);border-radius:24px;padding:36px 28px 32px;
+  box-shadow:var(--shadow-lg);text-align:center;
+  border:2.5px solid var(--pu-light);border-top:7px solid var(--pu-warm);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:70px;margin-bottom:8px;}
+.res-title{font-family:'Playfair Display',serif;font-size:27px;font-weight:900;color:var(--pu-dark);margin-bottom:4px;}
+.res-sub-title{font-size:13px;color:var(--pu-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:42px;margin:12px 0;}
+.res-big{font-family:'Press Start 2P',monospace;font-size:30px;color:var(--pu-main);margin-bottom:4px;}
+.res-sub{font-size:13px;color:#aaa;margin-bottom:22px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.stat-box{background:var(--pu-pale);border-radius:13px;padding:14px 8px;}
+.stat-n{font-size:26px;font-weight:900;color:var(--pu-dark);}
+.stat-l{font-size:11px;color:#aaa;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{
+  background:linear-gradient(135deg,var(--pu-warm),var(--pu-dark));color:white;
+  border:none;border-radius:13px;padding:14px 30px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(26,5,51,.25);transition:transform .15s;
+}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{
+  background:white;color:var(--pu-dark);border:2.5px solid var(--pu-warm);
+  border-radius:13px;padding:14px 30px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform .15s,background .15s;
+}
+.btn-border:hover{transform:translateY(-2px);background:var(--pu-pale);}
+
+footer{text-align:center;font-size:11px;color:#c4b5fd;padding:16px 20px 32px;letter-spacing:.5px;}
+footer a{color:var(--pu-warm);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="pu-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">🧬</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Science · Biology · Reproduction</div>
+    <div class="header-title">🔬 Human Reproductive System</div>
+    <div class="q-count-badge">30 Questions · Comprehensive Quiz</div>
+  </div>
+  <div class="pu-bar"></div>
+</header>
+
+<!-- START SCREEN -->
+<div class="screen active" id="screen-start">
+  <div style="max-width:720px;margin:0 auto;">
+    <div class="start-card">
+      <span class="start-emoji">🧬</span>
+      <div class="start-title">Human Reproductive System</div>
+      <div class="start-desc">
+        Test your knowledge of the human reproductive system — structures, functions, 
+        fertilisation, development, hormones, and more. 30 carefully crafted questions 
+        covering both male and female systems.
+      </div>
+      <div class="info-pills">
+        <span class="info-pill">📋 30 Questions</span>
+        <span class="info-pill">⏱ 30s per Question</span>
+        <span class="info-pill">🏆 4 pts per Correct</span>
+        <span class="info-pill">🔁 Retry Anytime</span>
+      </div>
+      <button class="start-btn" onclick="startQuiz()">🚀 Start Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">🧬 Human Reproductive System</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 30</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:720px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Outstanding!</div>
+      <div class="res-sub-title">🧬 Human Reproductive System</div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goStart()">🏠 Home</button>
+        <button class="btn-fill" onclick="startQuiz()">🔄 Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Human Reproductive System</footer>
+
+<script>
+// ══════════════════════════════════════
+//  30 QUESTIONS — Human Reproductive System
+// ══════════════════════════════════════
+const Q = [
+ // ── MALE SYSTEM ──
+ {q:"What is the PRIMARY reproductive organ in the male?",opts:["Prostate gland","Scrotum","Testes (testicles)","Epididymis"],a:2},
+ {q:"What is the main function of the TESTES?",opts:["Producing urine","Producing testosterone and sperm cells (spermatogenesis)","Transporting sperm to the urethra","Producing seminal fluid"],a:1},
+ {q:"Where does SPERM MATURATION occur after being produced in the testes?",opts:["Vas deferens","Prostate gland","Urethra","Epididymis"],a:3},
+ {q:"What is the VAS DEFERENS?",opts:["The gland that produces seminal fluid","A muscular tube that carries mature sperm from the epididymis towards the urethra","The external opening of the male reproductive system","The structure where sperm are produced"],a:1},
+ {q:"What is the role of the PROSTATE GLAND?",opts:["Producing sperm cells","Producing testosterone","Secreting alkaline fluid that nourishes and protects sperm, forming part of semen","Storing sperm before ejaculation"],a:2},
+ {q:"What is SEMEN?",opts:["Pure sperm cells only","Urine mixed with sperm","A fluid mixture of sperm and secretions from the seminal vesicles, prostate gland, and bulbourethral glands","A hormone produced in the testes"],a:2},
+ {q:"What is the function of the SCROTUM?",opts:["Producing sperm cells","Housing and protecting the testes and maintaining a temperature slightly below body temperature for sperm production","Carrying sperm to the urethra","Producing hormones"],a:1},
+ {q:"Why must the TESTES be located OUTSIDE the body cavity in the scrotum?",opts:["For protection from injury","Sperm production requires a temperature slightly lower than normal body temperature (around 35°C)","To allow easy fertilisation","To increase hormone production"],a:1},
+
+ // ── FEMALE SYSTEM ──
+ {q:"What are the PRIMARY reproductive organs in the female?",opts:["Uterus and vagina","Fallopian tubes","Ovaries","Cervix and vulva"],a:2},
+ {q:"What is OVULATION?",opts:["The fertilisation of an egg by sperm","The monthly shedding of the uterine lining","The release of a mature egg (ovum) from the ovary","The implantation of a fertilised egg"],a:2},
+ {q:"What is the function of the FALLOPIAN TUBES (oviducts)?",opts:["Producing egg cells","Carrying the foetus during pregnancy","Transporting the egg from the ovary to the uterus and where fertilisation usually occurs","Producing progesterone only"],a:2},
+ {q:"What is the UTERUS?",opts:["The organ that produces eggs","The muscular organ where the fertilised egg implants and develops into a baby during pregnancy","The tube connecting ovaries to the uterus","The external opening of the female reproductive tract"],a:1},
+ {q:"What is the ENDOMETRIUM?",opts:["The outer muscular wall of the uterus","The fallopian tube lining","The thick inner lining of the uterus that thickens each month in preparation for implantation","The cervix lining"],a:2},
+ {q:"What is the CERVIX?",opts:["The organ that produces eggs","The narrow lower part of the uterus that connects it to the vagina","The internal lining of the uterus","The ovarian follicle"],a:1},
+ {q:"What is the VAGINA?",opts:["The organ where eggs are produced","The tube that carries urine","The muscular canal leading from the cervix to the outside of the body — birth canal and receiving organ during intercourse","The organ where fertilisation occurs"],a:2},
+
+ // ── FERTILISATION & DEVELOPMENT ──
+ {q:"Where does FERTILISATION most commonly occur?",opts:["In the uterus","In the ovary","In the cervix","In the fallopian tube (oviduct)"],a:3},
+ {q:"What is a ZYGOTE?",opts:["An unfertilised egg","A mature sperm cell","The fertilised egg formed immediately after a sperm fuses with an ovum","A developing foetus after 8 weeks"],a:2},
+ {q:"What is IMPLANTATION?",opts:["The release of an egg from the ovary","The process by which the blastocyst embeds itself into the endometrium (uterine lining)","The moment sperm fertilises the egg","The start of labour"],a:1},
+ {q:"What is the PLACENTA?",opts:["The amniotic sac surrounding the foetus","A fluid-filled sac protecting the foetus","An organ formed during pregnancy that provides oxygen and nutrients to the foetus and removes waste products","The umbilical cord"],a:2},
+ {q:"What is the function of the UMBILICAL CORD?",opts:["It protects the foetus from shocks","It produces hormones for the foetus","It connects the foetus to the placenta, carrying blood with nutrients and oxygen to the foetus and removing waste","It forms the amniotic fluid"],a:2},
+ {q:"What is the AMNIOTIC SAC and its function?",opts:["The structure that connects the foetus to the placenta","A membrane filled with amniotic fluid that cushions and protects the developing foetus","The outer layer of the embryo","The organ providing nutrition to the zygote"],a:1},
+ {q:"What is the approximate duration of a normal human PREGNANCY (gestation period)?",opts:["6 months (approximately 26 weeks)","12 months (approximately 52 weeks)","9 months (approximately 38–40 weeks)","3 months (approximately 12 weeks)"],a:2},
+
+ // ── MENSTRUAL CYCLE & HORMONES ──
+ {q:"What is the MENSTRUAL CYCLE?",opts:["The monthly production of sperm in males","The quarterly release of hormones from the ovaries","A monthly series of hormonal and physical changes in females that prepares the body for possible pregnancy","The annual production of eggs"],a:2},
+ {q:"What is the average length of a menstrual cycle?",opts:["14 days","7 days","28 days (though it varies between individuals)","42 days"],a:2},
+ {q:"What is MENSTRUATION?",opts:["The release of an egg from the ovary","Fertilisation of an egg","The shedding of the uterine lining (endometrium) through the vagina when pregnancy does not occur","Implantation of a fertilised egg"],a:2},
+ {q:"Which hormone triggers OVULATION?",opts:["Oestrogen","Progesterone","Testosterone","Luteinising Hormone (LH)"],a:3},
+ {q:"What is the role of OESTROGEN in the female reproductive cycle?",opts:["Maintaining the uterine lining after fertilisation","Triggering menstruation","Stimulating the growth and repair of the uterine lining (endometrium) in the first half of the cycle","Producing sperm-like structures"],a:2},
+ {q:"What does PROGESTERONE do after ovulation?",opts:["Triggers ovulation","Causes menstruation","Maintains and thickens the uterine lining to support a possible pregnancy","Stimulates egg production"],a:2},
+ {q:"What is TESTOSTERONE and where is it mainly produced?",opts:["A female hormone produced in the ovaries","A male sex hormone produced mainly in the testes — responsible for sperm production and male secondary sexual characteristics","A hormone produced only in the brain","A hormone produced by the placenta"],a:1},
+
+ // ── PUBERTY & GENERAL ──
+ {q:"What is PUBERTY?",opts:["The stage of life when a person stops growing","A period of physical and hormonal changes in adolescence when the body becomes capable of reproduction","The beginning of the menstrual cycle only","A period only experienced by females"],a:1},
+ {q:"What is the correct sequence for human fertilisation?",opts:["Implantation → Fertilisation → Zygote → Ovulation","Ovulation → Fertilisation in fallopian tube → Zygote → Implantation in uterus","Fertilisation in uterus → Ovulation → Implantation → Zygote","Zygote → Ovulation → Fertilisation → Implantation"],a:1},
+];
+
+// ══════════ STATE ══════════
+let curQ=0,score=0,correct=0,wrong=0;
+let timer=null,timeLeft=30,answered=false;
+let shuffled=[];
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+function startQuiz(){
+  curQ=0;score=0;correct=0;wrong=0;
+  shuffled=shuffle(Q);
+  show('screen-game');
+  loadQ();
+}
+
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8)tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered)return;
+  answered=true;wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Time's up! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function pick(chosen,ans,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4;correct++;
+    feedback(true,'✅ Correct! Well done!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Wrong! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length)showResults();
+  else loadQ();
+};
+
+function showResults(){
+  clearInterval(timer);
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  const emojis=['💪','👍','🎉','🏆'];
+  const titles=['Keep Studying!','Good Effort!','Great Job!','Outstanding!'];
+  const idx=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  document.getElementById('res-emoji').textContent=emojis[idx];
+  document.getElementById('res-title').textContent=titles[idx];
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goStart(){clearInterval(timer);show('screen-start');}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

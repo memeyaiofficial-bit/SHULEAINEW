@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 7 CBC - Citizenship Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #000000 0%, #000000 25%, #BF0A30 25%, #BF0A30 50%, #006600 50%, #006600 75%, #FFFFFF 75%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .flag-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .flag {
+            width: 100%;
+            max-width: 400px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+            border: 3px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .flag-black { background: #000; height: 33.33%; }
+        .flag-red { background: #BF0A30; height: 33.33%; position: relative; }
+        .flag-green { background: #006600; height: 33.33%; }
+        .shield {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 70px;
+            background: #8B4513;
+            border: 3px solid white;
+            border-radius: 0 0 30px 30px;
+            z-index: 10;
+        }
+        .spears {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 2px;
+            background: white;
+        }
+        h1 {
+            color: #006600;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .level-btn {
+            padding: 20px;
+            border: 3px solid #006600;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #006600, #009900);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .level-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,100,0,0.3);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            background: linear-gradient(135deg, #BF0A30, #FF0000);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .question-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #006600;
+        }
+        .question-box h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .concept-box {
+            background: #E8F5E9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #006600;
+        }
+        .concept-box strong {
+            color: #006600;
+        }
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #006600;
+            background: #f0f0f0;
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .option.wrong {
+            border-color: #BF0A30;
+            background: #FFEBEE;
+        }
+        .explanation {
+            background: #FFF9C4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #FBC02D;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #006600, #009900);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-red {
+            background: linear-gradient(135deg, #BF0A30, #FF0000);
+        }
+        .hidden {
+            display: none;
+        }
+        .results {
+            text-align: center;
+            padding: 20px;
+        }
+        .results h2 {
+            color: #006600;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .trophy {
+            font-size: 80px;
+            margin: 20px 0;
+        }
+        .score-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #006600;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #006600;
+            font-size: 22px;
+        }
+        @media (max-width: 600px) {
+            .flag { max-width: 300px; height: 150px; }
+            h1 { font-size: 22px; }
+            .level-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menu">
+            <div class="flag-header">
+                <div class="flag">
+                    <div class="flag-black"></div>
+                    <div class="flag-red">
+                        <div class="shield"></div>
+                        <div class="spears"></div>
+                    </div>
+                    <div class="flag-green"></div>
+                </div>
+            </div>
+            
+            <h1>🇰🇪 Grade 7 CBC Citizenship Quiz 🇰🇪</h1>
+            <p class="subtitle">Master Citizenship Concepts - 25 Questions in 5 Levels</p>
+            
+            <div class="level-grid">
+                <button class="level-btn" onclick="start(1)">
+                    📚 Level 1<br>
+                    <small>Basics of Citizenship</small>
+                </button>
+                <button class="level-btn" onclick="start(2)">
+                    🏛️ Level 2<br>
+                    <small>Rights & Duties</small>
+                </button>
+                <button class="level-btn" onclick="start(3)">
+                    ⚖️ Level 3<br>
+                    <small>Constitution & Law</small>
+                </button>
+                <button class="level-btn" onclick="start(4)">
+                    🤝 Level 4<br>
+                    <small>National Unity</small>
+                </button>
+                <button class="level-btn" onclick="start(5)">
+                    🏆 Level 5<br>
+                    <small>Advanced Citizenship</small>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-label">🏆 Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="qnum">1</span>
+                    <span class="stat-label">📝 Question</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">5</span>
+                    <span class="stat-label">📊 Total</span>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <h2 id="qtext"></h2>
+                <div id="concept"></div>
+                <div id="options"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-red" onclick="menu()">🏠 Back to Menu</button>
+                <button class="btn" id="next" onclick="next()" style="display:none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="results">
+                <div class="trophy">🏆</div>
+                <h2>Excellent Work, Citizen!</h2>
+                
+                <div class="score-box">
+                    <div class="score-item">
+                        <span>🏆 Final Score:</span>
+                        <span class="score-value" id="final">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>✅ Correct Answers:</span>
+                        <span class="score-value" id="correct">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📊 Percentage:</span>
+                        <span class="score-value" id="percent">0%</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📈 Grade:</span>
+                        <span class="score-value" id="grade">-</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="again()">🎮 Try Again</button>
+                <button class="btn btn-red" onclick="menu()">🏠 Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var qs = {
+            1: [
+                {
+                    q: "What is citizenship?",
+                    opts: ["Being born in a country", "Legal membership of a nation with rights and duties", "Living in a city", "Going to school"],
+                    ans: 1,
+                    concept: "💡 Citizenship is the legal status of being a member of a country with specific rights and responsibilities.",
+                    exp: "Citizenship means you are officially recognized as a member of a nation. This gives you rights (like voting) and responsibilities (like obeying laws)."
+                },
+                {
+                    q: "Which of the following is a way to acquire Kenyan citizenship?",
+                    opts: ["Only by birth", "By birth, registration, or naturalization", "By visiting Kenya", "By studying in Kenya"],
+                    ans: 1,
+                    concept: "💡 Kenya recognizes three main ways to become a citizen: birth, registration, and naturalization.",
+                    exp: "You can become a Kenyan citizen if you are born in Kenya (birth), marry a Kenyan (registration), or live in Kenya for many years and apply (naturalization)."
+                },
+                {
+                    q: "What does the black color on the Kenyan flag represent?",
+                    opts: ["The soil", "The people of Kenya", "The night sky", "Coal mines"],
+                    ans: 1,
+                    concept: "💡 The Kenyan flag has symbolic colors: Black (people), Red (blood/struggle), Green (land), and White (peace).",
+                    exp: "The black color represents the people of Kenya. Each color on our flag tells part of our nation's story."
+                },
+                {
+                    q: "At what age can a Kenyan citizen vote?",
+                    opts: ["16 years", "18 years", "21 years", "25 years"],
+                    ans: 1,
+                    concept: "💡 Voting is a fundamental right and responsibility of citizens aged 18 and above.",
+                    exp: "In Kenya, you must be 18 years or older to vote. Voting is how citizens participate in choosing their leaders."
+                },
+                {
+                    q: "Which document proves Kenyan citizenship?",
+                    opts: ["Birth certificate only", "National ID card or passport", "School certificate", "Driving license"],
+                    ans: 1,
+                    concept: "💡 Official documents like National ID cards and passports are proof of citizenship.",
+                    exp: "A National ID card or passport officially proves you are a Kenyan citizen. You get your ID at 18 years old."
+                }
+            ],
+            2: [
+                {
+                    q: "Which of these is a fundamental right of Kenyan citizens?",
+                    opts: ["Right to free food", "Right to education", "Right to own a car", "Right to travel abroad"],
+                    ans: 1,
+                    concept: "💡 Fundamental rights include: life, education, healthcare, expression, and equality.",
+                    exp: "The right to education is guaranteed in our Constitution. Every child has the right to free basic education."
+                },
+                {
+                    q: "What is a civic duty?",
+                    opts: ["A choice to do if you want", "A responsibility every citizen must fulfill", "A type of job", "A school subject"],
+                    ans: 1,
+                    concept: "💡 Civic duties are responsibilities citizens must fulfill, like paying taxes and obeying laws.",
+                    exp: "Civic duties are things all citizens MUST do, such as paying taxes, obeying laws, and defending the nation when needed."
+                },
+                {
+                    q: "Which is an example of exercising your right to freedom of expression?",
+                    opts: ["Breaking the law", "Peacefully sharing your opinion", "Refusing to go to school", "Not paying taxes"],
+                    ans: 1,
+                    concept: "💡 Freedom of expression allows you to share ideas and opinions peacefully and respectfully.",
+                    exp: "Freedom of expression means you can share your thoughts and opinions, but you must do so peacefully and respect others' rights."
+                },
+                {
+                    q: "Why do citizens pay taxes?",
+                    opts: ["To make the government rich", "To fund public services like schools and hospitals", "As a punishment", "Only rich people pay taxes"],
+                    ans: 1,
+                    concept: "💡 Taxes are used by the government to provide services like education, healthcare, roads, and security.",
+                    exp: "When citizens pay taxes, the government uses that money to build schools, hospitals, roads, and provide security for everyone."
+                },
+                {
+                    q: "What is the duty of every citizen during elections?",
+                    opts: ["To stay at home", "To vote for leaders", "To complain about leaders", "To travel abroad"],
+                    ans: 1,
+                    concept: "💡 Voting is both a right and a civic duty that helps choose leaders and shape the country's future.",
+                    exp: "Voting is a duty because it's how citizens choose their leaders. When you turn 18, you should register and vote."
+                }
+            ],
+            3: [
+                {
+                    q: "What is the supreme law of Kenya?",
+                    opts: ["The President's orders", "The Constitution", "School rules", "Tribal customs"],
+                    ans: 1,
+                    concept: "💡 The Constitution is the supreme law - all other laws must follow it.",
+                    exp: "The Constitution of Kenya (2010) is the highest law in our country. Even the President must follow it."
+                },
+                {
+                    q: "How many arms of government does Kenya have?",
+                    opts: ["One", "Two", "Three", "Four"],
+                    ans: 2,
+                    concept: "💡 Kenya has three arms of government: Legislature (makes laws), Executive (implements laws), and Judiciary (interprets laws).",
+                    exp: "Kenya has three arms: Legislature (Parliament - makes laws), Executive (President - runs government), and Judiciary (Courts - interprets laws)."
+                },
+                {
+                    q: "Who is the head of the Kenyan government?",
+                    opts: ["The Governor", "The President", "The Chief Justice", "The Speaker"],
+                    ans: 1,
+                    concept: "💡 The President is the head of state and government, elected every five years.",
+                    exp: "The President is the head of Kenya's government and commander-in-chief of the armed forces. Kenyans elect the President every 5 years."
+                },
+                {
+                    q: "What is the role of the Judiciary?",
+                    opts: ["Make laws", "Interpret laws and deliver justice", "Collect taxes", "Build roads"],
+                    ans: 1,
+                    concept: "💡 The Judiciary (courts) interprets laws and ensures justice is served fairly.",
+                    exp: "The Judiciary, led by the Chief Justice, interprets laws and settles disputes. It ensures everyone gets fair treatment under the law."
+                },
+                {
+                    q: "Which document outlines the rights and freedoms of Kenyan citizens?",
+                    opts: ["The national anthem", "The Constitution", "School syllabus", "News headlines"],
+                    ans: 1,
+                    concept: "💡 The Bill of Rights in Chapter 4 of the Constitution lists all fundamental rights and freedoms.",
+                    exp: "The Constitution's Bill of Rights (Chapter 4) lists all the rights and freedoms that protect every Kenyan citizen."
+                }
+            ],
+            4: [
+                {
+                    q: "What is national unity?",
+                    opts: ["People living separately", "Citizens from different backgrounds working together for common goals", "One tribe ruling others", "Speaking one language only"],
+                    ans: 1,
+                    concept: "💡 National unity means Kenyans of all tribes, religions, and backgrounds working together as one nation.",
+                    exp: "National unity is when all Kenyans - regardless of tribe, religion, or background - work together peacefully for the country's progress."
+                },
+                {
+                    q: "What is the national motto of Kenya?",
+                    opts: ["Unity is Strength", "Harambee", "Peace and Love", "Education for All"],
+                    ans: 1,
+                    concept: "💡 'Harambee' means 'pulling together' - it represents cooperation and unity.",
+                    exp: "Harambee means 'let's pull together' in Swahili. It's our national motto encouraging all Kenyans to work together."
+                },
+                {
+                    q: "How does celebrating national holidays promote unity?",
+                    opts: ["It doesn't", "It brings citizens together to remember shared history", "It's just a day off", "Only some people celebrate"],
+                    ans: 1,
+                    concept: "💡 National holidays like Jamhuri Day and Madaraka Day unite Kenyans by celebrating shared history and achievements.",
+                    exp: "National holidays like Madaraka Day (June 1) and Jamhuri Day (December 12) remind all Kenyans of our shared history and achievements."
+                },
+                {
+                    q: "What does the shield and spears on Kenya's coat of arms represent?",
+                    opts: ["War", "Defense and willingness to defend the nation", "Hunting", "Traditional weapons"],
+                    ans: 1,
+                    concept: "💡 The shield and spears symbolize readiness to defend Kenya and its freedom.",
+                    exp: "The shield and two spears on our coat of arms show that Kenyans are ready to defend their country and freedom."
+                },
+                {
+                    q: "Why is it important to respect all Kenyan communities and cultures?",
+                    opts: ["It's not important", "It promotes peace, unity and national cohesion", "Only to avoid fights", "It's the law only"],
+                    ans: 1,
+                    concept: "💡 Kenya has over 40 ethnic communities. Respecting all cultures strengthens national unity and peace.",
+                    exp: "Kenya has over 40 tribes and communities. Respecting everyone's culture and traditions promotes peace and makes Kenya stronger."
+                }
+            ],
+            5: [
+                {
+                    q: "What is patriotism?",
+                    opts: ["Loving only your tribe", "Love, devotion, and loyalty to one's country", "Hating other countries", "Being in the military"],
+                    ans: 1,
+                    concept: "💡 Patriotism is loving your country and being willing to contribute to its development and protect it.",
+                    exp: "Patriotism means loving Kenya, being proud of it, and working to make it better. Patriots contribute to national development."
+                },
+                {
+                    q: "How can young citizens contribute to national development?",
+                    opts: ["By being lazy", "Through education, hard work, innovation and community service", "By breaking rules", "By doing nothing"],
+                    ans: 1,
+                    concept: "💡 Youth contribute through: studying hard, respecting laws, environmental conservation, and community service.",
+                    exp: "Young Kenyans contribute by: excelling in education, obeying laws, protecting the environment, helping in the community, and respecting others."
+                },
+                {
+                    q: "What is the meaning of devolution in Kenya?",
+                    opts: ["Power in Nairobi only", "Transfer of power and resources from national to county governments", "Presidential power", "Tribal divisions"],
+                    ans: 1,
+                    concept: "💡 Devolution (2010 Constitution) created 47 county governments to bring services closer to the people.",
+                    exp: "Devolution means the national government shares power and resources with 47 county governments, bringing services closer to citizens."
+                },
+                {
+                    q: "Why is environmental conservation a civic responsibility?",
+                    opts: ["It's not important", "To protect natural resources for current and future generations", "Only for farmers", "Just for exams"],
+                    ans: 1,
+                    concept: "💡 Citizens have a duty to protect the environment for themselves and future generations (Article 69, Constitution).",
+                    exp: "Every citizen must protect the environment - planting trees, avoiding pollution, saving water - to ensure future Kenyans have clean air, water, and land."
+                },
+                {
+                    q: "What is the role of the Independent Electoral and Boundaries Commission (IEBC)?",
+                    opts: ["Teach in schools", "Conduct free and fair elections", "Build roads", "Arrest criminals"],
+                    ans: 1,
+                    concept: "💡 IEBC is an independent body that organizes elections, registers voters, and ensures elections are free and fair.",
+                    exp: "The IEBC organizes all elections in Kenya, registers voters, and makes sure elections are free, fair, and transparent."
+                }
+            ]
+        };
+
+        var lvl = 1;
+        var qidx = 0;
+        var sc = 0;
+
+        function start(l) {
+            lvl = l;
+            qidx = 0;
+            sc = 0;
+            document.getElementById('menu').className = 'hidden';
+            document.getElementById('quiz').className = '';
+            show();
+        }
+
+        function show() {
+            var q = qs[lvl][qidx];
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('qnum').textContent = qidx + 1;
+            document.getElementById('score').textContent = sc;
+            
+            var conceptHTML = '<div class="concept-box">' + q.concept + '</div>';
+            document.getElementById('concept').innerHTML = conceptHTML;
+            
+            var opts = '';
+            for (var i = 0; i < q.opts.length; i++) {
+                opts += '<div class="option" onclick="pick(' + i + ')">' + q.opts[i] + '</div>';
+            }
+            document.getElementById('options').innerHTML = opts;
+            document.getElementById('explanation').className = 'explanation';
+            document.getElementById('next').style.display = 'none';
+        }
+
+        function pick(i) {
+            var q = qs[lvl][qidx];
+            var opts = document.querySelectorAll('.option');
+            
+            for (var j = 0; j < opts.length; j++) {
+                opts[j].style.pointerEvents = 'none';
+            }
+            
+            if (i === q.ans) {
+                opts[i].className = 'option correct';
+                sc++;
+                document.getElementById('score').textContent = sc;
+            } else {
+                opts[i].className = 'option wrong';
+                opts[q.ans].className = 'option correct';
+            }
+            
+            var expDiv = document.getElementById('explanation');
+            expDiv.innerHTML = '<strong>📖 Explanation:</strong> ' + q.exp;
+            expDiv.className = 'explanation show';
+            
+            document.getElementById('next').style.display = 'inline-block';
+        }
+
+        function next() {
+            qidx++;
+            if (qidx < 5) {
+                show();
+            } else {
+                end();
+            }
+        }
+
+        function end() {
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = '';
+            
+            var pct = Math.round((sc / 5) * 100);
+            var grade = '';
+            
+            if (pct >= 80) grade = 'A - Excellent!';
+            else if (pct >= 60) grade = 'B - Good!';
+            else if (pct >= 40) grade = 'C - Fair';
+            else grade = 'D - Keep Practicing';
+            
+            document.getElementById('final').textContent = sc;
+            document.getElementById('correct').textContent = sc;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('grade').textContent = grade;
+        }
+
+        function again() {
+            start(lvl);
+            document.getElementById('results').className = 'hidden';
+        }
+
+        function menu() {
+            document.getElementById('menu').className = '';
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = 'hidden';
+        }
+    </script>
+</body>
+</html>
