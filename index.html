@@ -12052,7 +12052,7 @@
 
           try {
             // Step 1: Initiate STK Push
-            const stkPushUrl = `${API_BASE_URL}/api/stkpush`;
+            const stkPushUrl = `${API_BASE_URL}/api/payments/stkpush`;
             console.log('📤 Step 1: Calling STK Push endpoint:', stkPushUrl);
             
             const stkRes = await fetch(stkPushUrl, {
