@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // GLOBAL CONFIGURATION & STATE
 // ============================================
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://shuleaiv1.onrender.com/api";
 const TILL_NUMBER = "5628512";
 
 const subscriptionPlans = {

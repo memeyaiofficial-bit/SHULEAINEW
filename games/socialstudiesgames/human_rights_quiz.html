@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Rights Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.4);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #1e3c72;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .intro {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #1e3c72;
+            margin: 20px 0;
+            color: #333;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .level-card {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(30,60,114,0.4);
+        }
+        .level-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .level-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 110px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            transition: width 0.5s;
+        }
+        .question-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #1e3c72;
+        }
+        .question-box h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .category {
+            display: inline-block;
+            background: #1e3c72;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #1e3c72;
+            background: #f0f7ff;
+            transform: translateX(5px);
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .option.wrong {
+            border-color: #f44336;
+            background: #FFEBEE;
+        }
+        .explanation {
+            background: #FFF9C4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #FBC02D;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #666, #999);
+        }
+        .hidden {
+            display: none;
+        }
+        .results {
+            text-align: center;
+            padding: 30px;
+        }
+        .results h2 {
+            color: #1e3c72;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .trophy {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+        .score-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #1e3c72;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 24px;
+        }
+        .message {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #2e7d32;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 28px; }
+            .icon { font-size: 60px; }
+            .level-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menu">
+            <div class="header">
+                <div class="icon">⚖️</div>
+                <h1>Human Rights Quiz</h1>
+                <p class="subtitle">Understanding Rights, Dignity & Justice for All</p>
+            </div>
+            
+            <div class="intro">
+                <strong>📖 About This Quiz:</strong> Test your knowledge about human rights - the basic rights and freedoms 
+                that belong to every person in the world. Learn about universal rights, international laws, 
+                and how rights protect human dignity. 45 questions across 3 levels!
+            </div>
+
+            <div class="level-grid">
+                <div class="level-card" onclick="start(1)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">📚</div>
+                    <h3>Level 1: Foundations</h3>
+                    <p>Basic concepts, UDHR, and fundamental rights</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(2)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🌍</div>
+                    <h3>Level 2: Global Rights</h3>
+                    <p>International law, treaties, and protections</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(3)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🏆</div>
+                    <h3>Level 3: Advanced</h3>
+                    <p>Violations, defenders, and contemporary issues</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-label">🏆 Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="qnum">1</span>
+                    <span class="stat-label">📝 Question</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">📊 Total</span>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="category" id="category"></div>
+                <h2 id="qtext"></h2>
+                <div id="options"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="menu()">🏠 Menu</button>
+                <button class="btn" id="next" onclick="next()" style="display:none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="results">
+                <div class="trophy">🏆</div>
+                <h2>Level Complete!</h2>
+                
+                <div class="score-box">
+                    <div class="score-item">
+                        <span>🏆 Final Score:</span>
+                        <span class="score-value" id="final">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>✅ Correct Answers:</span>
+                        <span class="score-value" id="correct">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>❌ Wrong Answers:</span>
+                        <span class="score-value" id="wrong">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📊 Percentage:</span>
+                        <span class="score-value" id="percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <button class="btn" onclick="again()">🔄 Retry Level</button>
+                <button class="btn btn-secondary" onclick="menu()">🏠 Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var questions = {
+            1: [
+                {
+                    q: "What are human rights?",
+                    opts: ["Rights only for rich people", "Basic rights and freedoms belonging to all people", "Rights given by governments", "Rights you must earn"],
+                    ans: 1,
+                    cat: "Basics",
+                    exp: "Human rights are basic rights and freedoms that belong to every person in the world, from birth until death. They are based on values like dignity, fairness, equality, and respect."
+                },
+                {
+                    q: "Which document is known as the Universal Declaration of Human Rights?",
+                    opts: ["A book", "UN declaration adopted in 1948", "A movie", "A constitution"],
+                    ans: 1,
+                    cat: "UDHR",
+                    exp: "The Universal Declaration of Human Rights (UDHR) was adopted by the United Nations General Assembly on December 10, 1948. It sets out fundamental human rights to be universally protected."
+                },
+                {
+                    q: "How many articles are in the Universal Declaration of Human Rights?",
+                    opts: ["10", "30", "50", "100"],
+                    ans: 1,
+                    cat: "UDHR",
+                    exp: "The UDHR contains 30 articles outlining the fundamental human rights that should be universally protected, covering civil, political, economic, social, and cultural rights."
+                },
+                {
+                    q: "Which is a fundamental human right?",
+                    opts: ["Right to own a car", "Right to life", "Right to be famous", "Right to travel to space"],
+                    ans: 1,
+                    cat: "Fundamental Rights",
+                    exp: "The right to life is one of the most fundamental human rights. It means everyone has the right to live and nobody should be arbitrarily killed."
+                },
+                {
+                    q: "What does 'All human beings are born free and equal in dignity and rights' mean?",
+                    opts: ["Only some people have rights", "Everyone has the same worth and rights from birth", "Rights depend on where you live", "Rights are earned"],
+                    ans: 1,
+                    cat: "Equality",
+                    exp: "Article 1 of the UDHR states all humans are born with equal dignity and rights, regardless of race, gender, religion, or any other status. This is the foundation of human rights."
+                },
+                {
+                    q: "Which organization promotes and protects human rights globally?",
+                    opts: ["FIFA", "United Nations", "World Bank", "Red Cross only"],
+                    ans: 1,
+                    cat: "Organizations",
+                    exp: "The United Nations (UN) is the primary international organization dedicated to promoting and protecting human rights worldwide through various bodies like the Human Rights Council."
+                },
+                {
+                    q: "What is the right to education?",
+                    opts: ["Only for rich children", "Every child's right to learn and go to school", "Optional right", "Right only in developed countries"],
+                    ans: 1,
+                    cat: "Education",
+                    exp: "Article 26 of the UDHR states everyone has the right to education. Education should be free, at least in elementary and fundamental stages, and compulsory."
+                },
+                {
+                    q: "What does freedom of expression mean?",
+                    opts: ["Right to be rude", "Right to express opinions and ideas freely", "Right to spread lies", "Right to insult others"],
+                    ans: 1,
+                    cat: "Freedoms",
+                    exp: "Freedom of expression (Article 19) means everyone has the right to hold opinions and express ideas and information through any media, but with respect for others' rights."
+                },
+                {
+                    q: "Can human rights be taken away?",
+                    opts: ["Yes, easily", "No, they are inherent and cannot be taken away", "Yes, by governments anytime", "Only during war"],
+                    ans: 1,
+                    cat: "Nature of Rights",
+                    exp: "Human rights are inherent - they cannot be taken away. They belong to you simply because you are human. However, they can be violated, which is why protection is important."
+                },
+                {
+                    q: "What is discrimination?",
+                    opts: ["Treating everyone equally", "Unfair treatment based on race, gender, religion, etc.", "A type of education", "Government policy"],
+                    ans: 1,
+                    cat: "Discrimination",
+                    exp: "Discrimination means treating people unfairly because of characteristics like race, color, sex, language, religion, or other status. Article 2 prohibits discrimination in human rights."
+                },
+                {
+                    q: "What does the right to fair trial mean?",
+                    opts: ["Quick trial", "Trial by jury only", "Right to be heard by impartial court with legal representation", "No trial needed"],
+                    ans: 2,
+                    cat: "Justice",
+                    exp: "The right to fair trial (Article 10) means everyone is entitled to a fair and public hearing by an independent tribunal, with legal assistance and presumption of innocence."
+                },
+                {
+                    q: "Which is NOT a human right?",
+                    opts: ["Freedom from slavery", "Right to own luxury items", "Freedom of thought", "Right to work"],
+                    ans: 1,
+                    cat: "Rights vs Wants",
+                    exp: "While everyone has rights to life, freedom, work, and thought, there is no human right to own luxury items. Human rights cover basic needs and freedoms, not luxury wants."
+                },
+                {
+                    q: "What is the right to privacy?",
+                    opts: ["Right to be alone always", "Right to protection from arbitrary interference in private life", "Right to keep secrets", "Right to hide crimes"],
+                    ans: 1,
+                    cat: "Privacy",
+                    exp: "Article 12 protects privacy - no one shall be subjected to arbitrary interference with privacy, family, home, or correspondence. Everyone has right to protection of the law."
+                },
+                {
+                    q: "Who is responsible for protecting human rights?",
+                    opts: ["Only police", "Only UN", "Governments primarily, but everyone has a role", "Nobody"],
+                    ans: 2,
+                    cat: "Responsibility",
+                    exp: "While governments have the primary duty to protect human rights, everyone - individuals, communities, organizations - has responsibility to respect and uphold others' rights."
+                },
+                {
+                    q: "What does freedom from torture mean?",
+                    opts: ["Light punishment is okay", "No one shall be subjected to torture or cruel punishment", "Only physical torture is banned", "Torture in war is acceptable"],
+                    ans: 1,
+                    cat: "Torture",
+                    exp: "Article 5 absolutely prohibits torture and cruel, inhuman or degrading treatment or punishment. This applies at all times, with no exceptions, even during war."
+                }
+            ],
+            2: [
+                {
+                    q: "What is the International Covenant on Civil and Political Rights (ICCPR)?",
+                    opts: ["A suggestion", "A legally binding treaty on civil and political rights", "A book", "A recommendation"],
+                    ans: 1,
+                    cat: "Treaties",
+                    exp: "The ICCPR (adopted 1966) is a legally binding international treaty that commits countries to respect civil and political rights like life, fair trial, and freedom of expression."
+                },
+                {
+                    q: "When is Human Rights Day celebrated?",
+                    opts: ["January 1", "July 4", "December 10", "March 8"],
+                    ans: 2,
+                    cat: "Observances",
+                    exp: "Human Rights Day is observed on December 10 each year, marking the day in 1948 when the UN General Assembly adopted the Universal Declaration of Human Rights."
+                },
+                {
+                    q: "What is the Convention on the Rights of the Child?",
+                    opts: ["Guidelines for parents", "International treaty protecting children's rights", "A school program", "A charity organization"],
+                    ans: 1,
+                    cat: "Children's Rights",
+                    exp: "The Convention on the Rights of the Child (1989) is the most widely ratified human rights treaty, setting out civil, political, economic, social, and cultural rights of children."
+                },
+                {
+                    q: "What does the right to asylum mean?",
+                    opts: ["Right to travel", "Right to seek protection in another country from persecution", "Right to live anywhere", "Right to visit family"],
+                    ans: 1,
+                    cat: "Refugees",
+                    exp: "Article 14 grants the right to seek and enjoy asylum from persecution in other countries. People fleeing serious human rights violations can request refugee protection."
+                },
+                {
+                    q: "What is the Universal Periodic Review?",
+                    opts: ["A test", "UN process reviewing human rights records of all countries", "A court case", "An election"],
+                    ans: 1,
+                    cat: "Monitoring",
+                    exp: "The Universal Periodic Review (UPR) is a UN Human Rights Council process where every UN member state's human rights record is reviewed every 4-5 years."
+                },
+                {
+                    q: "What are economic, social and cultural rights?",
+                    opts: ["Luxury rights", "Rights to adequate living standards, health, education, and culture", "Rights for rich countries only", "Optional rights"],
+                    ans: 1,
+                    cat: "ESC Rights",
+                    exp: "Economic, social and cultural rights (ICESCR) include rights to work, fair wages, social security, adequate living standards, health, education, and participation in cultural life."
+                },
+                {
+                    q: "What is the Convention on the Elimination of Discrimination Against Women (CEDAW)?",
+                    opts: ["A suggestion", "International treaty ensuring women's rights and equality", "A women's group", "A court"],
+                    ans: 1,
+                    cat: "Women's Rights",
+                    exp: "CEDAW (1979) is an international treaty that obligates countries to eliminate discrimination against women and ensure equality in political, economic, social, and cultural life."
+                },
+                {
+                    q: "What is the International Criminal Court (ICC)?",
+                    opts: ["A regular court", "Permanent court prosecuting genocide, war crimes, and crimes against humanity", "A police station", "A prison"],
+                    ans: 1,
+                    cat: "Justice",
+                    exp: "The ICC, established in 2002, is an independent permanent court that prosecutes individuals for genocide, crimes against humanity, war crimes, and aggression."
+                },
+                {
+                    q: "What does the principle of non-discrimination mean?",
+                    opts: ["Treating some people better", "Treating all people equally without unfair distinctions", "Ignoring differences", "Separate but equal"],
+                    ans: 1,
+                    cat: "Non-discrimination",
+                    exp: "Non-discrimination means all persons are entitled to their rights without distinction based on race, color, sex, language, religion, political opinion, or other status."
+                },
+                {
+                    q: "What are indigenous peoples' rights?",
+                    opts: ["No special rights", "Rights to lands, culture, self-determination, and development", "Same as everyone", "Limited rights"],
+                    ans: 1,
+                    cat: "Indigenous Rights",
+                    exp: "The UN Declaration on Rights of Indigenous Peoples (2007) recognizes their rights to lands, cultures, self-determination, and to maintain and strengthen distinct institutions."
+                },
+                {
+                    q: "What is the right to nationality?",
+                    opts: ["Right to travel", "Right to belong to a country and not be stateless", "Right to change countries", "Right to multiple passports"],
+                    ans: 1,
+                    cat: "Nationality",
+                    exp: "Article 15 states everyone has right to a nationality and no one shall be arbitrarily deprived of nationality. Being stateless denies access to many other rights."
+                },
+                {
+                    q: "What is the Office of the High Commissioner for Human Rights (OHCHR)?",
+                    opts: ["A police office", "UN office leading global human rights efforts", "A court", "A charity"],
+                    ans: 1,
+                    cat: "UN Bodies",
+                    exp: "OHCHR is the UN office mandated to promote and protect all human rights. It provides leadership, works objectively, and assists governments in upholding human rights."
+                },
+                {
+                    q: "What does freedom of peaceful assembly mean?",
+                    opts: ["Right to fight", "Right to meet and protest peacefully", "Right to disturb peace", "Right to gather secretly"],
+                    ans: 1,
+                    cat: "Assembly",
+                    exp: "Article 20 guarantees the right to peaceful assembly and association. People can gather publicly and peacefully to express views, but without violence."
+                },
+                {
+                    q: "What is the right to an adequate standard of living?",
+                    opts: ["Right to luxury", "Right to food, clothing, housing, medical care, and social services", "Right to wealth", "Right to travel"],
+                    ans: 1,
+                    cat: "Living Standards",
+                    exp: "Article 25 recognizes the right to a standard of living adequate for health and well-being, including food, clothing, housing, medical care, and necessary social services."
+                },
+                {
+                    q: "What is the principle of universality in human rights?",
+                    opts: ["Rights only in some countries", "Human rights apply to everyone, everywhere", "Rights depend on culture", "Rights vary by region"],
+                    ans: 1,
+                    cat: "Universality",
+                    exp: "Universality means human rights belong to all people regardless of nationality, place of residence, sex, ethnic origin, color, religion, language, or any other status."
+                }
+            ],
+            3: [
+                {
+                    q: "What is a human rights violation?",
+                    opts: ["Disagreement", "Action by state or group denying people their human rights", "A law", "A protest"],
+                    ans: 1,
+                    cat: "Violations",
+                    exp: "A human rights violation occurs when actions by governments, groups, or individuals deny people their basic rights and freedoms as outlined in human rights law."
+                },
+                {
+                    q: "Who was Nelson Mandela?",
+                    opts: ["A singer", "Anti-apartheid activist and first Black president of South Africa", "A scientist", "An athlete"],
+                    ans: 1,
+                    cat: "Human Rights Defenders",
+                    exp: "Nelson Mandela (1918-2013) fought against apartheid in South Africa, spent 27 years in prison, and became the country's first Black president, championing reconciliation and human rights."
+                },
+                {
+                    q: "What is genocide?",
+                    opts: ["A war", "Deliberate killing of a large group of people based on ethnicity or nationality", "A disease", "A political system"],
+                    ans: 1,
+                    cat: "Crimes Against Humanity",
+                    exp: "Genocide is the deliberate and systematic destruction of a racial, ethnic, national, or religious group. It is considered one of the gravest crimes under international law."
+                },
+                {
+                    q: "What is human trafficking?",
+                    opts: ["Legal trade", "Illegal trade of humans for exploitation through force or deception", "Migration", "Employment"],
+                    ans: 1,
+                    cat: "Modern Slavery",
+                    exp: "Human trafficking is the illegal trade of people for exploitation through force, fraud, or coercion. It's a grave violation of human rights affecting millions globally."
+                },
+                {
+                    q: "Who was Malala Yousafzai?",
+                    opts: ["A politician", "Pakistani activist for girls' education shot by Taliban, youngest Nobel laureate", "A scientist", "An artist"],
+                    ans: 1,
+                    cat: "Human Rights Defenders",
+                    exp: "Malala Yousafzai survived being shot by the Taliban for advocating girls' education in Pakistan. She became the youngest Nobel Peace Prize laureate in 2014 at age 17."
+                },
+                {
+                    q: "What are crimes against humanity?",
+                    opts: ["Regular crimes", "Widespread or systematic attacks on civilians including murder, torture, enslavement", "Accidents", "Misdemeanors"],
+                    ans: 1,
+                    cat: "International Law",
+                    exp: "Crimes against humanity are widespread or systematic attacks directed against civilian populations, including murder, torture, rape, enslavement, and persecution."
+                },
+                {
+                    q: "What is enforced disappearance?",
+                    opts: ["Going missing", "Arrest, detention, or abduction by state followed by refusal to acknowledge", "Hiding", "Emigration"],
+                    ans: 1,
+                    cat: "Violations",
+                    exp: "Enforced disappearance is when state agents arrest, detain, or abduct people then refuse to acknowledge it or reveal their fate, placing victims outside the law's protection."
+                },
+                {
+                    q: "What is the death penalty debate about?",
+                    opts: ["Prison conditions", "Whether executing criminals violates the right to life", "Court procedures", "Police methods"],
+                    ans: 1,
+                    cat: "Right to Life",
+                    exp: "The death penalty debate centers on whether state execution violates the right to life. Many argue it's cruel and inhuman; over 100 countries have abolished it."
+                },
+                {
+                    q: "What are whistleblowers?",
+                    opts: ["Musicians", "People who expose wrongdoing or illegal activities", "Athletes", "Politicians"],
+                    ans: 1,
+                    cat: "Transparency",
+                    exp: "Whistleblowers are people who expose information about illegal, unethical, or harmful activities. They often face retaliation and need legal protection for defending public interest."
+                },
+                {
+                    q: "What is arbitrary detention?",
+                    opts: ["Legal arrest", "Imprisonment without legal basis or due process", "Police custody", "Court sentence"],
+                    ans: 1,
+                    cat: "Liberty",
+                    exp: "Arbitrary detention is imprisonment without legal basis, charges, or trial. Article 9 prohibits arbitrary arrest, stating everyone has the right to liberty and security."
+                },
+                {
+                    q: "What is the right to freedom of religion?",
+                    opts: ["Right to force religion on others", "Right to practice, change, or not follow any religion", "Right to one religion only", "Right to ban religions"],
+                    ans: 1,
+                    cat: "Religion",
+                    exp: "Article 18 protects freedom of thought, conscience, and religion - the right to practice, change, or not follow any religion, alone or with others, publicly or privately."
+                },
+                {
+                    q: "What is intersectionality in human rights?",
+                    opts: ["Roads crossing", "How different forms of discrimination overlap and compound", "International cooperation", "Court procedures"],
+                    ans: 1,
+                    cat: "Discrimination",
+                    exp: "Intersectionality recognizes how different aspects of identity (race, gender, class, disability) overlap to create unique experiences of discrimination that must be addressed together."
+                },
+                {
+                    q: "What is the responsibility to protect (R2P)?",
+                    opts: ["Police duty", "International principle to prevent genocide, war crimes, and crimes against humanity", "Military strategy", "Insurance policy"],
+                    ans: 1,
+                    cat: "International Principles",
+                    exp: "R2P is an international principle establishing that states must protect populations from genocide, war crimes, ethnic cleansing, and crimes against humanity."
+                },
+                {
+                    q: "What is climate change's relationship to human rights?",
+                    opts: ["No relationship", "Threatens rights to life, health, food, water, and housing", "Only environmental issue", "Economic issue only"],
+                    ans: 1,
+                    cat: "Emerging Issues",
+                    exp: "Climate change threatens fundamental rights including life, health, food, water, and housing. The UN recognizes a clean, healthy environment as a human right."
+                },
+                {
+                    q: "What can individuals do to promote human rights?",
+                    opts: ["Nothing", "Educate themselves, speak out, support organizations, respect others' rights", "Wait for governments", "Ignore issues"],
+                    ans: 1,
+                    cat: "Taking Action",
+                    exp: "Individuals can promote human rights by educating themselves and others, speaking out against violations, supporting human rights organizations, and respecting others' rights daily."
+                }
+            ]
+        };
+
+        var lvl = 1;
+        var qidx = 0;
+        var sc = 0;
+
+        function start(l) {
+            lvl = l;
+            qidx = 0;
+            sc = 0;
+            document.getElementById('menu').className = 'hidden';
+            document.getElementById('quiz').className = '';
+            show();
+        }
+
+        function show() {
+            var q = questions[lvl][qidx];
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('category').textContent = q.cat;
+            document.getElementById('qnum').textContent = qidx + 1;
+            document.getElementById('score').textContent = sc;
+            
+            var progress = ((qidx + 1) / 15) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            var opts = '';
+            for (var i = 0; i < q.opts.length; i++) {
+                opts += '<div class="option" onclick="pick(' + i + ')">' + q.opts[i] + '</div>';
+            }
+            document.getElementById('options').innerHTML = opts;
+            document.getElementById('explanation').className = 'explanation';
+            document.getElementById('next').style.display = 'none';
+        }
+
+        function pick(i) {
+            var q = questions[lvl][qidx];
+            var opts = document.querySelectorAll('.option');
+            
+            for (var j = 0; j < opts.length; j++) {
+                opts[j].style.pointerEvents = 'none';
+            }
+            
+            if (i === q.ans) {
+                opts[i].className = 'option correct';
+                sc++;
+                document.getElementById('score').textContent = sc;
+            } else {
+                opts[i].className = 'option wrong';
+                opts[q.ans].className = 'option correct';
+            }
+            
+            var expDiv = document.getElementById('explanation');
+            expDiv.innerHTML = '<strong>📖 Learn More:</strong> ' + q.exp;
+            expDiv.className = 'explanation show';
+            
+            document.getElementById('next').style.display = 'inline-block';
+        }
+
+        function next() {
+            qidx++;
+            if (qidx < 15) {
+                show();
+            } else {
+                end();
+            }
+        }
+
+        function end() {
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = '';
+            
+            var pct = Math.round((sc / 15) * 100);
+            var wrong = 15 - sc;
+            var msg = '';
+            
+            if (pct >= 90) msg = '🌟 Outstanding! You are a human rights champion!';
+            else if (pct >= 75) msg = '👏 Excellent! You have strong knowledge of human rights!';
+            else if (pct >= 60) msg = '👍 Good work! You understand human rights well!';
+            else if (pct >= 40) msg = '📚 Keep learning! Human rights are important!';
+            else msg = '💪 Don\'t give up! Study more about human rights!';
+            
+            document.getElementById('final').textContent = sc;
+            document.getElementById('correct').textContent = sc;
+            document.getElementById('wrong').textContent = wrong;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('message').textContent = msg;
+        }
+
+        function again() {
+            start(lvl);
+            document.getElementById('results').className = 'hidden';
+        }
+
+        function menu() {
+            document.getElementById('menu').className = '';
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = 'hidden';
+        }
+    </script>
+</body>
+</html>

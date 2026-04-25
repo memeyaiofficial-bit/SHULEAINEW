@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Computer Concepts</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --cr-deep:    #2a1f0e;
+  --cr-dark:    #4a3728;
+  --cr-main:    #7a5c3a;
+  --cr-mid:     #a07850;
+  --cr-warm:    #c49a68;
+  --cr-light:   #dfc4a0;
+  --cr-pale:    #f5ead8;
+  --cr-cream:   #fdf8f0;
+  --cr-ivory:   #fffdf7;
+  --accent:     #8b5e3c;
+  --accent-lt:  #c49a68;
+  --teal:       #3d7a72;
+  --teal-lt:    #6fb8ae;
+  --rose:       #9c4a4a;
+  --gold:       #c8960c;
+  --gold-lt:    #f0c94d;
+  --red-err:    #b71c1c;
+  --green-ok:   #2e7d32;
+  --white:      #ffffff;
+  --shadow:     0 6px 28px rgba(42,31,14,0.14);
+  --shadow-lg:  0 14px 48px rgba(42,31,14,0.20);
+  --shadow-card:0 3px 16px rgba(42,31,14,0.10);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--cr-cream);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(160deg,var(--cr-ivory) 0%,#f0e6d0 40%,#e8d5b5 100%);
+  box-shadow:0 3px 20px rgba(42,31,14,0.14);
+  border-bottom:3px solid var(--cr-light);
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 10% 50%,rgba(122,92,58,0.08) 0%,transparent 60%),
+    radial-gradient(ellipse at 90% 30%,rgba(61,122,114,0.07) 0%,transparent 60%),
+    repeating-linear-gradient(
+      135deg,transparent,transparent 24px,
+      rgba(122,92,58,0.04) 24px,rgba(122,92,58,0.04) 48px
+    );
+}
+.accent-bar{
+  width:100%;height:5px;
+  background:linear-gradient(90deg,var(--rose),var(--accent),var(--gold),var(--teal),var(--accent),var(--rose));
+}
+.header-inner{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;padding:22px 20px 18px;
+}
+.brand-top{display:flex;align-items:center;gap:13px;margin-bottom:8px;}
+.brand-icon{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--accent),var(--cr-main));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:28px;box-shadow:0 4px 16px rgba(42,31,14,0.22);flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.4);
+}
+.brand-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,4.5vw,30px);
+  font-weight:900;color:var(--cr-deep);letter-spacing:.5px;line-height:1;
+}
+.brand-plus{color:var(--gold);}
+.header-sub{font-size:11px;color:var(--cr-mid);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.header-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(15px,3.2vw,22px);
+  color:var(--cr-dark);font-weight:700;text-align:center;line-height:1.3;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:780px;padding:26px 16px 50px;}
+.screen.active{display:block;}
+
+/* ── LEVEL SELECT ── */
+.section-title{
+  font-family:'Playfair Display',serif;font-size:24px;font-weight:900;
+  color:var(--cr-dark);text-align:center;margin-bottom:5px;margin-top:6px;
+}
+.section-sub{
+  text-align:center;font-size:13px;color:var(--cr-mid);
+  margin-bottom:28px;font-weight:500;line-height:1.6;
+}
+
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;}
+@media(min-width:560px){.levels-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:720px){.levels-grid{grid-template-columns:repeat(5,1fr);}}
+
+/* ── LEVEL CARD ── */
+.level-card{
+  background:var(--cr-ivory);
+  border:2.5px solid var(--cr-light);
+  border-radius:20px;padding:22px 10px 18px;
+  text-align:center;cursor:pointer;
+  transition:transform .22s,box-shadow .22s,border-color .22s;
+  box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;
+}
+.level-card::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:4px;
+  opacity:0;transition:opacity .2s;
+}
+.lc1::before{background:linear-gradient(90deg,#e8a87c,#f5c842);}
+.lc2::before{background:linear-gradient(90deg,#7ab8a8,#3d7a72);}
+.lc3::before{background:linear-gradient(90deg,#9c6bb0,#6a3d85);}
+.lc4::before{background:linear-gradient(90deg,#c06060,#8b2020);}
+.lc5::before{background:linear-gradient(90deg,#5a8fbf,#2c5f8a);}
+.level-card:hover::before{opacity:1;}
+.level-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--cr-warm);
+}
+.level-card.completed{border-color:var(--gold);}
+.level-card.completed .lnum{color:var(--gold);}
+
+.lvl-icon{font-size:30px;margin-bottom:8px;display:block;}
+.lnum{
+  font-family:'Press Start 2P',monospace;font-size:13px;
+  color:var(--cr-main);margin-bottom:7px;display:block;line-height:1.5;
+}
+.lname{
+  font-weight:800;font-size:12px;color:var(--cr-dark);
+  margin-bottom:3px;line-height:1.35;min-height:32px;
+  display:flex;align-items:center;justify-content:center;
+}
+.lq{font-size:10px;color:#bbb;margin-bottom:7px;}
+.level-stars{font-size:15px;min-height:20px;}
+
+.lvl-tag{
+  display:inline-block;font-size:9px;font-weight:800;
+  padding:3px 9px;border-radius:20px;margin-bottom:8px;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.lt1{background:#fef3e2;color:#b45309;}
+.lt2{background:#e6f4f1;color:#1a5952;}
+.lt3{background:#f3ecf8;color:#6a1b9a;}
+.lt4{background:#fdecea;color:#b71c1c;}
+.lt5{background:#e8f0f8;color:#1a3a6e;}
+
+/* ── GAME TOPBAR ── */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:13px;gap:8px;flex-wrap:wrap;
+}
+.game-level-tag{
+  background:linear-gradient(135deg,var(--cr-main),var(--cr-dark));
+  color:var(--cr-pale);border-radius:22px;
+  padding:6px 16px;font-weight:700;font-size:11px;
+  flex:1;text-align:center;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-pill{
+  background:var(--gold);color:var(--cr-deep);
+  border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;
+  min-width:74px;text-align:center;flex-shrink:0;
+  transition:background .3s;border:2px solid rgba(255,255,255,0.3);
+}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{
+  background:linear-gradient(135deg,var(--teal),var(--cr-dark));
+  color:white;border-radius:22px;padding:6px 16px;font-weight:800;font-size:13px;flex-shrink:0;
+}
+
+/* Progress */
+.prog-wrap{
+  width:100%;height:12px;
+  background:var(--cr-pale);
+  border-radius:99px;margin-bottom:18px;overflow:hidden;
+  border:1px solid var(--cr-light);
+}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--gold));
+  border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);
+}
+
+/* ── QUESTION ── */
+.question-card{
+  background:var(--cr-ivory);border-radius:20px;
+  padding:24px 22px 20px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border:2px solid var(--cr-light);
+  border-left:6px solid var(--accent);
+  position:relative;
+}
+.q-num{
+  font-size:11px;font-weight:700;color:var(--cr-mid);
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:9px;
+}
+.q-text{
+  font-size:clamp(14px,2.5vw,17px);font-weight:700;
+  color:var(--cr-deep);line-height:1.6;
+}
+
+/* ── OPTIONS ── */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--cr-ivory);border:2px solid var(--cr-light);border-radius:14px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--cr-dark);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;
+  transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){
+  background:var(--cr-pale);border-color:var(--cr-warm);
+  transform:translateY(-2px);box-shadow:0 5px 14px rgba(42,31,14,0.12);
+}
+.opt-letter{
+  background:var(--cr-pale);color:var(--cr-main);
+  border-radius:8px;min-width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+  border:1.5px solid var(--cr-light);
+}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;border-color:var(--green-ok);}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;border-color:var(--red-err);}
+.opt-btn:disabled{cursor:default;}
+
+/* ── FEEDBACK ── */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#e8f5e9;border:2px solid var(--green-ok);border-radius:13px;
+  padding:12px 16px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:22px;flex-shrink:0;}
+
+/* ── NEXT BTN ── */
+.next-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--cr-warm),var(--cr-dark));
+  color:white;border:none;border-radius:14px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 18px rgba(42,31,14,0.28);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(42,31,14,0.34);}
+.next-btn.show{display:block;}
+
+/* ── RESULTS ── */
+.result-box{
+  background:var(--cr-ivory);border-radius:24px;padding:36px 28px 32px;
+  box-shadow:var(--shadow-lg);text-align:center;
+  border:2.5px solid var(--cr-light);
+  border-top:7px solid var(--gold);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:68px;margin-bottom:8px;}
+.res-title{
+  font-family:'Playfair Display',serif;font-size:27px;
+  font-weight:900;color:var(--cr-dark);margin-bottom:4px;
+}
+.res-level-name{font-size:13px;color:var(--cr-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:42px;margin:12px 0;}
+.res-big{
+  font-family:'Press Start 2P',monospace;font-size:30px;
+  color:var(--cr-main);margin-bottom:4px;
+}
+.res-sub{font-size:13px;color:#aaa;margin-bottom:22px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.stat-box{
+  background:var(--cr-pale);border-radius:13px;padding:14px 8px;
+  border:1.5px solid var(--cr-light);
+}
+.stat-n{font-size:26px;font-weight:900;color:var(--cr-dark);}
+.stat-l{font-size:11px;color:#aaa;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{
+  background:linear-gradient(135deg,var(--cr-warm),var(--cr-dark));color:white;
+  border:none;border-radius:13px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(42,31,14,0.22);transition:transform .15s;
+}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{
+  background:var(--cr-ivory);color:var(--cr-dark);
+  border:2.5px solid var(--cr-warm);
+  border-radius:13px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform .15s,background .15s;
+}
+.btn-border:hover{transform:translateY(-2px);background:var(--cr-pale);}
+
+footer{
+  text-align:center;font-size:11px;color:#c0b090;
+  padding:16px 20px 32px;letter-spacing:.5px;
+}
+footer a{color:var(--cr-main);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="accent-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">💻</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Computer Studies · All Levels</div>
+    <div class="header-title">🖥️ Computer Concepts Quiz</div>
+  </div>
+  <div class="accent-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:780px;margin:0 auto;">
+    <div class="section-title">Choose Your Level</div>
+    <div class="section-sub">5 Levels · 15 Questions Each · All Levels Open — Pick Yours!</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Level 1</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 15</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:780px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Outstanding!</div>
+      <div class="res-level-name" id="res-level-name"></div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Levels</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Computer Concepts</footer>
+
+<script>
+// ════════════════════════════════════════════
+//  QUESTIONS  —  5 Levels × 15 Questions each
+// ════════════════════════════════════════════
+const Q = {
+
+// ── LEVEL 1 : Computer Basics ─────────────────────────────────
+1:[
+ {q:"What is a computer?",opts:["A type of television","An electronic device that processes data and performs tasks according to instructions","A large calculator only","A device that prints documents"],a:1},
+ {q:"What are the TWO main parts of a computer system?",opts:["Screen and keyboard","Hardware and software","Monitor and printer","Mouse and keyboard"],a:1},
+ {q:"What is HARDWARE?",opts:["Programs stored on a computer","The internet connection","The physical parts of a computer you can touch","The icons on the screen"],a:2},
+ {q:"What is SOFTWARE?",opts:["The keyboard and mouse","The physical components of a computer","The screen display","Programs and instructions that tell the computer what to do"],a:3},
+ {q:"Which part of the computer displays information visually?",opts:["Keyboard","Monitor (screen)","Printer","Speaker"],a:1},
+ {q:"What is a KEYBOARD used for?",opts:["Displaying images","Printing documents","Entering text and commands into a computer","Storing data"],a:2},
+ {q:"What does a MOUSE do?",opts:["Prints documents","Controls a pointer on screen to select and click items","Stores files","Connects to the internet"],a:1},
+ {q:"What does a PRINTER do?",opts:["Displays images on screen","Scans documents","Produces a physical (paper) copy of documents","Stores data"],a:2},
+ {q:"What is the CPU?",opts:["The screen of the computer","Central Processing Unit — the brain that processes all instructions","The main storage device","The power supply"],a:1},
+ {q:"What is RAM used for?",opts:["Permanent storage of files","Connecting to the internet","Displaying graphics","Temporary storage of data the computer is currently using"],a:3},
+ {q:"Which device is used to scan images or documents into the computer?",opts:["Printer","Speaker","Scanner","Monitor"],a:2},
+ {q:"What is the INTERNET?",opts:["A type of computer","A large storage device","A global network connecting millions of computers worldwide","A computer programme"],a:2},
+ {q:"What does it mean to SHUT DOWN a computer?",opts:["Put it to sleep mode","Turn off the screen only","Properly close all programs and power off the computer","Restart the computer"],a:2},
+ {q:"What is a FILE?",opts:["A type of hardware","A collection of data or information stored under a name on a computer","A computer programme only","An internet connection"],a:1},
+ {q:"What is a FOLDER on a computer?",opts:["A type of software","A hardware component","A container used to organise and store related files","A type of internet browser"],a:2},
+],
+
+// ── LEVEL 2 : Operating Systems & Software ─────────────────────
+2:[
+ {q:"What is an OPERATING SYSTEM (OS)?",opts:["A type of computer game","System software that manages computer hardware and software resources and provides a platform for other programs","A word processing program","A type of internet browser"],a:1},
+ {q:"Which of these is an example of an OPERATING SYSTEM?",opts:["Microsoft Word","Google Chrome","Windows 11","Adobe Photoshop"],a:2},
+ {q:"What does the DESKTOP refer to on a computer?",opts:["The physical surface of a desk","The main screen you see after logging in — where icons and shortcuts are displayed","The keyboard and mouse surface","The back panel of the computer"],a:1},
+ {q:"What is an ICON on a computer?",opts:["A type of virus","A small image or symbol representing a program, file, or folder","The background image","A type of font"],a:1},
+ {q:"What is APPLICATION SOFTWARE?",opts:["The operating system","Programs designed to help users perform specific tasks like writing, calculating, or browsing","Hardware drivers","Computer firmware"],a:1},
+ {q:"Which of these is an example of APPLICATION SOFTWARE?",opts:["Windows","Linux","Microsoft Word or Excel","BIOS firmware"],a:2},
+ {q:"What is a WORD PROCESSOR used for?",opts:["Editing photos","Creating and editing text documents","Browsing the internet","Making spreadsheets"],a:1},
+ {q:"What is a SPREADSHEET program used for?",opts:["Creating text documents","Browsing websites","Organising and calculating data in rows and columns","Editing videos"],a:2},
+ {q:"What does INSTALLING a program mean?",opts:["Deleting a program","Copying the program files onto your computer so it can be used","Printing a document","Connecting to the internet"],a:1},
+ {q:"What is a USER INTERFACE?",opts:["The physical design of a keyboard","The way a computer communicates with hardware inside","The system by which a user interacts with the computer — screens, menus, and buttons","A type of software virus"],a:2},
+ {q:"What is a GRAPHICAL USER INTERFACE (GUI)?",opts:["A type of keyboard layout","A visual interface using icons, windows, and menus that users interact with using a mouse or touch","A programming language","A computer network"],a:1},
+ {q:"What is a TASKBAR on a Windows computer?",opts:["A toolbar for typing","The bar at the bottom of the screen showing open programmes and system icons","The title at the top of a window","The file explorer sidebar"],a:1},
+ {q:"What does SCROLL mean on a computer?",opts:["To delete a file","To print a document","To move up or down through content on a screen","To open a new window"],a:2},
+ {q:"What is a SHORTCUT KEY?",opts:["A small key on the keyboard","A type of virus","A combination of keys pressed together to quickly perform a command — e.g. Ctrl+C to copy","A link to a website"],a:2},
+ {q:"What is the purpose of the RECYCLE BIN on Windows?",opts:["To permanently delete files immediately","Temporary storage for deleted files that can be recovered or permanently deleted","To store downloaded files","To backup important files"],a:1},
+],
+
+// ── LEVEL 3 : Internet, Networks & Digital Safety ──────────────
+3:[
+ {q:"What is a COMPUTER NETWORK?",opts:["A single computer working alone","A programme for designing graphics","Two or more computers connected together to share resources and information","A type of operating system"],a:2},
+ {q:"What is a LAN?",opts:["A Large Area Network covering countries","A Local Area Network connecting computers within a small area like a school or office","A Long Access Node","A type of internet browser"],a:1},
+ {q:"What is a WAN?",opts:["Wireless Application Network","Wide Area Network connecting computers over large geographic areas","Web Access Node","A small office network"],a:1},
+ {q:"What does a ROUTER do?",opts:["Prints documents","Scans images","Directs internet data between devices on a network and connects the network to the internet","Stores files permanently"],a:2},
+ {q:"What is a WEB BROWSER?",opts:["A type of email service","Software used to access and view websites on the internet","A type of word processor","A file storage programme"],a:1},
+ {q:"What does URL stand for?",opts:["Universal Resource Locator","United Remote Link","Uniform Real Link","Universal Reading Language"],a:0},
+ {q:"What is a SEARCH ENGINE?",opts:["A car engine used for computing","A program that searches files on your hard drive","A web service that helps users find information on the internet by indexing websites","A type of operating system"],a:2},
+ {q:"What is EMAIL?",opts:["A physical letter sent by post","A type of virus","Electronic mail — messages sent and received digitally over the internet","A type of social media post"],a:2},
+ {q:"What is a COMPUTER VIRUS?",opts:["A beneficial programme","Malicious software that can damage or spread through a computer system causing harm","A type of antivirus","A hardware component"],a:1},
+ {q:"What does ANTIVIRUS SOFTWARE do?",opts:["Makes the computer run faster","Detects and removes malicious software to protect the computer","Increases storage space","Designs graphics"],a:1},
+ {q:"What is a FIREWALL?",opts:["Physical protection for the computer","A type of screen saver","Security software or hardware that monitors and controls incoming and outgoing network traffic to block threats","A type of virus"],a:2},
+ {q:"What is PHISHING?",opts:["A type of water sport","A legitimate email from your bank","A cyber attack where criminals trick people into revealing personal information through fake messages or websites","A type of antivirus scan"],a:2},
+ {q:"What does a STRONG PASSWORD include?",opts:["Only your name","Only numbers","Your birthday","A mix of upper and lowercase letters, numbers, and symbols that is difficult to guess"],a:3},
+ {q:"What is CYBERBULLYING?",opts:["Bullying a computer","A type of computer game","Using ICT devices and the internet to bully, harass, or harm others","A type of firewall attack"],a:2},
+ {q:"What does HTTPS in a web address indicate?",opts:["The website is very fast","The website is popular","The website uses a secure, encrypted connection to protect your data","The website is in English"],a:2},
+],
+
+// ── LEVEL 4 : Data, Programming & Problem Solving ──────────────
+4:[
+ {q:"What is DATA?",opts:["Processed and meaningful information","Raw, unprocessed facts and figures that have not yet been given meaning","A type of software","A computer programme"],a:1},
+ {q:"What is INFORMATION?",opts:["Raw unprocessed figures","Data that has been processed and given meaning, making it useful for decision-making","A type of hardware","Random numbers"],a:1},
+ {q:"What is a DATABASE?",opts:["A type of computer game","A web browser","An organised collection of structured data stored and accessed electronically","A type of email service"],a:2},
+ {q:"What is an ALGORITHM?",opts:["A type of computer virus","A step-by-step set of instructions for solving a problem or completing a task","A programming language","A type of software application"],a:1},
+ {q:"What is a FLOWCHART?",opts:["A type of graph showing financial data","A diagram using shapes and arrows to visually represent the steps of an algorithm or process","A type of database","A computer programme"],a:1},
+ {q:"What is PROGRAMMING (coding)?",opts:["Designing the physical appearance of a computer","The process of writing instructions in a programming language that a computer can execute","Typing a document","Setting up a network"],a:1},
+ {q:"What is a PROGRAMMING LANGUAGE?",opts:["A human spoken language used in computers","A formal set of instructions and rules used to write programs that a computer can understand and run","A type of operating system","A hardware component"],a:1},
+ {q:"What does INPUT mean in computing?",opts:["Data sent out from the computer","Data stored on a hard drive","Data or instructions entered into the computer for processing","The final result of processing"],a:2},
+ {q:"What does OUTPUT mean in computing?",opts:["Data entered into the computer","Data stored permanently","Data or results produced by the computer after processing — displayed, printed, or stored","The process of calculation"],a:2},
+ {q:"What is a LOOP in programming?",opts:["A type of data error","A circular wire in hardware","A programming structure that repeats a set of instructions a number of times until a condition is met","A type of output device"],a:2},
+ {q:"What is a VARIABLE in programming?",opts:["A type of loop","A fixed value that never changes","A named storage location in a programme that holds a value which can change during execution","A type of algorithm"],a:2},
+ {q:"What is DEBUGGING in programming?",opts:["Adding new features to a programme","Deleting old programmes","The process of finding and fixing errors (bugs) in a programme","Installing software"],a:2},
+ {q:"What is BINARY CODE?",opts:["A type of human language","A number system using only 0s and 1s that computers use to represent data and instructions","A type of programming language","A type of database"],a:1},
+ {q:"What does a BIT represent in computing?",opts:["8 units of data","A large file","The smallest unit of data in computing — a single 0 or 1","A type of storage device"],a:2},
+ {q:"What is a BYTE?",opts:["A single 0 or 1","A type of computer virus","A unit of digital data consisting of 8 bits","1,000 megabytes"],a:2},
+],
+
+// ── LEVEL 5 : Advanced Concepts & Emerging Technologies ────────
+5:[
+ {q:"What is ARTIFICIAL INTELLIGENCE (AI)?",opts:["A type of robot that replaces all human jobs","Computer software that simulates human intelligence — enabling machines to learn, reason, and solve problems","A type of database","A computer virus category"],a:1},
+ {q:"What is MACHINE LEARNING?",opts:["Teaching computers to type faster","A subset of AI where systems learn from data to improve their performance without being explicitly re-programmed","A method of making hardware","A type of firewall"],a:1},
+ {q:"What is CLOUD COMPUTING?",opts:["Computing done in cold weather","Storing and accessing data and programmes over the internet rather than on a local hard drive","A type of weather forecasting software","A method of connecting computers with cables"],a:1},
+ {q:"What is the INTERNET OF THINGS (IoT)?",opts:["A type of social media","A network of physical devices embedded with sensors and software that connect and exchange data over the internet","A type of programming language","A cybersecurity tool"],a:1},
+ {q:"What is BLOCKCHAIN technology?",opts:["A type of antivirus","A decentralised digital ledger that records transactions across many computers in a way that makes records difficult to alter","A type of social network","A cloud storage service"],a:1},
+ {q:"What is VIRTUAL REALITY (VR)?",opts:["A standard television broadcast","A computer-generated simulation of a three-dimensional environment that users can interact with as if it were real","A type of video conferencing","A 2D drawing software"],a:1},
+ {q:"What is AUGMENTED REALITY (AR)?",opts:["A fully virtual world replacing the real world","Technology that overlays digital information or images onto the real world environment — e.g. Snapchat filters","A type of screen protector","A type of network security"],a:1},
+ {q:"What is CYBER SECURITY?",opts:["Physical security of computer rooms","The practice of protecting computer systems, networks, and data from digital attacks, theft, and damage","A type of computer virus","A method of backing up files"],a:1},
+ {q:"What is BIG DATA?",opts:["A very large computer","Extremely large and complex data sets that cannot be processed by traditional software — requiring special tools for analysis","A type of database software","A large storage drive"],a:1},
+ {q:"What does OPEN SOURCE software mean?",opts:["Software that has no functions","Software whose source code is available publicly so anyone can use, modify, and distribute it","Software that is always free of bugs","Software only for governments"],a:1},
+ {q:"What is an API (Application Programming Interface)?",opts:["A type of computer virus","A type of screen display","A set of rules and protocols that allows different software applications to communicate and share data with each other","A computer storage unit"],a:2},
+ {q:"What is DATA ENCRYPTION?",opts:["Deleting data permanently","The process of converting data into a coded form to prevent unauthorised access — keeping data secure during storage or transmission","Compressing data to save space","Backing up data to the cloud"],a:1},
+ {q:"What is a SERVER in networking?",opts:["A person who serves food","A computer or programme that provides data, resources, or services to other computers (clients) over a network","A type of antivirus software","A type of output device"],a:1},
+ {q:"What is the difference between 5G and 4G mobile networks?",opts:["5G is slower but cheaper","They are the same technology","5G offers significantly faster speeds, lower latency, and higher capacity than 4G, enabling more connected devices","5G only works indoors"],a:2},
+ {q:"What is DIGITAL CITIZENSHIP?",opts:["Having a passport for digital countries","Owning a computer","The responsible, ethical, and safe use of technology and the internet — understanding rights and responsibilities online","A type of computer programming"],a:2},
+]
+
+}; // end Q
+
+// ════════════ LEVEL META ════════════
+const LVL_META = {
+  1:{label:"Computer Basics",             sub:"Hardware, Software & Peripherals", icon:"🖥️", tag:"lt1", cardcls:"lc1"},
+  2:{label:"Operating Systems",           sub:"OS, Software & User Interface",    icon:"⚙️", tag:"lt2", cardcls:"lc2"},
+  3:{label:"Internet & Digital Safety",   sub:"Networks, Web & Cybersecurity",    icon:"🌐", tag:"lt3", cardcls:"lc3"},
+  4:{label:"Data & Programming",          sub:"Algorithms, Code & Data",          icon:"💡", tag:"lt4", cardcls:"lc4"},
+  5:{label:"Advanced & Emerging Tech",    sub:"AI, Cloud, Blockchain & More",     icon:"🚀", tag:"lt5", cardcls:"lc5"},
+};
+
+// ════════════ STATE ════════════
+let curLevel=1,curQ=0,score=0,correct=0,wrong=0;
+let timer=null,timeLeft=30,answered=false;
+let shuffled=[];
+let stars={1:0,2:0,3:0,4:0,5:0};
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+// ── RENDER LEVELS ──
+function renderLevels(){
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  for(let l=1;l<=5;l++){
+    const m=LVL_META[l];
+    const hasStar=(stars[l]>0);
+    const c=document.createElement('div');
+    c.className='level-card '+m.cardcls+(hasStar?' completed':'');
+    const stHtml=hasStar?'⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]):'☆☆☆';
+    c.innerHTML=
+      '<span class="lvl-icon">'+m.icon+'</span>'+
+      '<span class="lvl-tag '+m.tag+'">Level '+l+'</span>'+
+      '<span class="lnum">'+m.icon+' L'+l+'</span>'+
+      '<div class="lname">'+m.label+'</div>'+
+      '<div class="lq">15 Questions</div>'+
+      '<div class="level-stars">'+stHtml+'</div>';
+    (function(lv){c.onclick=function(){startLevel(lv);};})(l);
+    g.appendChild(c);
+  }
+}
+
+// ── START LEVEL ──
+function startLevel(l){
+  curLevel=l;curQ=0;score=0;correct=0;wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  const m=LVL_META[l];
+  document.getElementById('game-level-label').textContent=m.icon+' Level '+l+' · '+m.label;
+  loadQ();
+}
+
+// ── LOAD QUESTION ──
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+// ── TIMER ──
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8)tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered)return;
+  answered=true;wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Time's up! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+// ── PICK ──
+function pick(chosen,ans,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4;correct++;
+    feedback(true,'✅ Correct! Well done!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Wrong! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length)showResults();
+  else loadQ();
+};
+
+// ── RESULTS ──
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  const m=LVL_META[curLevel];
+  document.getElementById('res-emoji').textContent=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('res-title').textContent=pct>=90?'Outstanding!':pct>=70?'Great Job!':pct>=50?'Good Effort!':'Keep Practising!';
+  document.getElementById('res-level-name').textContent=m.icon+' Level '+curLevel+' · '+m.label;
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goHome(){clearInterval(timer);renderLevels();show('screen-levels');}
+function retryLevel(){startLevel(curLevel);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+renderLevels();
+</script>
+</body>
+</html>

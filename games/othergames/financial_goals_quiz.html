@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Financial Goals</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --or-deep:    #6b2d00;
+  --or-dark:    #a84000;
+  --or-main:    #d85c00;
+  --or-mid:     #f07020;
+  --or-warm:    #ff8c3a;
+  --or-light:   #ffb07a;
+  --or-pale:    #fff0e4;
+  --or-cream:   #fffaf5;
+  --gold:       #f5c200;
+  --gold-lt:    #ffe066;
+  --yellow:     #ffd54f;
+  --red-err:    #c62828;
+  --green-ok:   #2e7d32;
+  --white:      #ffffff;
+  --shadow:     0 6px 24px rgba(107,45,0,0.18);
+  --shadow-lg:  0 14px 42px rgba(107,45,0,0.24);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--or-cream);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(135deg,var(--or-deep) 0%,var(--or-dark) 50%,var(--or-main) 100%);
+  box-shadow:0 4px 22px rgba(0,0,0,0.32);
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -45deg,transparent,transparent 20px,
+    rgba(255,255,255,0.04) 20px,rgba(255,255,255,0.04) 40px
+  );
+}
+.gold-bar{
+  width:100%;height:5px;
+  background:linear-gradient(90deg,transparent,var(--gold),var(--gold-lt),var(--yellow),var(--gold),transparent);
+}
+.header-inner{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 20px 17px;
+}
+.brand-top{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.brand-icon{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,var(--gold),var(--or-warm));
+  border-radius:13px;display:flex;align-items:center;justify-content:center;
+  font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,0.28);flex-shrink:0;
+}
+.brand-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,4.5vw,30px);
+  font-weight:900;color:var(--white);letter-spacing:.5px;line-height:1;
+}
+.brand-plus{color:var(--gold-lt);}
+.header-sub{font-size:11px;color:var(--or-light);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.header-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(15px,3.2vw,22px);
+  color:var(--or-pale);font-weight:700;text-align:center;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:760px;padding:26px 16px 48px;}
+.screen.active{display:block;}
+
+/* ── LEVEL SELECT ── */
+.section-title{
+  font-family:'Playfair Display',serif;font-size:23px;font-weight:900;
+  color:var(--or-dark);text-align:center;margin-bottom:5px;margin-top:4px;
+}
+.section-sub{
+  text-align:center;font-size:13px;color:var(--or-mid);
+  margin-bottom:28px;font-weight:500;line-height:1.5;
+}
+
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+@media(min-width:560px){.levels-grid{grid-template-columns:repeat(4,1fr);}}
+
+.level-card{
+  background:var(--white);
+  border:3px solid var(--or-light);
+  border-radius:20px;padding:22px 10px 18px;
+  text-align:center;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.level-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--or-warm),var(--gold));
+  opacity:0;transition:opacity .2s;
+}
+.level-card:hover::after{opacity:1;}
+.level-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--or-warm);}
+.level-card.completed{border-color:var(--gold);}
+.level-card.completed .lnum{color:var(--gold);}
+
+.age-badge{
+  display:inline-block;font-size:10px;font-weight:800;
+  padding:4px 10px;border-radius:20px;margin-bottom:9px;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.ab-1{background:#fff8e1;color:#f57f17;}
+.ab-2{background:#fce4ec;color:#880e4f;}
+.ab-3{background:#e8f5e9;color:#1b5e20;}
+.ab-4{background:#e3f2fd;color:#0d47a1;}
+
+.lnum{
+  font-family:'Press Start 2P',monospace;font-size:11px;
+  color:var(--or-main);margin-bottom:8px;display:block;line-height:1.6;
+}
+.lname{font-weight:800;font-size:13px;color:var(--or-dark);margin-bottom:3px;line-height:1.3;}
+.lq{font-size:11px;color:#aaa;margin-bottom:7px;}
+.level-stars{font-size:16px;min-height:20px;}
+
+/* ── GAME TOPBAR ── */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:13px;gap:8px;flex-wrap:wrap;
+}
+.game-level-tag{
+  background:var(--or-dark);color:var(--or-pale);
+  border-radius:20px;padding:5px 16px;font-weight:700;font-size:12px;
+  flex:1;text-align:center;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-pill{
+  background:var(--gold);color:var(--or-deep);
+  border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;
+  min-width:74px;text-align:center;flex-shrink:0;transition:background .3s;
+}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{
+  background:linear-gradient(135deg,var(--or-main),var(--or-deep));
+  color:white;border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;flex-shrink:0;
+}
+
+/* Progress */
+.prog-wrap{width:100%;height:11px;background:#ffe5cc;border-radius:99px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--or-warm),var(--gold));
+  border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);
+}
+
+/* ── QUESTION ── */
+.question-card{
+  background:var(--white);border-radius:18px;padding:22px 20px 18px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border-left:6px solid var(--or-warm);
+}
+.q-num{font-size:11px;font-weight:700;color:var(--or-main);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.q-text{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:var(--or-deep);line-height:1.55;}
+
+/* ── OPTIONS ── */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--white);border:2.5px solid #ffd4a8;border-radius:13px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--or-dark);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){
+  background:var(--or-pale);border-color:var(--or-warm);
+  transform:translateY(-2px);box-shadow:0 4px 12px rgba(216,92,0,.15);
+}
+.opt-letter{
+  background:var(--or-pale);color:var(--or-main);
+  border-radius:7px;min-width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;}
+.opt-btn:disabled{cursor:default;}
+
+/* ── FEEDBACK ── */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#e8f5e9;border:2px solid var(--green-ok);border-radius:12px;
+  padding:11px 15px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:20px;flex-shrink:0;}
+
+/* ── NEXT BTN ── */
+.next-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--or-warm),var(--or-deep));
+  color:white;border:none;border-radius:13px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 16px rgba(168,64,0,.35);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(168,64,0,.4);}
+.next-btn.show{display:block;}
+
+/* ── RESULTS ── */
+.result-box{
+  background:var(--white);border-radius:22px;padding:34px 26px 30px;
+  box-shadow:var(--shadow-lg);text-align:center;border-top:6px solid var(--gold);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:66px;margin-bottom:8px;}
+.res-title{font-family:'Playfair Display',serif;font-size:27px;font-weight:900;color:var(--or-dark);margin-bottom:4px;}
+.res-level-name{font-size:13px;color:var(--or-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:40px;margin:12px 0;}
+.res-big{font-family:'Press Start 2P',monospace;font-size:30px;color:var(--or-main);margin-bottom:4px;}
+.res-sub{font-size:13px;color:#999;margin-bottom:22px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.stat-box{background:var(--or-pale);border-radius:12px;padding:14px 8px;}
+.stat-n{font-size:24px;font-weight:900;color:var(--or-dark);}
+.stat-l{font-size:11px;color:#999;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{
+  background:linear-gradient(135deg,var(--or-warm),var(--or-deep));color:white;
+  border:none;border-radius:12px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(168,64,0,.3);transition:transform .15s;
+}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{
+  background:white;color:var(--or-dark);border:2.5px solid var(--or-warm);
+  border-radius:12px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform .15s,background .15s;
+}
+.btn-border:hover{transform:translateY(-2px);background:var(--or-pale);}
+
+footer{
+  text-align:center;font-size:11px;color:#bbb;
+  padding:16px 20px 32px;letter-spacing:.5px;
+}
+footer a{color:var(--or-warm);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gold-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">💰</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Financial Literacy · All Ages</div>
+    <div class="header-title">🎯 Financial Goals Quiz</div>
+  </div>
+  <div class="gold-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:760px;margin:0 auto;">
+    <div class="section-title">Choose Your Age Level</div>
+    <div class="section-sub">4 Age Levels · 25 Questions Each · All levels open — pick yours!</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Age 8–10</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 25</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:760px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Outstanding!</div>
+      <div class="res-level-name" id="res-level-name"></div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Levels</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Financial Goals</footer>
+
+<script>
+// ════════════════════════════════════════════════════
+//  QUESTIONS  —  4 Age Levels × 25 Questions Each
+// ════════════════════════════════════════════════════
+const Q = {
+
+// ── AGE 8–10 : Young Savers ─────────────────────────────────────
+1:[
+ {q:"What is money?",opts:["Something you eat for breakfast","Coins and notes used to buy things","A type of toy","Something only grown-ups can touch"],a:1},
+ {q:"What does it mean to SAVE money?",opts:["Spend all your money quickly","Lose your money somewhere","Keep some money safely to use later","Give all money to friends"],a:2},
+ {q:"What is a piggy bank used for?",opts:["Feeding pigs","Keeping sweets","Saving money at home","Storing school supplies"],a:2},
+ {q:"What is a GOAL?",opts:["A type of sport only","Something you want to achieve in the future","A funny story","A kind of food"],a:1},
+ {q:"What is a FINANCIAL GOAL?",opts:["A goal to run very fast","A goal you set to earn, save, or spend money wisely","A goal to eat healthy food","A goal to make new friends"],a:1},
+ {q:"Which of these is a SHORT-TERM financial goal for a child?",opts:["Buying a house","Saving to buy a favourite toy this month","Retiring from work","Starting a big company"],a:1},
+ {q:"If you get pocket money, what is the SMART thing to do first?",opts:["Spend it all on sweets immediately","Save a small part before spending","Give it all away","Hide it and forget about it"],a:1},
+ {q:"What does a BUDGET help you do?",opts:["It helps you run faster","It helps you plan how to spend and save your money","It helps you cook food","It helps you read better"],a:1},
+ {q:"What is the difference between a NEED and a WANT?",opts:["They are exactly the same","A need is essential to survive; a want is something extra you desire","A want is more important than a need","Needs cost more than wants"],a:1},
+ {q:"Which of these is a NEED?",opts:["A new video game","Designer shoes","Food and water","A bicycle"],a:2},
+ {q:"Which of these is a WANT?",opts:["Clean clothes","A place to sleep","Medicine when sick","A brand-new tablet"],a:3},
+ {q:"What happens if you SPEND more money than you have?",opts:["You get richer","You run out of money and cannot buy what you need","Nothing happens","You get a reward"],a:1},
+ {q:"If you want to buy something that costs 100 shillings and you have 60 shillings, how much MORE do you need to save?",opts:["20 shillings","60 shillings","40 shillings","100 shillings"],a:2},
+ {q:"What is the BEST way to reach a savings goal faster?",opts:["Spend more money every day","Save a little bit regularly over time","Ask for money from everyone","Wait for money to fall from the sky"],a:1},
+ {q:"What is a BANK?",opts:["A place where people swim","A place where money is kept safely and can be withdrawn later","A school for money","A type of market"],a:1},
+ {q:"Why is it good to set financial goals?",opts:["It makes life harder","It helps you plan your money and achieve things you want","Goals are only for adults","Financial goals waste your time"],a:1},
+ {q:"What does EARN mean?",opts:["To give money away","To receive money in return for doing work or a task","To spend money on food","To lose money"],a:1},
+ {q:"Which of these is a way a child can EARN money?",opts:["Sleeping all day","Watching television","Helping with chores at home","Crying louder"],a:2},
+ {q:"What is SHARING in financial terms?",opts:["Keeping all your money for yourself","Giving some of what you have to help others","Spending money on yourself only","Borrowing from friends"],a:1},
+ {q:"What does it mean to be RESPONSIBLE with money?",opts:["Spending it all as quickly as possible","Losing your money often","Making careful choices about earning, saving, and spending","Giving it all to a friend to keep"],a:2},
+ {q:"If you save 10 shillings every day, how much will you save in 7 days?",opts:["17 shillings","70 shillings","100 shillings","7 shillings"],a:1},
+ {q:"What is POCKET MONEY?",opts:["Money kept inside a pocket forever","A small amount of money given to a child regularly","A type of bank account","Money only adults have"],a:1},
+ {q:"What does SPENDING mean?",opts:["Putting money in the bank","Earning money from work","Using money to buy goods or services","Saving money for later"],a:2},
+ {q:"Why should you think BEFORE you spend money?",opts:["Thinking takes too long","To make sure you are buying what you truly need and not wasting money","Spending is always wrong","Money grows back automatically"],a:1},
+ {q:"What is the FIRST step to reaching a financial goal?",opts:["Spend all your money","Decide clearly what you want to achieve and how much it costs","Ask others for money","Ignore your money"],a:1},
+],
+
+// ── AGE 11–14 : Junior Money Managers ──────────────────────────
+2:[
+ {q:"What is a financial goal?",opts:["A target in a football match","A specific plan for how to earn, save, or use money to achieve something","A government tax","A type of bank loan"],a:1},
+ {q:"What makes a goal SMART?",opts:["Simple, Managed, Attractive, Real, Tested","Specific, Measurable, Achievable, Relevant, Time-bound","Super, Modern, Active, Rapid, Tactical","Shared, Motivated, Agreed, Required, Timed"],a:1},
+ {q:"Which of these is a SPECIFIC financial goal?",opts:["I want to save money","I want to save 500 shillings in 2 months to buy school shoes","I will be rich someday","Money is important"],a:1},
+ {q:"What is the difference between a SHORT-TERM and LONG-TERM goal?",opts:["There is no difference","Short-term goals take a few days or months; long-term goals take years","Long-term goals are easier","Short-term goals cost more"],a:1},
+ {q:"Which of these is a LONG-TERM financial goal for a teenager?",opts:["Saving to buy lunch tomorrow","Saving pocket money for a week","Saving money over several years to pay for college or a business","Spending money on a movie this weekend"],a:2},
+ {q:"What is a BUDGET?",opts:["A type of savings account","A government programme","A plan showing expected income and how it will be spent and saved","A method of borrowing money"],a:2},
+ {q:"What does INCOME mean?",opts:["Money that is lost","Money that is donated","Money that is spent on food","Money received from work, business, or other sources"],a:3},
+ {q:"What does EXPENDITURE mean?",opts:["Money earned from a job","Money saved in a bank","All money spent on goods, services, or bills","Money borrowed from friends"],a:2},
+ {q:"What happens when your EXPENSES are more than your INCOME?",opts:["You have a surplus","You break even","You have a deficit — you are spending more than you earn","You automatically get a loan"],a:2},
+ {q:"What is INTEREST on a savings account?",opts:["A penalty for spending too much","Extra money the bank pays you for keeping your money with them","A type of tax","Money you pay to borrow"],a:1},
+ {q:"What is the 50/30/20 budgeting rule?",opts:["Save 50%, spend 30%, give 20%","Spend 50% on needs, 30% on wants, save 20%","Earn 50%, invest 30%, spend 20%","Give 50%, save 30%, spend 20%"],a:1},
+ {q:"What does it mean to PRIORITISE your spending?",opts:["Spend on the most expensive items first","Buy only luxury goods","Decide what is most important and pay for that first","Spend money randomly"],a:2},
+ {q:"What is an EMERGENCY FUND?",opts:["Money kept for buying luxury items","A government grant","Money saved specifically for unexpected expenses or crises","A type of investment"],a:2},
+ {q:"Why is having an emergency fund important?",opts:["It helps you buy more wants","It means you never have to work","It protects you from financial problems when unexpected costs arise","It earns the most interest"],a:2},
+ {q:"What is DEBT?",opts:["Money earned from a business","Money saved in a bank","Money you owe to someone else after borrowing","Money donated to charity"],a:2},
+ {q:"What does it mean to INVEST money?",opts:["To spend money on entertainment","To put money into something with the goal of earning more money over time","To give money to a friend","To hide money at home"],a:1},
+ {q:"What is a SAVINGS ACCOUNT?",opts:["An account used only for borrowing","A bank account designed to hold and grow your savings over time","A type of credit card","A government fund"],a:1},
+ {q:"What does COMPOUND INTEREST mean?",opts:["Interest paid only once","Earning interest on both your original money AND the interest already earned","A penalty for late payment","Splitting interest between two accounts"],a:1},
+ {q:"Which is a better savings habit?",opts:["Saving whatever is left after spending","Spending first and saving the rest","Saving a set amount FIRST before spending the rest","Only saving once a year"],a:2},
+ {q:"What does FINANCIAL DISCIPLINE mean?",opts:["Studying maths at school","Punishing people who spend too much","Consistently following your budget and savings plan even when it is hard","Spending freely without planning"],a:2},
+ {q:"What is the relationship between RISK and REWARD in finance?",opts:["Higher risk always guarantees higher reward","There is no relationship","Lower risk always gives higher reward","Generally, higher potential reward comes with higher risk"],a:3},
+ {q:"What is a GOAL TRACKER?",opts:["A type of bank account","A device used in sports","A tool used to monitor progress towards achieving your financial goals","A government tax record"],a:2},
+ {q:"What does DELAYED GRATIFICATION mean?",opts:["Spending money as soon as you get it","Refusing to ever spend money","Waiting and saving now to enjoy a bigger reward in the future","Asking others to buy things for you"],a:2},
+ {q:"What is a FINANCIAL PLAN?",opts:["A list of things to buy","A document that outlines your income, expenses, savings goals, and investment strategy","A government spending report","A school timetable"],a:1},
+ {q:"Why is it important to REVIEW your financial goals regularly?",opts:["It is not important at all","To make sure your goals still match your situation and progress is on track","To change your goals every day","To show your goals to others"],a:1},
+],
+
+// ── AGE 15–18 : Teen Finance Challengers ───────────────────────
+3:[
+ {q:"What is PERSONAL FINANCE?",opts:["Finance studied only in university","Government budget planning","Managing your own money including income, expenses, savings, and investments","Company accounting"],a:2},
+ {q:"What is NET INCOME?",opts:["Total income before any deductions","Income earned from investments only","Total income minus taxes and deductions — the money you actually take home","The money a business earns"],a:2},
+ {q:"What is a CREDIT SCORE?",opts:["Your score in a mathematics exam","The number of bank accounts you have","A number representing how reliably you repay debts, used by lenders to assess risk","The amount of money in your savings"],a:2},
+ {q:"What is INFLATION?",opts:["The rise in value of your savings","The general increase in prices over time, which reduces the purchasing power of money","A government reward to savers","A type of bank loan"],a:1},
+ {q:"Why does inflation make saving in CASH alone a poor long-term strategy?",opts:["Cash earns no money","Inflation increases the value of cash over time","Inflation reduces the purchasing power of money, so cash saved may buy less in the future","Banks can take your cash"],a:2},
+ {q:"What is DIVERSIFICATION in investing?",opts:["Putting all your money in one investment","Spreading investments across different assets to reduce risk","Only investing in government bonds","Spending in different currencies"],a:1},
+ {q:"What is a MUTUAL FUND?",opts:["A pool of money collected from many investors to invest in a variety of assets","A government savings account","A personal bank account","A loan product"],a:0},
+ {q:"What is the STOCK MARKET?",opts:["A market where food is sold in bulk","A place where buyers and sellers trade shares of companies","A government banking system","A type of savings account"],a:1},
+ {q:"What does it mean to buy a SHARE in a company?",opts:["To lend money to the company","To become a partial owner of the company","To donate money to the company","To insure the company"],a:1},
+ {q:"What is a FIXED EXPENSE?",opts:["An expense that changes every month","A one-time expense","An expense that stays the same amount every month, like rent","An expense paid only once a year"],a:2},
+ {q:"What is a VARIABLE EXPENSE?",opts:["An expense that stays the same each month","An expense that does not exist","An expense that changes in amount from month to month, like food or transport","A government tax"],a:2},
+ {q:"What is FINANCIAL LITERACY?",opts:["The ability to read finance textbooks","The ability to understand and effectively manage personal financial decisions","A type of banking licence","A school subject only"],a:1},
+ {q:"What is a TAX?",opts:["Money borrowed from a bank","A reward given by the government","A mandatory payment collected by the government from individuals and businesses","A type of insurance"],a:2},
+ {q:"What is INSURANCE?",opts:["A type of savings goal","A financial product that provides compensation for losses or damages in exchange for regular premium payments","A form of investment","A type of loan"],a:1},
+ {q:"What is ASSET ALLOCATION?",opts:["Donating assets to charity","Deciding how to distribute your investments across different asset types to manage risk and growth","Spending money on assets","Selling all your assets"],a:1},
+ {q:"What does LIQUIDITY mean in finance?",opts:["The water content of an investment","How quickly and easily an asset can be converted into cash without losing value","The interest rate on savings","The total value of your assets"],a:1},
+ {q:"What is an INDEX FUND?",opts:["A fund that pays the highest interest","A type of government bond","A fund that tracks the performance of a market index like the top 100 companies","A personal savings account"],a:2},
+ {q:"What is the TIME VALUE OF MONEY?",opts:["Money saved for a specific time period","The concept that money available now is worth more than the same amount in the future due to its earning potential","The time it takes to earn money","A type of savings plan"],a:1},
+ {q:"What is a SCHOLARSHIP?",opts:["A type of student loan","A student bank account","Money awarded to a student to help pay for education, which does not need to be repaid","A government tax relief"],a:2},
+ {q:"What does BANKRUPTCY mean?",opts:["Having too much money","A legal process for individuals or businesses who cannot repay their debts","A type of investment","Closing a savings account"],a:1},
+ {q:"What is a PENSION?",opts:["A type of student loan","A savings plan that provides income during retirement after a person stops working","A government grant for children","A type of insurance policy"],a:1},
+ {q:"What is FINANCIAL RISK?",opts:["The risk of losing your phone","The possibility of losing money or not achieving your financial goals due to uncertainty","The cost of insurance","The interest rate on a loan"],a:1},
+ {q:"What does RETURN ON INVESTMENT (ROI) measure?",opts:["The risk of an investment","The time spent making an investment","The profit or loss made on an investment relative to its cost, expressed as a percentage","The insurance cost of an investment"],a:2},
+ {q:"What is a SACCO (Savings and Credit Cooperative)?",opts:["A government tax department","A type of stock market","A member-owned financial cooperative where members save together and access affordable loans","A commercial bank"],a:2},
+ {q:"What is the MOST important first step in achieving any financial goal?",opts:["Borrowing as much money as possible","Writing the goal down clearly with a specific amount and deadline","Investing in stocks immediately","Waiting until you are older"],a:1},
+],
+
+// ── AGE 19+ : Adult Financial Mastery ──────────────────────────
+4:[
+ {q:"What is a NET WORTH statement?",opts:["A list of your income only","A document showing total assets minus total liabilities — your overall financial position","A government tax statement","A company profit report"],a:1},
+ {q:"What are LIABILITIES?",opts:["Things you own that have value","Future income you expect to earn","Money in your savings account","Debts and financial obligations you owe to others"],a:3},
+ {q:"What is COMPOUND INTEREST and why is it powerful for long-term savings?",opts:["Interest paid only on the principal — it has little long-term effect","It reduces your savings over time","Interest earned on both the principal and accumulated interest, causing savings to grow exponentially over time","A flat fee charged by banks"],a:2},
+ {q:"What is an AMORTISATION SCHEDULE?",opts:["A timetable for paying taxes","A plan showing how each loan payment is split between interest and principal over the loan term","A type of investment account","A government savings plan"],a:1},
+ {q:"What is DOLLAR-COST AVERAGING?",opts:["Exchanging currency regularly","Investing in US dollars only","Investing a fixed amount of money at regular intervals regardless of market price, reducing the impact of volatility","Buying stocks only when prices are high"],a:2},
+ {q:"What is an ESTATE PLAN?",opts:["A plan to buy property","A government inheritance tax","A set of legal documents outlining how your assets will be managed and distributed after death","A property development strategy"],a:2},
+ {q:"What is a WILL in financial planning?",opts:["The desire to earn more money","A bank savings product","A legal document stating how a person wants their assets distributed after they die","A type of insurance policy"],a:2},
+ {q:"What does REBALANCING a portfolio mean?",opts:["Selling all investments","Adjusting the proportions of assets in a portfolio to maintain the originally desired level of risk and return","Adding only new stocks","Withdrawing all funds"],a:1},
+ {q:"What is PASSIVE INCOME?",opts:["Income earned from a full-time job","Income that requires constant active work","Income earned with little or no ongoing effort, such as rent, dividends, or royalties","Government welfare payments"],a:2},
+ {q:"What is the DEBT SNOWBALL method?",opts:["Taking out more loans to pay old ones","Paying off the LARGEST debt first regardless of interest rate","Paying off the SMALLEST debt first to build momentum, then rolling payments to larger debts","Ignoring debts until they grow"],a:2},
+ {q:"What is the DEBT AVALANCHE method?",opts:["Paying the smallest debt first","Paying debts randomly","Taking out new debt to cover old debt","Paying off the debt with the HIGHEST interest rate first to minimise total interest paid"],a:3},
+ {q:"What is a TERM DEPOSIT (Fixed Deposit)?",opts:["A type of current account","A loan product","A savings arrangement where money is deposited for a fixed period at a fixed interest rate","A government bond"],a:2},
+ {q:"What is FINANCIAL INDEPENDENCE?",opts:["Earning the highest salary possible","Having enough income from savings and investments to cover all living expenses without needing to work","Owning the most property","Having no debts at all"],a:1},
+ {q:"What is SEQUENCE OF RETURNS RISK?",opts:["The risk of investing in wrong order","Risk that occurs only during inflation","The danger that poor investment returns early in retirement can permanently damage a portfolio even if long-term average returns are acceptable","The risk of changing investment strategies"],a:2},
+ {q:"What is a BOND in financial markets?",opts:["A bank savings account","A share in a company","A legal contract between two businesses","A debt instrument where an investor lends money to a borrower who promises to repay with interest"],a:3},
+ {q:"What is LEVERAGE in investing?",opts:["The ability to lift heavy objects","Using borrowed money to increase potential investment returns — which also increases potential losses","Diversifying across many assets","Saving more than you spend"],a:1},
+ {q:"What does LIQUIDITY RISK mean?",opts:["The risk of water damage to assets","The risk that you cannot sell an asset quickly enough at a fair price when you need the cash","The risk of interest rate changes","The risk of inflation"],a:1},
+ {q:"What is a HEDGE FUND?",opts:["A government savings fund","A mutual fund for small investors","A type of pension fund","An investment fund using complex strategies including leverage and short-selling to generate returns regardless of market direction"],a:3},
+ {q:"What is FINANCIAL GEARING (Leverage Ratio)?",opts:["The speed at which savings grow","A measure of how much of a business or investment is financed by debt compared to equity","The ratio of income to expenses","The interest rate on a mortgage"],a:1},
+ {q:"What is a MORTGAGE?",opts:["A type of savings account","A government housing grant","A long-term loan used to purchase property, with the property serving as collateral","A type of insurance"],a:2},
+ {q:"What does DIVERSIFYING INCOME STREAMS mean?",opts:["Spending money in different ways","Creating multiple different sources of income to reduce financial risk","Only investing in foreign currencies","Having accounts in different banks"],a:1},
+ {q:"What is STAGFLATION?",opts:["Rapid economic growth with low inflation","Low inflation with high employment","A situation of stagnant economic growth combined with high inflation and high unemployment","A type of government economic policy"],a:2},
+ {q:"What is a FIDUCIARY?",opts:["A type of bank account","A government official","A person or organisation legally obligated to act in the best financial interests of another person","A type of insurance agent"],a:2},
+ {q:"What is FINANCIAL GOAL CASCADING?",opts:["Combining all your goals into one","Abandoning goals that seem too hard","Breaking a large long-term financial goal into smaller, connected short- and medium-term goals to make progress manageable","Setting financial goals only for retirement"],a:3},
+ {q:"What is the MOST critical habit for long-term financial success?",opts:["Earning the highest salary","Consistently spending less than you earn, saving and investing the difference over a long period","Investing all money in property","Avoiding all forms of debt forever"],a:1},
+]
+
+}; // end Q
+
+// ════════════ LEVEL META ════════════
+const LEVEL_META = {
+  1:{age:"Ages 8 – 10",  label:"🌟 Young Savers",         badge:"ab-1", emoji:"🌟"},
+  2:{age:"Ages 11 – 14", label:"📘 Junior Money Managers", badge:"ab-2", emoji:"📘"},
+  3:{age:"Ages 15 – 18", label:"🔥 Teen Finance Challengers",badge:"ab-3",emoji:"🔥"},
+  4:{age:"Ages 19+",     label:"💼 Adult Financial Mastery",badge:"ab-4",emoji:"💼"},
+};
+
+// ════════════ STATE ════════════
+let curLevel=1,curQ=0,score=0,correct=0,wrong=0;
+let timer=null,timeLeft=30,answered=false;
+let shuffled=[];
+let stars={1:0,2:0,3:0,4:0};
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+// ── RENDER LEVELS ──
+function renderLevels(){
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  for(let l=1;l<=4;l++){
+    const m=LEVEL_META[l];
+    const hasStar=(stars[l]>0);
+    const c=document.createElement('div');
+    c.className='level-card'+(hasStar?' completed':'');
+    const stHtml=hasStar?'⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]):'☆☆☆';
+    c.innerHTML=
+      '<span class="age-badge '+m.badge+'">'+m.emoji+' '+m.age+'</span>'+
+      '<span class="lnum">'+m.label+'</span>'+
+      '<div class="lq">25 Questions</div>'+
+      '<div class="level-stars">'+stHtml+'</div>';
+    (function(lv){c.onclick=function(){startLevel(lv);};})(l);
+    g.appendChild(c);
+  }
+}
+
+// ── START LEVEL ──
+function startLevel(l){
+  curLevel=l;curQ=0;score=0;correct=0;wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  const m=LEVEL_META[l];
+  document.getElementById('game-level-label').textContent=m.emoji+' '+m.age+' · '+m.label.replace(m.emoji+' ','');
+  loadQ();
+}
+
+// ── LOAD QUESTION ──
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+// ── TIMER ──
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8)tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered)return;
+  answered=true;wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Time's up! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+// ── PICK ──
+function pick(chosen,ans,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4;correct++;
+    feedback(true,'✅ Correct! Great answer!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Wrong! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length)showResults();
+  else loadQ();
+};
+
+// ── RESULTS ──
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  const m=LEVEL_META[curLevel];
+  document.getElementById('res-emoji').textContent=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('res-title').textContent=pct>=90?'Outstanding!':pct>=70?'Great Job!':pct>=50?'Good Effort!':'Keep Practising!';
+  document.getElementById('res-level-name').textContent=m.emoji+' '+m.age+' · '+m.label.replace(m.emoji+' ','');
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goHome(){clearInterval(timer);renderLevels();show('screen-levels');}
+function retryLevel(){startLevel(curLevel);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+renderLevels();
+</script>
+</body>
+</html>

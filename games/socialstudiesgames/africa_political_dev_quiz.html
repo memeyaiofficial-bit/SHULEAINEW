@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Development in Africa Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a5f1a 0%, #d4a017 50%, #8b2500 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.4);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #1a5f1a;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .intro {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #d4a017;
+            margin: 20px 0;
+            color: #333;
+        }
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .level-card {
+            background: linear-gradient(135deg, #1a5f1a, #2d8a2d);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: 3px solid #0f3f0f;
+        }
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(26,95,26,0.4);
+        }
+        .level-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .level-card p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            background: linear-gradient(135deg, #d4a017, #f4c430);
+            color: #333;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 110px;
+            font-weight: bold;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-label {
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1a5f1a, #2d8a2d);
+            transition: width 0.5s;
+        }
+        .question-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #1a5f1a;
+        }
+        .question-box h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .category {
+            display: inline-block;
+            background: #1a5f1a;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            margin: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .option:hover {
+            border-color: #1a5f1a;
+            background: #f0fff0;
+            transform: translateX(5px);
+        }
+        .option.correct {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        .option.wrong {
+            border-color: #8b2500;
+            background: #FFEBEE;
+        }
+        .explanation {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #d4a017;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .btn {
+            background: linear-gradient(135deg, #1a5f1a, #2d8a2d);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #d4a017, #f4c430);
+            color: #333;
+        }
+        .hidden {
+            display: none;
+        }
+        .results {
+            text-align: center;
+            padding: 30px;
+        }
+        .results h2 {
+            color: #1a5f1a;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .trophy {
+            font-size: 100px;
+            margin: 20px 0;
+        }
+        .score-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #1a5f1a;
+        }
+        .score-value {
+            font-weight: bold;
+            color: #1a5f1a;
+            font-size: 24px;
+        }
+        .message {
+            background: #E8F5E9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 18px;
+            color: #2e7d32;
+            border: 2px solid #1a5f1a;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 28px; }
+            .icon { font-size: 60px; }
+            .level-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menu Screen -->
+        <div id="menu">
+            <div class="header">
+                <div class="icon">🌍</div>
+                <h1>Political Development in Africa</h1>
+                <p class="subtitle">From Independence to Modern Democracy</p>
+            </div>
+            
+            <div class="intro">
+                <strong>📖 About This Quiz:</strong> Explore Africa's political journey from pre-colonial times 
+                through colonization, independence movements, post-independence challenges, to modern democratic 
+                developments. Learn about key leaders, movements, and milestones that shaped the continent's 
+                political landscape. 45 comprehensive questions across 3 levels!
+            </div>
+
+            <div class="level-grid">
+                <div class="level-card" onclick="start(1)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">📜</div>
+                    <h3>Level 1: Foundations</h3>
+                    <p>Pre-colonial, colonization & independence</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(2)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">✊</div>
+                    <h3>Level 2: Post-Independence</h3>
+                    <p>Leaders, challenges & liberation movements</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+                
+                <div class="level-card" onclick="start(3)">
+                    <div style="font-size: 50px; margin-bottom: 15px;">🏆</div>
+                    <h3>Level 3: Modern Era</h3>
+                    <p>Democracy, regional bodies & contemporary issues</p>
+                    <p><strong>15 Questions</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="score">0</span>
+                    <span class="stat-label">🏆 Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="qnum">1</span>
+                    <span class="stat-label">📝 Question</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">15</span>
+                    <span class="stat-label">📊 Total</span>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="category" id="category"></div>
+                <h2 id="qtext"></h2>
+                <div id="options"></div>
+                <div id="explanation" class="explanation"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-secondary" onclick="menu()">🏠 Menu</button>
+                <button class="btn" id="next" onclick="next()" style="display:none;">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results" class="hidden">
+            <div class="results">
+                <div class="trophy">🏆</div>
+                <h2>Level Complete!</h2>
+                
+                <div class="score-box">
+                    <div class="score-item">
+                        <span>🏆 Final Score:</span>
+                        <span class="score-value" id="final">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>✅ Correct Answers:</span>
+                        <span class="score-value" id="correct">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>❌ Wrong Answers:</span>
+                        <span class="score-value" id="wrong">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span>📊 Percentage:</span>
+                        <span class="score-value" id="percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="message" id="message"></div>
+
+                <button class="btn" onclick="again()">🔄 Retry Level</button>
+                <button class="btn btn-secondary" onclick="menu()">🏠 Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var questions = {
+            1: [
+                {
+                    q: "What was the main system of governance in pre-colonial Africa?",
+                    opts: ["Democracy only", "Diverse systems including kingdoms, chiefdoms, and democratic councils", "No governance", "European style"],
+                    ans: 1,
+                    cat: "Pre-Colonial",
+                    exp: "Pre-colonial Africa had diverse political systems including powerful kingdoms (like Great Zimbabwe, Mali, Songhai), chiefdoms, age-grade systems, and democratic councils. Each region had its own structures."
+                },
+                {
+                    q: "When was the Berlin Conference held to divide Africa?",
+                    opts: ["1850-1851", "1884-1885", "1900-1901", "1920-1921"],
+                    ans: 1,
+                    cat: "Colonization",
+                    exp: "The Berlin Conference (1884-1885) saw European powers divide Africa among themselves without consulting Africans. This 'Scramble for Africa' established colonial boundaries that still exist today."
+                },
+                {
+                    q: "Which African country was never colonized?",
+                    opts: ["Kenya", "Ethiopia", "Ghana", "Nigeria"],
+                    ans: 1,
+                    cat: "Colonization",
+                    exp: "Ethiopia (and Liberia) were never colonized. Ethiopia defeated Italy at the Battle of Adwa in 1896, maintaining its independence while most of Africa fell under colonial rule."
+                },
+                {
+                    q: "What was the first sub-Saharan African country to gain independence?",
+                    opts: ["Ghana", "Nigeria", "Kenya", "South Africa"],
+                    ans: 0,
+                    cat: "Independence",
+                    exp: "Ghana became the first sub-Saharan African country to gain independence on March 6, 1957, under the leadership of Kwame Nkrumah. This inspired other independence movements across Africa."
+                },
+                {
+                    q: "What year is known as the 'Year of Africa' when many countries gained independence?",
+                    opts: ["1955", "1960", "1965", "1970"],
+                    ans: 1,
+                    cat: "Independence",
+                    exp: "1960 is called the 'Year of Africa' when 17 African countries gained independence, including Nigeria, Congo, Somalia, Senegal, and others. This marked a major decolonization wave."
+                },
+                {
+                    q: "Who led Ghana to independence?",
+                    opts: ["Jomo Kenyatta", "Kwame Nkrumah", "Julius Nyerere", "Nelson Mandela"],
+                    ans: 1,
+                    cat: "Leaders",
+                    exp: "Kwame Nkrumah led Ghana to independence in 1957 and became its first President. He was a Pan-Africanist who promoted African unity and inspired independence movements across the continent."
+                },
+                {
+                    q: "What was the main colonial power in Kenya?",
+                    opts: ["France", "Britain", "Germany", "Portugal"],
+                    ans: 1,
+                    cat: "Colonization",
+                    exp: "Britain colonized Kenya from the 1890s until independence in 1963. Kenya was part of British East Africa, and British colonial rule significantly shaped Kenya's political development."
+                },
+                {
+                    q: "When did Kenya gain independence?",
+                    opts: ["1960", "1961", "1963", "1964"],
+                    ans: 2,
+                    cat: "Independence",
+                    exp: "Kenya gained independence on December 12, 1963 (Jamhuri Day). Jomo Kenyatta became the first Prime Minister and later the first President when Kenya became a republic in 1964."
+                },
+                {
+                    q: "What was apartheid?",
+                    opts: ["A celebration", "System of racial segregation and discrimination in South Africa", "A dance", "A language"],
+                    ans: 1,
+                    cat: "Apartheid",
+                    exp: "Apartheid was a brutal system of racial segregation in South Africa (1948-1994) where the white minority government oppressed the Black majority, denying them basic rights and freedoms."
+                },
+                {
+                    q: "Which movement fought for Kenya's independence?",
+                    opts: ["ANC", "Mau Mau", "ZANU", "FRELIMO"],
+                    ans: 1,
+                    cat: "Independence Movements",
+                    exp: "The Mau Mau uprising (1952-1960) was a significant armed rebellion against British colonial rule in Kenya. Though controversial, it accelerated Kenya's path to independence."
+                },
+                {
+                    q: "What does 'Pan-Africanism' mean?",
+                    opts: ["Division of Africa", "Movement promoting unity and solidarity among all Africans", "European control", "Tribal conflicts"],
+                    ans: 1,
+                    cat: "Ideology",
+                    exp: "Pan-Africanism is an ideology and movement promoting unity, solidarity, and cooperation among all African people and nations, both on the continent and in the diaspora."
+                },
+                {
+                    q: "Who was the first President of Tanzania?",
+                    opts: ["Kenneth Kaunda", "Julius Nyerere", "Jomo Kenyatta", "Kwame Nkrumah"],
+                    ans: 1,
+                    cat: "Leaders",
+                    exp: "Julius Nyerere, known as 'Mwalimu' (teacher), was Tanzania's first President (1964-1985). He promoted African socialism (Ujamaa) and was a respected Pan-African leader."
+                },
+                {
+                    q: "What was the Organization of African Unity (OAU) formed to do?",
+                    opts: ["Promote European control", "Promote African unity and eradicate colonialism", "Start wars", "Divide Africa"],
+                    ans: 1,
+                    cat: "Organizations",
+                    exp: "The OAU was formed in 1963 to promote unity and solidarity among African states, eradicate colonialism, and improve living standards. It was replaced by the African Union in 2002."
+                },
+                {
+                    q: "Which country gained independence last in Africa?",
+                    opts: ["Zimbabwe", "Namibia", "South Sudan", "Eritrea"],
+                    ans: 2,
+                    cat: "Independence",
+                    exp: "South Sudan gained independence on July 9, 2011, making it Africa's newest country. It separated from Sudan after a referendum, becoming the 54th African nation."
+                },
+                {
+                    q: "What was 'indirect rule' in British colonies?",
+                    opts: ["Direct control", "Governing through local traditional leaders", "Military rule", "No government"],
+                    ans: 1,
+                    cat: "Colonial Administration",
+                    exp: "Indirect rule was a British colonial strategy of governing through existing local traditional rulers and structures, rather than replacing them entirely. This preserved some African institutions while maintaining British control."
+                }
+            ],
+            2: [
+                {
+                    q: "Who was Jomo Kenyatta?",
+                    opts: ["First President of Ghana", "First President of Kenya", "First President of Tanzania", "First President of Uganda"],
+                    ans: 1,
+                    cat: "Leaders",
+                    exp: "Jomo Kenyatta was Kenya's first President (1964-1978). He led the independence struggle and is honored as the 'Father of the Nation' (Mzee). His legacy shaped modern Kenya."
+                },
+                {
+                    q: "What major challenge did many African countries face after independence?",
+                    opts: ["Too much wealth", "Nation-building with artificial colonial borders and ethnic diversity", "Too few people", "No challenges"],
+                    ans: 1,
+                    cat: "Post-Independence Challenges",
+                    exp: "Post-independence challenges included: artificial colonial borders grouping diverse ethnicities, weak institutions, poverty, limited infrastructure, tribalism, and the need to build national identity from colonial legacy."
+                },
+                {
+                    q: "What is 'neocolonialism'?",
+                    opts: ["New independence", "Continued economic and political control by former colonial powers", "African unity", "Democracy"],
+                    ans: 1,
+                    cat: "Neocolonialism",
+                    exp: "Neocolonialism refers to indirect control of independent African nations by former colonial powers through economic dependence, political influence, and cultural dominance rather than direct military occupation."
+                },
+                {
+                    q: "Who was Nelson Mandela?",
+                    opts: ["Kenyan leader", "Anti-apartheid leader and first Black President of South Africa", "Nigerian President", "Ethiopian Emperor"],
+                    ans: 1,
+                    cat: "Leaders",
+                    exp: "Nelson Mandela fought against apartheid in South Africa, spent 27 years in prison, and became the country's first Black President (1994-1999). He championed reconciliation and is a global icon of freedom."
+                },
+                {
+                    q: "What was 'Ujamaa' in Tanzania?",
+                    opts: ["A war", "African socialism emphasizing village cooperation", "A dance", "A language"],
+                    ans: 1,
+                    cat: "Political Ideologies",
+                    exp: "Ujamaa (meaning 'familyhood' in Swahili) was Julius Nyerere's policy of African socialism in Tanzania, emphasizing cooperative village life, self-reliance, and communal ownership."
+                },
+                {
+                    q: "Which country experienced a genocide in 1994?",
+                    opts: ["Kenya", "Rwanda", "Ghana", "Egypt"],
+                    ans: 1,
+                    cat: "Conflicts",
+                    exp: "The 1994 Rwandan Genocide saw extremist Hutus kill approximately 800,000 Tutsis and moderate Hutus in 100 days. It remains one of Africa's darkest moments and led to major political reforms."
+                },
+                {
+                    q: "What was the Mau Mau uprising?",
+                    opts: ["A celebration", "Armed rebellion against British colonial rule in Kenya", "A political party", "A constitution"],
+                    ans: 1,
+                    cat: "Independence Movements",
+                    exp: "The Mau Mau uprising (1952-1960) was an armed rebellion by Kenyan freedom fighters against British colonial rule. Though brutally suppressed, it accelerated Kenya's independence."
+                },
+                {
+                    q: "Who led the anti-apartheid movement in South Africa alongside Mandela?",
+                    opts: ["Desmond Tutu", "Robert Mugabe", "Idi Amin", "Mobutu Sese Seko"],
+                    ans: 0,
+                    cat: "Leaders",
+                    exp: "Archbishop Desmond Tutu was a prominent anti-apartheid activist who used his moral authority to fight injustice. He later led the Truth and Reconciliation Commission after apartheid ended."
+                },
+                {
+                    q: "What does 'Harambee' mean in Kenya's political context?",
+                    opts: ["Division", "Pulling together/collective effort", "Independence", "Colonization"],
+                    ans: 1,
+                    cat: "National Philosophy",
+                    exp: "Harambee (pulling together) became Kenya's national philosophy under Kenyatta, promoting self-help and community development. It encouraged Kenyans to work together for nation-building."
+                },
+                {
+                    q: "Which organization fought against apartheid in South Africa?",
+                    opts: ["Mau Mau", "African National Congress (ANC)", "KANU", "OAU only"],
+                    ans: 1,
+                    cat: "Liberation Movements",
+                    exp: "The African National Congress (ANC), founded in 1912, led the struggle against apartheid in South Africa. Nelson Mandela, Walter Sisulu, and Oliver Tambo were among its leaders."
+                },
+                {
+                    q: "What was a common problem with one-party states in post-independence Africa?",
+                    opts: ["Too much freedom", "Lack of democracy, corruption, and suppression of opposition", "Too many parties", "No problems"],
+                    ans: 1,
+                    cat: "Governance Challenges",
+                    exp: "Many African countries adopted one-party systems after independence, leading to authoritarian rule, corruption, suppression of opposition, and lack of accountability despite initial nation-building goals."
+                },
+                {
+                    q: "Who was Patrice Lumumba?",
+                    opts: ["First Prime Minister of independent Congo, assassinated in 1961", "President of Kenya", "South African leader", "Ethiopian Emperor"],
+                    ans: 0,
+                    cat: "Leaders",
+                    exp: "Patrice Lumumba was Congo's first Prime Minister after independence in 1960. He was assassinated in 1961 during the Congo Crisis, becoming a martyr for African independence and Pan-Africanism."
+                },
+                {
+                    q: "What was the Frontline States' role?",
+                    opts: ["Trading bloc", "Coalition supporting liberation of southern Africa from apartheid and colonialism", "Sports association", "Cultural group"],
+                    ans: 1,
+                    cat: "Regional Cooperation",
+                    exp: "The Frontline States (Angola, Botswana, Mozambique, Tanzania, Zambia, Zimbabwe) supported liberation movements fighting apartheid in South Africa and colonialism in Rhodesia and Portuguese colonies."
+                },
+                {
+                    q: "What sparked the Soweto Uprising in South Africa?",
+                    opts: ["Celebration", "Students protesting against Afrikaans language instruction", "Sports event", "Election"],
+                    ans: 1,
+                    cat: "Resistance Movements",
+                    exp: "The Soweto Uprising (June 16, 1976) began when Black students protested the imposition of Afrikaans as the medium of instruction. Police killed hundreds, galvanizing international opposition to apartheid."
+                },
+                {
+                    q: "What is 'African socialism'?",
+                    opts: ["European ideology", "Political ideology blending African communal values with socialist economics", "Capitalism", "Monarchy"],
+                    ans: 1,
+                    cat: "Political Ideologies",
+                    exp: "African socialism combined traditional African communal values with socialist economic principles. Leaders like Nyerere (Tanzania) and Nkrumah (Ghana) adapted socialism to African contexts, emphasizing cooperation and equality."
+                }
+            ],
+            3: [
+                {
+                    q: "When was the African Union (AU) established?",
+                    opts: ["1963", "1990", "2002", "2010"],
+                    ans: 2,
+                    cat: "Regional Organizations",
+                    exp: "The African Union was established in 2002, replacing the Organization of African Unity (OAU). It aims to accelerate political and socio-economic integration, promote peace, and strengthen Africa's voice globally."
+                },
+                {
+                    q: "What is the main purpose of the East African Community (EAC)?",
+                    opts: ["War", "Regional integration and cooperation", "Colonization", "Division"],
+                    ans: 1,
+                    cat: "Regional Blocs",
+                    exp: "The EAC promotes regional economic, political, and social integration among East African countries (Kenya, Tanzania, Uganda, Rwanda, Burundi, South Sudan). Goals include a common market, monetary union, and political federation."
+                },
+                {
+                    q: "What major political change swept Africa in the 1990s?",
+                    opts: ["Return to colonialism", "Democratization and multi-party systems", "More dictatorships", "No changes"],
+                    ans: 1,
+                    cat: "Democratization",
+                    exp: "The 1990s saw a 'third wave' of democratization in Africa. Many countries transitioned from one-party states to multi-party democracy, though challenges like election rigging and authoritarianism persist."
+                },
+                {
+                    q: "What is ECOWAS?",
+                    opts: ["A disease", "Economic Community of West African States", "A political party", "A person"],
+                    ans: 1,
+                    cat: "Regional Organizations",
+                    exp: "ECOWAS (established 1975) promotes economic integration among 15 West African countries. It also intervenes in political crises and conflicts, playing a crucial role in regional peace and stability."
+                },
+                {
+                    q: "What is the African Court on Human and Peoples' Rights?",
+                    opts: ["A prison", "Continental court ensuring compliance with African Charter on Human Rights", "A school", "A hospital"],
+                    ans: 1,
+                    cat: "Institutions",
+                    exp: "Established in 2006, this court complements the African Commission on Human Rights by interpreting and applying the African Charter on Human and Peoples' Rights, ensuring states respect human rights."
+                },
+                {
+                    q: "What challenge do many African democracies still face?",
+                    opts: ["Too much freedom", "Electoral fraud, corruption, and weak institutions", "Too many rights", "No challenges"],
+                    ans: 1,
+                    cat: "Contemporary Challenges",
+                    exp: "Despite democratic progress, challenges include electoral manipulation, corruption, weak institutions, ethnic politics, youth unemployment, and leaders overstaying constitutional term limits."
+                },
+                {
+                    q: "What is 'term limits' in democratic governance?",
+                    opts: ["No limit", "Constitutional restrictions on how long a leader can serve", "Life presidency", "One year only"],
+                    ans: 1,
+                    cat: "Democratic Principles",
+                    exp: "Term limits restrict how long someone can serve as president (usually two terms of 4-5 years each). They prevent dictatorship and ensure peaceful power transitions, though some African leaders try to remove them."
+                },
+                {
+                    q: "What role does social media play in modern African politics?",
+                    opts: ["No role", "Platform for civic engagement, activism, and political mobilization", "Only entertainment", "Only business"],
+                    ans: 1,
+                    cat: "Modern Politics",
+                    exp: "Social media has transformed African politics, enabling youth mobilization, exposing corruption, organizing protests, and challenging authoritarian regimes, as seen in movements across the continent."
+                },
+                {
+                    q: "What is the 'African Continental Free Trade Area (AfCFTA)'?",
+                    opts: ["A market", "Agreement creating single market for goods and services across Africa", "A currency", "A border"],
+                    ans: 1,
+                    cat: "Economic Integration",
+                    exp: "AfCFTA, launched in 2021, creates the world's largest free trade area by country count, aiming to boost intra-African trade, industrialization, and economic integration across 54 countries."
+                },
+                {
+                    q: "What is the significance of women's representation in African politics?",
+                    opts: ["Not important", "Essential for inclusive governance and addressing gender equality", "Optional", "Forbidden"],
+                    ans: 1,
+                    cat: "Gender & Politics",
+                    exp: "Women's political representation is crucial for inclusive governance. Rwanda leads globally with over 60% women in parliament. Many African countries have adopted quotas to increase female participation."
+                },
+                {
+                    q: "What is the 'African Peer Review Mechanism (APRM)'?",
+                    opts: ["A test", "Voluntary system for African countries to review each other's governance", "A court", "A currency"],
+                    ans: 1,
+                    cat: "Governance",
+                    exp: "APRM is a voluntary African-led process where member states assess each other's governance, democracy, and development. It promotes accountability and sharing of best practices."
+                },
+                {
+                    q: "What does 'youth bulge' mean for African politics?",
+                    opts: ["No meaning", "Large youth population creating both opportunities and challenges", "Old population", "No youth"],
+                    ans: 1,
+                    cat: "Demographics",
+                    exp: "Africa's 'youth bulge' (median age around 19) creates political pressure for jobs, services, and participation. Youth increasingly demand accountability, driving political change across the continent."
+                },
+                {
+                    q: "What is 'constitutional coup'?",
+                    opts: ["Legal process", "Leaders manipulating constitutions to extend power beyond term limits", "Democratic election", "Referendum"],
+                    ans: 1,
+                    cat: "Democratic Backsliding",
+                    exp: "Constitutional coups occur when leaders change constitutions to remove term limits or extend their rule, undermining democracy while maintaining appearance of legality. Several African countries have experienced this."
+                },
+                {
+                    q: "What role do regional economic communities play?",
+                    opts: ["None", "Promote integration, peace, and economic development", "Create conflicts", "Divide Africa"],
+                    ans: 1,
+                    cat: "Regional Integration",
+                    exp: "Regional Economic Communities (RECs) like EAC, ECOWAS, SADC promote trade integration, peace and security, infrastructure development, and political cooperation within their regions."
+                },
+                {
+                    q: "What is the future vision of African political development?",
+                    opts: ["Return to colonialism", "Stronger democracies, regional integration, and continental unity", "More divisions", "No future"],
+                    ans: 1,
+                    cat: "Future Vision",
+                    exp: "Africa's political future envisions stronger democratic institutions, effective regional integration through AU and RECs, economic prosperity, youth empowerment, and greater global influence - Agenda 2063."
+                }
+            ]
+        };
+
+        var lvl = 1;
+        var qidx = 0;
+        var sc = 0;
+
+        function start(l) {
+            lvl = l;
+            qidx = 0;
+            sc = 0;
+            document.getElementById('menu').className = 'hidden';
+            document.getElementById('quiz').className = '';
+            show();
+        }
+
+        function show() {
+            var q = questions[lvl][qidx];
+            document.getElementById('qtext').textContent = q.q;
+            document.getElementById('category').textContent = q.cat;
+            document.getElementById('qnum').textContent = qidx + 1;
+            document.getElementById('score').textContent = sc;
+            
+            var progress = ((qidx + 1) / 15) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            var opts = '';
+            for (var i = 0; i < q.opts.length; i++) {
+                opts += '<div class="option" onclick="pick(' + i + ')">' + q.opts[i] + '</div>';
+            }
+            document.getElementById('options').innerHTML = opts;
+            document.getElementById('explanation').className = 'explanation';
+            document.getElementById('next').style.display = 'none';
+        }
+
+        function pick(i) {
+            var q = questions[lvl][qidx];
+            var opts = document.querySelectorAll('.option');
+            
+            for (var j = 0; j < opts.length; j++) {
+                opts[j].style.pointerEvents = 'none';
+            }
+            
+            if (i === q.ans) {
+                opts[i].className = 'option correct';
+                sc++;
+                document.getElementById('score').textContent = sc;
+            } else {
+                opts[i].className = 'option wrong';
+                opts[q.ans].className = 'option correct';
+            }
+            
+            var expDiv = document.getElementById('explanation');
+            expDiv.innerHTML = '<strong>📖 Historical Context:</strong> ' + q.exp;
+            expDiv.className = 'explanation show';
+            
+            document.getElementById('next').style.display = 'inline-block';
+        }
+
+        function next() {
+            qidx++;
+            if (qidx < 15) {
+                show();
+            } else {
+                end();
+            }
+        }
+
+        function end() {
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = '';
+            
+            var pct = Math.round((sc / 15) * 100);
+            var wrong = 15 - sc;
+            var msg = '';
+            
+            if (pct >= 90) msg = '🌟 Outstanding! You are an expert on African political development!';
+            else if (pct >= 75) msg = '👏 Excellent! You understand Africa\'s political journey well!';
+            else if (pct >= 60) msg = '👍 Good work! Keep learning about African politics!';
+            else if (pct >= 40) msg = '📚 Fair effort! Study more about Africa\'s political history!';
+            else msg = '💪 Keep learning! Africa\'s political story is important!';
+            
+            document.getElementById('final').textContent = sc;
+            document.getElementById('correct').textContent = sc;
+            document.getElementById('wrong').textContent = wrong;
+            document.getElementById('percent').textContent = pct + '%';
+            document.getElementById('message').textContent = msg;
+        }
+
+        function again() {
+            start(lvl);
+            document.getElementById('results').className = 'hidden';
+        }
+
+        function menu() {
+            document.getElementById('menu').className = '';
+            document.getElementById('quiz').className = 'hidden';
+            document.getElementById('results').className = 'hidden';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shule AI Plus+ | Metallic & Non-Metallic Materials</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+:root {
+  --bl-deep:   #0a1628;
+  --bl-dark:   #0d2b5e;
+  --bl-main:   #1565c0;
+  --bl-mid:    #1e88e5;
+  --bl-warm:   #42a5f5;
+  --bl-light:  #90caf9;
+  --bl-pale:   #e3f2fd;
+  --bl-cream:  #f0f7ff;
+  --cyan:      #00bcd4;
+  --cyan-lt:   #80deea;
+  --silver:    #b0bec5;
+  --silver-lt: #eceff1;
+  --gold:      #ffc107;
+  --gold-lt:   #ffe082;
+  --red-err:   #c62828;
+  --green-ok:  #2e7d32;
+  --white:     #ffffff;
+  --shadow:    0 6px 26px rgba(13,43,94,0.18);
+  --shadow-lg: 0 14px 44px rgba(13,43,94,0.26);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bl-cream);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── HEADER ── */
+header{
+  width:100%;
+  background:linear-gradient(135deg,var(--bl-deep) 0%,var(--bl-dark) 55%,var(--bl-main) 100%);
+  box-shadow:0 4px 22px rgba(0,0,0,0.35);
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 15% 50%,rgba(66,165,245,0.12) 0%,transparent 55%),
+    radial-gradient(circle at 85% 30%,rgba(0,188,212,0.10) 0%,transparent 50%),
+    repeating-linear-gradient(60deg,transparent,transparent 22px,rgba(255,255,255,0.03) 22px,rgba(255,255,255,0.03) 44px);
+}
+.cyan-bar{
+  width:100%;height:5px;
+  background:linear-gradient(90deg,transparent,var(--bl-main),var(--cyan),var(--cyan-lt),var(--cyan),var(--bl-main),transparent);
+}
+.header-inner{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;padding:20px 20px 17px;
+}
+.brand-top{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.brand-icon{
+  width:50px;height:50px;
+  background:linear-gradient(135deg,var(--cyan),var(--bl-warm));
+  border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:27px;box-shadow:0 4px 14px rgba(0,0,0,0.3);flex-shrink:0;
+}
+.brand-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,4.5vw,30px);
+  font-weight:900;color:var(--white);letter-spacing:.5px;line-height:1;
+}
+.brand-plus{color:var(--cyan-lt);}
+.header-sub{font-size:11px;color:var(--bl-light);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.header-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(14px,3.2vw,21px);
+  color:#e8f4ff;font-weight:700;text-align:center;line-height:1.3;
+}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;max-width:780px;padding:26px 16px 48px;}
+.screen.active{display:block;}
+
+/* ── LEVEL SELECT ── */
+.section-title{
+  font-family:'Playfair Display',serif;font-size:23px;font-weight:900;
+  color:var(--bl-dark);text-align:center;margin-bottom:5px;margin-top:4px;
+}
+.section-sub{
+  text-align:center;font-size:13px;color:var(--bl-mid);
+  margin-bottom:26px;font-weight:500;line-height:1.5;
+}
+
+/* Topic tabs */
+.topic-tabs{
+  display:flex;gap:10px;justify-content:center;margin-bottom:22px;flex-wrap:wrap;
+}
+.topic-tab{
+  padding:7px 20px;border-radius:22px;border:2.5px solid var(--bl-light);
+  font-size:12px;font-weight:800;cursor:pointer;transition:all .18s;
+  background:var(--white);color:var(--bl-dark);letter-spacing:.3px;
+}
+.topic-tab.active-tab,.topic-tab:hover{
+  background:var(--bl-main);color:var(--white);border-color:var(--bl-main);
+}
+
+.levels-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(min-width:560px){.levels-grid{grid-template-columns:repeat(5,1fr);}}
+
+.level-card{
+  background:var(--white);border:3px solid var(--bl-light);border-radius:18px;
+  padding:20px 8px 16px;text-align:center;cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.level-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--bl-main),var(--cyan));
+  opacity:0;transition:opacity .2s;
+}
+.level-card:hover::after{opacity:1;}
+.level-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--bl-warm);}
+.level-card.completed{border-color:var(--gold);}
+.level-card.completed .lnum{color:var(--gold);}
+
+.grade-badge{
+  display:inline-block;font-size:9px;font-weight:800;
+  padding:3px 9px;border-radius:20px;margin-bottom:8px;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.gb-5{background:#e3f2fd;color:#0d47a1;}
+.gb-6{background:#e8eaf6;color:#283593;}
+.gb-7{background:#f3e5f5;color:#6a1b9a;}
+.gb-8{background:#e0f7fa;color:#006064;}
+.gb-9{background:#fce4ec;color:#880e4f;}
+
+.lnum{
+  font-family:'Press Start 2P',monospace;font-size:18px;
+  color:var(--bl-main);margin-bottom:6px;display:block;
+}
+.lname{font-weight:800;font-size:11px;color:var(--bl-dark);margin-bottom:2px;line-height:1.3;}
+.lq{font-size:10px;color:#aaa;margin-bottom:6px;}
+.level-stars{font-size:14px;min-height:18px;}
+
+/* topic pill on card */
+.topic-pill{
+  display:inline-block;font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:10px;margin-bottom:6px;
+}
+.tp-metal{background:#cfd8dc;color:#263238;}
+.tp-nonmetal{background:#c8e6c9;color:#1b5e20;}
+.tp-both{background:#e3f2fd;color:#0d47a1;}
+
+/* ── GAME TOPBAR ── */
+.game-topbar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;gap:8px;flex-wrap:wrap;
+}
+.game-level-tag{
+  background:var(--bl-dark);color:#dbeeff;
+  border-radius:20px;padding:5px 15px;font-weight:700;font-size:11px;
+  flex:1;text-align:center;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.timer-pill{
+  background:var(--cyan);color:var(--bl-deep);
+  border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;
+  min-width:74px;text-align:center;flex-shrink:0;transition:background .3s;
+}
+.timer-pill.danger{background:var(--red-err);color:white;animation:throb .55s infinite alternate;}
+@keyframes throb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.score-pill{
+  background:linear-gradient(135deg,var(--bl-main),var(--bl-deep));
+  color:white;border-radius:20px;padding:5px 16px;font-weight:800;font-size:13px;flex-shrink:0;
+}
+
+/* Progress */
+.prog-wrap{width:100%;height:11px;background:#bbdefb;border-radius:99px;margin-bottom:18px;overflow:hidden;}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--bl-main),var(--cyan));
+  border-radius:99px;transition:width .45s cubic-bezier(.4,2,.6,1);
+}
+
+/* ── QUESTION ── */
+.question-card{
+  background:var(--white);border-radius:18px;padding:22px 20px 18px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+  border-left:6px solid var(--bl-warm);
+}
+.q-num{font-size:11px;font-weight:700;color:var(--bl-mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.q-text{font-size:clamp(14px,2.5vw,17px);font-weight:700;color:var(--bl-deep);line-height:1.55;}
+
+/* ── OPTIONS ── */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.opt-btn{
+  background:var(--white);border:2.5px solid var(--bl-light);border-radius:13px;
+  padding:13px 12px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;
+  color:var(--bl-dark);cursor:pointer;text-align:left;
+  display:flex;align-items:flex-start;gap:9px;transition:all .15s;line-height:1.4;
+}
+.opt-btn:hover:not(:disabled){
+  background:var(--bl-pale);border-color:var(--bl-warm);
+  transform:translateY(-2px);box-shadow:0 4px 12px rgba(21,101,192,.15);
+}
+.opt-letter{
+  background:var(--bl-pale);color:var(--bl-main);
+  border-radius:7px;min-width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green-ok);color:var(--green-ok);}
+.opt-btn.correct .opt-letter{background:var(--green-ok);color:white;}
+.opt-btn.wrong{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.opt-btn.wrong .opt-letter{background:var(--red-err);color:white;}
+.opt-btn:disabled{cursor:default;}
+
+/* ── FEEDBACK ── */
+.feedback-strip{
+  display:none;align-items:center;gap:10px;
+  background:#e8f5e9;border:2px solid var(--green-ok);border-radius:12px;
+  padding:11px 15px;font-size:13px;font-weight:700;color:var(--green-ok);margin-bottom:12px;
+}
+.feedback-strip.show{display:flex;}
+.feedback-strip.bad{background:#fdecea;border-color:var(--red-err);color:var(--red-err);}
+.fb-icon{font-size:20px;flex-shrink:0;}
+
+/* ── NEXT BTN ── */
+.next-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--bl-warm),var(--bl-deep));
+  color:white;border:none;border-radius:13px;padding:15px;
+  font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;cursor:pointer;
+  display:none;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 5px 16px rgba(13,43,94,.35);letter-spacing:.3px;
+}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(13,43,94,.4);}
+.next-btn.show{display:block;}
+
+/* ── RESULTS ── */
+.result-box{
+  background:var(--white);border-radius:22px;padding:34px 26px 30px;
+  box-shadow:var(--shadow-lg);text-align:center;border-top:6px solid var(--cyan);
+  animation:popIn .4s cubic-bezier(.4,2,.6,1) forwards;
+}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.res-emoji{font-size:66px;margin-bottom:8px;}
+.res-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--bl-dark);margin-bottom:4px;}
+.res-level-name{font-size:13px;color:var(--bl-mid);font-weight:600;margin-bottom:10px;}
+.res-stars{font-size:40px;margin:12px 0;}
+.res-big{font-family:'Press Start 2P',monospace;font-size:30px;color:var(--bl-main);margin-bottom:4px;}
+.res-sub{font-size:13px;color:#999;margin-bottom:22px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px;}
+.stat-box{background:var(--bl-pale);border-radius:12px;padding:14px 8px;}
+.stat-n{font-size:24px;font-weight:900;color:var(--bl-dark);}
+.stat-l{font-size:11px;color:#999;margin-top:2px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-fill{
+  background:linear-gradient(135deg,var(--bl-warm),var(--bl-deep));color:white;
+  border:none;border-radius:12px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 14px rgba(13,43,94,.28);transition:transform .15s;
+}
+.btn-fill:hover{transform:translateY(-2px);}
+.btn-border{
+  background:white;color:var(--bl-dark);border:2.5px solid var(--bl-warm);
+  border-radius:12px;padding:13px 28px;
+  font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform .15s,background .15s;
+}
+.btn-border:hover{transform:translateY(-2px);background:var(--bl-pale);}
+
+footer{text-align:center;font-size:11px;color:#bbb;padding:16px 20px 32px;letter-spacing:.5px;}
+footer a{color:var(--bl-warm);text-decoration:none;font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="cyan-bar"></div>
+  <div class="header-inner">
+    <div class="brand-top">
+      <div class="brand-icon">⚙️</div>
+      <div class="brand-name">Shule AI Plus<span class="brand-plus">+</span></div>
+    </div>
+    <div class="header-sub">Pre Technical Studies · Grades 5 – 9</div>
+    <div class="header-title">🔩 Metallic &amp; Non-Metallic Materials</div>
+  </div>
+  <div class="cyan-bar"></div>
+</header>
+
+<!-- LEVEL SELECT -->
+<div class="screen active" id="screen-levels">
+  <div style="max-width:780px;margin:0 auto;">
+    <div class="section-title">Choose Your Grade</div>
+    <div class="section-sub">Grades 5–9 · 25 Questions Each · Metallic &amp; Non-Metallic Materials · All Grades Open!</div>
+    <div class="levels-grid" id="levels-grid"></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="screen-game">
+  <div class="game-topbar">
+    <span class="game-level-tag" id="game-level-label">Grade 5</span>
+    <span class="timer-pill" id="timer-pill">⏱ 30s</span>
+    <span class="score-pill" id="score-display">Score: 0</span>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="question-card">
+    <div class="q-num" id="q-num">Question 1 of 25</div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+  <div class="options-grid" id="options-grid"></div>
+  <div class="feedback-strip" id="feedback-strip">
+    <span class="fb-icon" id="fb-icon"></span>
+    <span id="fb-text"></span>
+  </div>
+  <button class="next-btn" id="next-btn">Next Question →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="screen-results">
+  <div style="max-width:780px;margin:0 auto;">
+    <div class="result-box">
+      <div class="res-emoji" id="res-emoji">🏆</div>
+      <div class="res-title" id="res-title">Outstanding!</div>
+      <div class="res-level-name" id="res-level-name"></div>
+      <div class="res-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="res-big" id="res-big">0</div>
+      <div class="res-sub" id="res-sub">points earned</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="s-correct">0</div><div class="stat-l">✅ Correct</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-wrong">0</div><div class="stat-l">❌ Wrong</div></div>
+        <div class="stat-box"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">📊 Score</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-border" onclick="goHome()">🏠 Grades</button>
+        <button class="btn-fill" onclick="retryLevel()">🔄 Retry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2025 <a href="https://shule.memeyai.com" target="_blank">Shule.memeyai.com</a> · Shule AI Plus+ · Metallic &amp; Non-Metallic Materials</footer>
+
+<script>
+// ════════════════════════════════════════════════
+//  QUESTIONS  —  5 Grades × 25 Questions each
+// ════════════════════════════════════════════════
+const Q = {
+
+// ── GRADE 5 : Introduction to Materials ────────────────────────
+5:[
+ {q:"What is a MATERIAL?",opts:["A type of subject in school","Something used to make objects or products","A kind of food","A computer programme"],a:1},
+ {q:"Which of these is an example of a METALLIC material?",opts:["Wood","Plastic","Iron","Rubber"],a:2},
+ {q:"Which of these is a NON-METALLIC material?",opts:["Steel","Copper","Wood","Aluminium"],a:2},
+ {q:"What is METAL mainly found in?",opts:["Oceans and rivers","Plants and trees","The ground as ores or minerals","The atmosphere"],a:2},
+ {q:"Which property describes most metals?",opts:["They are soft and break easily","They are shiny and can conduct electricity","They float on water","They are all the same colour"],a:1},
+ {q:"What does it mean when a material is said to be HARD?",opts:["It is very light","It resists being scratched or dented easily","It melts quickly","It is transparent"],a:1},
+ {q:"Which of the following metals is used to make cooking pots?",opts:["Gold","Aluminium","Mercury","Lead"],a:1},
+ {q:"What is WOOD classified as?",opts:["A metallic material","A liquid material","A non-metallic material","A synthetic material"],a:2},
+ {q:"Which of these materials can be found naturally in the earth?",opts:["Plastic","Iron ore","Nylon","Glass fibre"],a:1},
+ {q:"What is PLASTIC made from?",opts:["Melted rocks","Natural tree sap only","Chemicals from oil (petroleum)","Pure water"],a:2},
+ {q:"Which metal is liquid at room temperature?",opts:["Iron","Silver","Mercury","Copper"],a:2},
+ {q:"What does CONDUCTOR mean for a material?",opts:["It breaks easily","It allows heat or electricity to pass through it","It is very colourful","It absorbs water quickly"],a:1},
+ {q:"Which of these materials is a good conductor of electricity?",opts:["Rubber","Wood","Copper","Plastic"],a:2},
+ {q:"Which material is used to make electric wires because it conducts electricity well?",opts:["Glass","Copper or Aluminium","Wood","Rubber"],a:1},
+ {q:"What is GLASS made from?",opts:["Melted metal","Melted sand (silica)","Compressed wood","Rubber compounds"],a:1},
+ {q:"Which property allows metals to be beaten into flat sheets?",opts:["Conductivity","Malleability","Magnetism","Hardness"],a:1},
+ {q:"What does MALLEABLE mean?",opts:["It conducts electricity well","It is very heavy","It can be hammered or rolled into different shapes without breaking","It dissolves in water"],a:2},
+ {q:"Which of these is a magnetic material?",opts:["Copper","Aluminium","Wood","Iron"],a:3},
+ {q:"What is RUBBER mainly used for?",opts:["Building houses","Making wires","Making tyres, gloves, and seals because it is elastic and waterproof","Making windows"],a:2},
+ {q:"What does NATURAL material mean?",opts:["A material made in a factory","A material that comes directly from nature without being manufactured","A material that conducts electricity","A material that is always metallic"],a:1},
+ {q:"Which of these is a NATURAL non-metallic material?",opts:["Nylon","Polyester","Cotton","Polythene"],a:2},
+ {q:"What does SYNTHETIC material mean?",opts:["A material found naturally in forests","A material made by humans using chemicals","A type of metal","A material that is magnetic"],a:1},
+ {q:"Which material is TRANSPARENT, meaning you can see through it?",opts:["Iron","Glass","Wood","Rubber"],a:1},
+ {q:"What property makes iron useful for making tools and building structures?",opts:["It is very light","It is transparent","It is soft","It is strong and hard"],a:3},
+ {q:"What is the main difference between a metallic and a non-metallic material?",opts:["Metals are cheaper than non-metals","Metals are typically shiny, conduct electricity, and come from ores; non-metals generally do not","Non-metals are always heavier than metals","All non-metals are transparent"],a:1},
+],
+
+// ── GRADE 6 : Properties & Uses of Materials ───────────────────
+6:[
+ {q:"What does DUCTILE mean when describing a metal?",opts:["It can be melted easily","It is very heavy","It can be drawn into thin wires without breaking","It is transparent"],a:2},
+ {q:"Which metal is known as the best conductor of electricity?",opts:["Iron","Lead","Silver","Aluminium"],a:2},
+ {q:"What is the property called when a material returns to its original shape after being stretched?",opts:["Malleability","Elasticity","Conductivity","Hardness"],a:1},
+ {q:"What is DENSITY?",opts:["The colour of a material","The measure of how much mass is contained in a given volume — how heavy something is for its size","The texture of a surface","The melting point of a material"],a:1},
+ {q:"Which metal has the LOWEST density and is therefore very light?",opts:["Iron","Lead","Gold","Aluminium"],a:3},
+ {q:"What is CORROSION?",opts:["The process of making metal shiny","The gradual destruction of metal by chemical reaction with its environment, such as rusting","The hardening of a metal","The melting of metal"],a:1},
+ {q:"What is RUST?",opts:["A type of paint applied to iron","Iron oxide formed when iron reacts with oxygen and water","A special kind of metal","A non-metallic material"],a:1},
+ {q:"How can you PREVENT rusting on iron?",opts:["By leaving it in water","By heating it repeatedly","By painting, galvanising, or coating it to prevent contact with moisture and oxygen","By mixing it with rubber"],a:2},
+ {q:"What is GALVANISING?",opts:["Painting iron red","Coating iron or steel with a layer of zinc to protect it from rusting","Heating iron to very high temperatures","Mixing iron with rubber"],a:1},
+ {q:"What is an ALLOY?",opts:["A pure form of a single metal","A type of non-metallic material","A mixture of two or more metals, or a metal mixed with another element, to improve properties","A type of plastic"],a:2},
+ {q:"What is STEEL?",opts:["A non-metallic material","A pure form of iron","An alloy of iron and carbon used for its greater strength and hardness","A type of rubber"],a:2},
+ {q:"What is BRASS an alloy of?",opts:["Iron and carbon","Copper and zinc","Aluminium and tin","Silver and gold"],a:1},
+ {q:"What is BRONZE an alloy of?",opts:["Iron and aluminium","Copper and zinc","Lead and silver","Copper and tin"],a:3},
+ {q:"Which of the following is a property of CERAMICS?",opts:["They conduct electricity very well","They are flexible and elastic","They are hard, heat-resistant, and brittle non-metallic materials","They are always transparent"],a:2},
+ {q:"What is CERAMICS used for?",opts:["Making electric wires","Making tiles, bricks, and plates because of heat resistance and hardness","Making rubber tyres","Making plastic bottles"],a:1},
+ {q:"What does BRITTLE mean?",opts:["A material that can be hammered into shape","A material that shatters or breaks easily when force is applied — the opposite of ductile","A very heavy material","A very elastic material"],a:1},
+ {q:"What is TIMBER?",opts:["A type of metal alloy","Cut and prepared wood used as a building material","A type of synthetic plastic","A form of rubber"],a:1},
+ {q:"What makes ALUMINIUM useful in making aircraft bodies?",opts:["It is magnetic","It is very heavy and strong","It is light yet strong and resists corrosion","It is transparent"],a:2},
+ {q:"What is HARDNESS in the context of materials?",opts:["The ability to bend without breaking","The ability to resist being scratched, cut, or worn away","The ability to conduct heat","The weight of the material"],a:1},
+ {q:"Which material is hardest?",opts:["Iron","Glass","Rubber","Diamond (carbon)"],a:3},
+ {q:"What is meant by TENSILE STRENGTH?",opts:["The ability to conduct heat","The ability to resist being pulled apart or stretched","The shine or lustre of a material","The weight of a material"],a:1},
+ {q:"What is THERMAL CONDUCTIVITY?",opts:["How well a material reflects light","How easily a material allows heat to pass through it","How hard a material is","How magnetic a material is"],a:1},
+ {q:"Which material is used as THERMAL INSULATION because it does not conduct heat well?",opts:["Copper","Steel","Iron","Wood or fibreglass"],a:3},
+ {q:"What is FIBREGLASS?",opts:["A type of metal alloy","A composite non-metallic material made from fine glass fibres and resin — strong yet lightweight","A type of ceramic","Pure glass only"],a:1},
+ {q:"What is the main reason metals are chosen over non-metals for construction beams and bridges?",opts:["Metals are cheaper","Metals are more colourful","Metals have high tensile strength and can bear heavy loads","Metals float on water"],a:2},
+],
+
+// ── GRADE 7 : Classification & Deeper Properties ───────────────
+7:[
+ {q:"How are metals classified in terms of FERROUS and NON-FERROUS?",opts:["Ferrous metals contain gold; non-ferrous contain silver","Ferrous metals contain iron; non-ferrous metals do not contain iron","Ferrous metals are magnetic; non-ferrous metals are transparent","Ferrous metals are alloys; non-ferrous are pure metals"],a:1},
+ {q:"Which of these is a FERROUS metal?",opts:["Copper","Aluminium","Cast iron","Brass"],a:2},
+ {q:"Which of these is a NON-FERROUS metal?",opts:["Steel","Cast iron","Wrought iron","Copper"],a:3},
+ {q:"What is CAST IRON?",opts:["Pure iron with no carbon","Iron with a high carbon content (above 2%) — hard but very brittle","An alloy of iron and copper","A non-ferrous metal"],a:1},
+ {q:"What is WROUGHT IRON?",opts:["Iron with very low carbon content — tough, malleable, and rust-resistant","Pure aluminium","Iron mixed with zinc","A non-metallic material"],a:0},
+ {q:"What is MILD STEEL?",opts:["A non-ferrous metal","Steel with a very low carbon content — easy to weld and shape, widely used in construction","Pure iron","An alloy of copper and zinc"],a:1},
+ {q:"What is HIGH CARBON STEEL?",opts:["Steel with a large amount of zinc","Steel with high carbon content — very hard and used for cutting tools and springs","Pure iron with no impurities","A type of non-metallic material"],a:1},
+ {q:"What is STAINLESS STEEL?",opts:["Steel painted silver to resist rust","Steel containing chromium and nickel that makes it highly resistant to corrosion and staining","Pure iron","A type of aluminium alloy"],a:1},
+ {q:"What does THERMOPLASTIC mean?",opts:["A plastic that cannot be melted","A non-metallic polymer that softens when heated and can be reshaped, then hardens on cooling","A type of metal alloy","A ceramic material"],a:1},
+ {q:"What is THERMOSETTING PLASTIC?",opts:["A plastic that melts and can be remoulded many times","A plastic that permanently hardens after setting and cannot be remelted","A type of metal","A natural rubber compound"],a:1},
+ {q:"Which of these is an example of a THERMOPLASTIC?",opts:["Bakelite","Melamine","Epoxy resin","Polyethylene (polythene)"],a:3},
+ {q:"Which of these is an example of THERMOSETTING PLASTIC?",opts:["PVC","Polystyrene","Bakelite","Nylon"],a:2},
+ {q:"What are POLYMERS?",opts:["A type of metal alloy","Large molecules made of repeating units — most plastics are polymers","A class of ceramic materials","A type of metallic ore"],a:1},
+ {q:"What is NATURAL RUBBER made from?",opts:["Petroleum chemicals","The latex sap collected from rubber trees","Melted minerals","Cotton fibres"],a:1},
+ {q:"What is SYNTHETIC RUBBER?",opts:["Rubber from trees","Rubber produced from natural latex only","Artificial rubber manufactured from petroleum-based chemicals such as neoprene or SBR","A type of thermosetting plastic"],a:2},
+ {q:"What is COMPOSITE MATERIAL?",opts:["A material made from one pure element","A material made by combining two or more materials to get better properties than either alone","A type of metallic ore","A pure non-metallic element"],a:1},
+ {q:"Give an example of a COMPOSITE material.",opts:["Copper","Wood","Concrete reinforced with steel (reinforced concrete)","Pure aluminium"],a:2},
+ {q:"What does ELECTRICAL RESISTIVITY mean for a material?",opts:["How well it conducts heat","How hard it is","The measure of how strongly a material opposes the flow of electric current","How magnetic it is"],a:2},
+ {q:"Which non-metallic material is an excellent ELECTRICAL INSULATOR?",opts:["Copper","Aluminium","PVC (polyvinyl chloride) plastic","Iron"],a:2},
+ {q:"What makes CARBON FIBRE a useful engineering material?",opts:["It is very cheap and widely available","It is very heavy and rigid","It is extremely strong and lightweight — ideal for aircraft and sports equipment","It conducts electricity poorly"],a:2},
+ {q:"What is ANNEALING of metals?",opts:["Coating metal with zinc","The heat treatment process of heating metal then cooling it slowly to reduce hardness and relieve internal stress","Mixing two metals together","Painting metal to prevent corrosion"],a:1},
+ {q:"What is HARDENING of steel?",opts:["Mixing steel with rubber","Heating steel to a high temperature then cooling it rapidly (quenching) to increase hardness","Painting steel to prevent rust","Bending steel into shape"],a:1},
+ {q:"What is the GRAIN STRUCTURE of a metal?",opts:["The colour pattern on the metal surface","The microscopic crystal structure made of grains that affects the strength and properties of the metal","The weight of the metal","The electrical conductivity of the metal"],a:1},
+ {q:"What are CERAMICS chemically classified as?",opts:["Organic carbon-based compounds","Metallic alloys","Inorganic non-metallic solid materials made by heating minerals","Synthetic polymers"],a:2},
+ {q:"What type of material is used for the BODY of a car due to its balance of strength, weight, and formability?",opts:["Ceramic","Pure copper","Cast iron","Steel or aluminium alloy sheets"],a:3},
+],
+
+// ── GRADE 8 : Advanced Properties, Processing & Selection ──────
+8:[
+ {q:"What is FATIGUE in metals?",opts:["Metal becoming shinier over time","Weakening and cracking of metal after repeated stress cycles even below its yield point","The process of hardening metal","Metal expanding when heated"],a:1},
+ {q:"What is the YIELD POINT (yield strength) of a material?",opts:["The temperature at which it melts","The maximum stress a material can withstand before it permanently deforms","The point at which metal rusts","The weight of the material per unit area"],a:1},
+ {q:"What is CREEP in materials science?",opts:["The sound metal makes when bent","Slow permanent deformation of a material under constant stress over time, especially at high temperatures","The process of cooling metal rapidly","Coating metal with another material"],a:1},
+ {q:"What is the difference between ELASTIC and PLASTIC deformation?",opts:["Elastic is permanent; plastic is temporary","Elastic deformation is temporary (material returns to shape); plastic deformation is permanent","They are the same thing","Plastic deformation happens only in non-metals"],a:1},
+ {q:"What does YOUNG'S MODULUS measure?",opts:["The magnetic strength of a material","The ability to conduct electricity","The stiffness of a material — the ratio of stress to strain within the elastic region","The melting point of a material"],a:2},
+ {q:"What is TOUGHNESS of a material?",opts:["The ability to resist scratching","The ability to absorb energy and deform without fracturing","The shine of a material surface","The ability to conduct heat"],a:1},
+ {q:"What is the difference between STRENGTH and STIFFNESS?",opts:["They are the same property","Strength is resistance to fracture or yielding; stiffness is resistance to elastic deformation (bending)","Stiffness is about weight; strength is about colour","Strength applies only to metals"],a:1},
+ {q:"What is IMPACT STRENGTH?",opts:["The magnetic force of a material","The ability of a material to resist sudden forces or shocks without fracturing","The hardness of a material at high temperature","The ability to resist corrosion"],a:1},
+ {q:"What is CASE HARDENING of steel?",opts:["Painting steel to prevent rust","A process that hardens only the outer surface of steel while keeping the core tough — used for gears and shafts","Mixing steel with rubber","Cooling steel in water"],a:1},
+ {q:"What is TEMPERING of steel after hardening?",opts:["Heating steel and cooling it slowly","Reheating hardened steel to a temperature below its critical point then cooling, to reduce brittleness while keeping hardness","Coating steel with zinc","Annealing to soften the steel"],a:1},
+ {q:"What is NORMALISING of steel?",opts:["Coating steel with chrome","Rapidly cooling steel in oil","Heating steel above critical temperature then cooling in still air to refine grain structure and relieve stress","Making steel magnetic"],a:2},
+ {q:"What is NITRIDING?",opts:["Dipping metal in nitrogen gas","A surface hardening process in which nitrogen is diffused into the surface of steel to increase hardness and wear resistance","A type of corrosion","Coating with zinc"],a:1},
+ {q:"What does MACHINABILITY of a metal mean?",opts:["The ability of metal to conduct electricity","How easily a metal can be cut, drilled, milled, or shaped using machine tools","The weight of the metal per volume","How well the metal resists corrosion"],a:1},
+ {q:"What is WELDABILITY?",opts:["The ability to stretch into wires","How easily a material can be joined by welding without cracking or losing its properties","The magnetic strength of a material","The ability to float in water"],a:1},
+ {q:"What is FORGING in metalworking?",opts:["Melting metal and pouring it into a mould","Shaping metal by applying compressive force through hammering or pressing while hot or cold","Cutting metal with a saw","Coating metal with another material"],a:1},
+ {q:"What is CASTING?",opts:["Beating metal flat with a hammer","Shaping metal by pouring molten metal into a mould and allowing it to solidify","Drawing metal into wires","Joining metals by welding"],a:1},
+ {q:"What is ROLLING in metal processing?",opts:["Pouring metal into moulds","Reducing the thickness of metal by passing it between rollers to make sheets, plates, or strips","Heating metal in a furnace","Coating metal with paint"],a:1},
+ {q:"What is EXTRUSION in manufacturing?",opts:["Pouring molten material into a mould","Pulling material through a die to form a specific cross-section shape","Hammering material into shape","Coating material with chemicals"],a:0},
+ {q:"What does NON-DESTRUCTIVE TESTING (NDT) of materials involve?",opts:["Melting the material to check its composition","Breaking the material in half to test strength","Inspecting a material or component for defects without damaging or destroying it","Coating the material with a test chemical"],a:2},
+ {q:"What is the purpose of a MATERIAL DATA SHEET?",opts:["A sheet of material used for packaging","A document providing detailed information on the properties, safety, and specifications of a material","A type of metal sheet","A school worksheet about materials"],a:1},
+ {q:"What is RECYCLING of metals?",opts:["Coating old metals with new paint","Throwing used metals away","The process of melting down used metals to reuse the material in new products","Converting metals into non-metals"],a:2},
+ {q:"What is the advantage of RECYCLING aluminium compared to producing new aluminium?",opts:["Recycled aluminium is weaker","There is no advantage","Recycling aluminium uses significantly less energy than extracting aluminium from bauxite ore","Recycled aluminium cannot conduct electricity"],a:2},
+ {q:"What is POLYCARBONATE?",opts:["A type of metal alloy","A type of ceramic","A strong, tough, transparent thermoplastic used in safety goggles, phone screens, and bulletproof glass","A natural fibre"],a:2},
+ {q:"What is EPOXY RESIN?",opts:["A metallic alloy","A liquid metal","A thermosetting polymer adhesive and coating material known for its strong bonding and chemical resistance","A type of clay ceramic"],a:2},
+ {q:"Why is MATERIAL SELECTION important in engineering design?",opts:["Materials are all the same","Selecting the right material ensures the product is safe, functional, durable, and cost-effective for its intended use","The cheapest material is always the best choice","Only appearance matters in material selection"],a:1},
+],
+
+// ── GRADE 9 : Expert Level — Materials Science & Engineering ───
+9:[
+ {q:"What is the ATOMIC STRUCTURE of metals that gives them their unique properties?",opts:["Metals have atoms arranged randomly with no structure","Metals have a crystalline lattice structure with free-moving electrons that enable conductivity and metallic bonding","Metals are made of large organic molecules","Metals have a covalent bonding structure throughout"],a:1},
+ {q:"What is METALLIC BONDING?",opts:["The bonding found in all non-metallic materials","A type of ionic bond found in ceramics","The bonding in metals where positive ions are held together by a 'sea' of delocalised electrons — explaining conductivity and malleability","A covalent bond between metal atoms"],a:2},
+ {q:"What is a PHASE DIAGRAM in metallurgy?",opts:["A diagram showing how to paint metal","A graph of electrical conductivity vs temperature","A graph that shows the phases (solid, liquid) of a metal or alloy at different temperatures and compositions","A diagram of the factory layout"],a:2},
+ {q:"What is DISLOCATION in a metal's crystal structure?",opts:["A type of corrosion","A crack in the metal surface","A line defect in the crystal lattice — dislocations moving through the lattice enable plastic deformation","A type of alloy composition"],a:2},
+ {q:"What is WORK HARDENING (strain hardening) of metals?",opts:["Heating metal to high temperature","Softening a metal by annealing","Hardening that occurs when a metal is plastically deformed at room temperature — dislocations multiply and block each other","Coating a metal with a harder material"],a:2},
+ {q:"What does RECRYSTALLISATION mean in metallurgy?",opts:["The process of forming a metal alloy","The formation of new strain-free grains in a deformed metal when heated above the recrystallisation temperature — softening the metal","The conversion of metal to ceramic","The rapid cooling of molten metal"],a:1},
+ {q:"What is PRECIPITATION HARDENING (age hardening)?",opts:["Hardening caused by chemical corrosion","Hardening caused by bending metal rapidly","A heat treatment process that increases alloy strength through formation of fine precipitate particles within the crystal structure","A surface coating process"],a:2},
+ {q:"What is OXIDATION of metals?",opts:["A method of joining metals","The chemical reaction of a metal with oxygen to form a metal oxide — a form of corrosion","The removal of oxygen from metal ore","The process of cooling metal in air"],a:1},
+ {q:"What is CATHODIC PROTECTION?",opts:["Painting metal to prevent rust","A corrosion prevention method using a sacrificial anode or impressed current to protect metal structures like pipelines and ship hulls","Heating metal to prevent oxidation","Coating metal with plastic"],a:1},
+ {q:"What is a SACRIFICIAL ANODE?",opts:["A type of metal alloy used in construction","A metal more reactive than the structure it protects — it corrodes instead of the structure (e.g. zinc protecting steel in galvanising)","A non-metallic material used in batteries","A type of welding electrode"],a:1},
+ {q:"What is ELECTROPLATING?",opts:["A method of cutting metal with electricity","Coating a metal object with a thin layer of another metal using an electric current — to improve appearance, corrosion resistance, or hardness","A type of metal recycling","A method of testing metal hardness"],a:1},
+ {q:"What is SHOT PEENING?",opts:["A type of metal alloy composition","A surface treatment where small metal balls are blasted against a surface to induce compressive residual stress and improve fatigue life","A method of melting metal","A type of NDT inspection"],a:1},
+ {q:"What is the VICKERS HARDNESS TEST?",opts:["A test for electrical conductivity","A test for magnetic properties","A test for corrosion resistance","A method of measuring metal hardness by pressing a diamond pyramid indenter into the surface under load"],a:3},
+ {q:"What is SCANNING ELECTRON MICROSCOPY (SEM) used for in materials science?",opts:["Cutting materials into thin sections","Testing the electrical resistance of materials","Melting materials at high temperature","Imaging and analysing the surface microstructure of materials at very high magnification"],a:3},
+ {q:"What is STRESS CONCENTRATION in materials?",opts:["The overall weight of a material","The average stress across a material","The significantly higher local stress around notches, holes, or cracks that can cause failure at much lower loads than expected","The stress caused by thermal expansion"],a:2},
+ {q:"What is the FRACTURE TOUGHNESS of a material?",opts:["The maximum temperature before melting","The ability of a material to resist crack propagation — the higher it is, the more the material tolerates cracks without sudden failure","The tensile strength at room temperature","The hardness of the material surface"],a:1},
+ {q:"What does ANISOTROPY mean in materials science?",opts:["A material with identical properties in all directions","A property of some materials where mechanical or physical properties vary depending on the direction of measurement","A type of heat treatment","A type of corrosion"],a:1},
+ {q:"What is a SMART MATERIAL?",opts:["A material that is always expensive","A material that can think and learn","A material that changes its properties in response to external stimuli like temperature, stress, or electric field — e.g. shape memory alloys","A material made using artificial intelligence"],a:2},
+ {q:"What is a SHAPE MEMORY ALLOY (SMA)?",opts:["An alloy that changes colour when bent","A metal alloy that can recover its original shape after deformation when heated — used in medical stents and actuators","A type of steel alloy","An alloy that becomes liquid at room temperature"],a:1},
+ {q:"What is NANO-MATERIAL?",opts:["A very large material used in construction","A material involving structures at the nanoscale (1–100 nm) showing unique properties different from bulk material — used in electronics and medicine","A type of ceramic only","A liquid metal compound"],a:1},
+ {q:"What is LIFE CYCLE ASSESSMENT (LCA) of a material?",opts:["A test of material hardness over time","A detailed record of a material's colour change","The evaluation of the total environmental impact of a material from raw material extraction through production, use, and disposal","A method of measuring electrical conductivity"],a:2},
+ {q:"What is SELECTIVE LASER SINTERING (SLS) in manufacturing?",opts:["A method of cutting metal with a laser","A traditional casting process","A 3D printing process that uses a laser to fuse powdered materials layer by layer into solid parts","A surface coating process"],a:2},
+ {q:"What makes HIGH ENTROPY ALLOYS (HEAs) different from conventional alloys?",opts:["They contain only one metal element","They contain no metallic elements","They are made of five or more principal elements in near-equal proportions, giving exceptional strength and high-temperature performance","They are non-metallic composites"],a:2},
+ {q:"What is SUPERALLOY used for?",opts:["Making household plastic items","Making electrical cables","Making everyday tools","A group of high-performance alloys used in jet engines and gas turbines that maintain strength and resist corrosion at very high temperatures"],a:3},
+ {q:"What is the key engineering principle when SELECTING a material for a specific application?",opts:["Always use the cheapest material","Always use the heaviest material","Always use the shiniest material","Match the material's properties to the requirements of the application — considering performance, cost, manufacturability, and sustainability"],a:3},
+]
+
+}; // end Q
+
+// ════════════ LEVEL META ════════════
+const GRADE_META = {
+  5:{label:"Grade 5",sub:"Introduction to Materials",        badge:"gb-5",emoji:"🔵"},
+  6:{label:"Grade 6",sub:"Properties & Uses",               badge:"gb-6",emoji:"🔷"},
+  7:{label:"Grade 7",sub:"Classification & Deeper Study",   badge:"gb-7",emoji:"⚗️"},
+  8:{label:"Grade 8",sub:"Processing & Selection",          badge:"gb-8",emoji:"🔧"},
+  9:{label:"Grade 9",sub:"Materials Science & Engineering", badge:"gb-9",emoji:"🧬"},
+};
+const GRADES=[5,6,7,8,9];
+
+// ════════════ STATE ════════════
+let curLevel=5,curQ=0,score=0,correct=0,wrong=0;
+let timer=null,timeLeft=30,answered=false;
+let shuffled=[];
+let stars={5:0,6:0,7:0,8:0,9:0};
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+// ── RENDER LEVELS ──
+function renderLevels(){
+  const g=document.getElementById('levels-grid');
+  g.innerHTML='';
+  GRADES.forEach(function(l){
+    const m=GRADE_META[l];
+    const hasStar=(stars[l]>0);
+    const c=document.createElement('div');
+    c.className='level-card'+(hasStar?' completed':'');
+    const stHtml=hasStar?'⭐'.repeat(stars[l])+'☆'.repeat(3-stars[l]):'☆☆☆';
+    c.innerHTML=
+      '<span class="grade-badge '+m.badge+'">'+m.emoji+' '+m.label+'</span>'+
+      '<span class="lnum">G'+l+'</span>'+
+      '<div class="lname">'+m.sub+'</div>'+
+      '<div class="lq">25 Questions</div>'+
+      '<div class="level-stars">'+stHtml+'</div>';
+    (function(lv){c.onclick=function(){startLevel(lv);};})(l);
+    g.appendChild(c);
+  });
+}
+
+// ── START LEVEL ──
+function startLevel(l){
+  curLevel=l;curQ=0;score=0;correct=0;wrong=0;
+  shuffled=shuffle(Q[l]);
+  show('screen-game');
+  const m=GRADE_META[l];
+  document.getElementById('game-level-label').textContent=m.emoji+' '+m.label+' · '+m.sub;
+  loadQ();
+}
+
+// ── LOAD QUESTION ──
+function loadQ(){
+  answered=false;
+  clearInterval(timer);
+  timeLeft=30;
+  const q=shuffled[curQ];
+  document.getElementById('q-num').textContent='Question '+(curQ+1)+' of '+shuffled.length;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('prog-bar').style.width=((curQ/shuffled.length)*100)+'%';
+  document.getElementById('feedback-strip').className='feedback-strip';
+  document.getElementById('next-btn').className='next-btn';
+  const tp=document.getElementById('timer-pill');
+  tp.className='timer-pill';
+  tp.textContent='⏱ '+timeLeft+'s';
+
+  const grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  ['A','B','C','D'].forEach(function(lt,i){
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML='<span class="opt-letter">'+lt+'</span><span>'+q.opts[i]+'</span>';
+    (function(idx,b){btn.onclick=function(){pick(idx,q.a,b);};})(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+// ── TIMER ──
+function startTimer(){
+  const tp=document.getElementById('timer-pill');
+  timer=setInterval(function(){
+    timeLeft--;
+    tp.textContent='⏱ '+timeLeft+'s';
+    if(timeLeft<=8)tp.className='timer-pill danger';
+    if(timeLeft<=0){clearInterval(timer);timesUp();}
+  },1000);
+}
+
+function timesUp(){
+  if(answered)return;
+  answered=true;wrong++;
+  const q=shuffled[curQ];
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  btns[q.a].classList.add('correct');
+  feedback(false,"⏰ Time's up! Answer: "+q.opts[q.a]);
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+// ── PICK ──
+function pick(chosen,ans,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  if(chosen===ans){
+    btn.classList.add('correct');
+    score+=4;correct++;
+    feedback(true,'✅ Correct! Excellent!');
+  } else {
+    btn.classList.add('wrong');
+    btns[ans].classList.add('correct');
+    wrong++;
+    feedback(false,'❌ Wrong! Correct: '+shuffled[curQ].opts[ans]);
+  }
+  document.getElementById('score-display').textContent='Score: '+score;
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function feedback(ok,msg){
+  const fb=document.getElementById('feedback-strip');
+  fb.className='feedback-strip show'+(ok?'':' bad');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'💡';
+  document.getElementById('fb-text').textContent=msg;
+}
+
+document.getElementById('next-btn').onclick=function(){
+  curQ++;
+  if(curQ>=shuffled.length)showResults();
+  else loadQ();
+};
+
+// ── RESULTS ──
+function showResults(){
+  const total=shuffled.length;
+  const pct=Math.round((correct/total)*100);
+  const st=pct>=90?3:pct>=70?2:pct>=50?1:0;
+  stars[curLevel]=Math.max(stars[curLevel],st);
+  const m=GRADE_META[curLevel];
+  document.getElementById('res-emoji').textContent=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('res-title').textContent=pct>=90?'Outstanding!':pct>=70?'Great Job!':pct>=50?'Good Effort!':'Keep Practising!';
+  document.getElementById('res-level-name').textContent=m.emoji+' '+m.label+' · '+m.sub;
+  document.getElementById('res-stars').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+  document.getElementById('res-big').textContent=score;
+  document.getElementById('res-sub').textContent='out of '+(total*4)+' possible points · '+pct+'%';
+  document.getElementById('s-correct').textContent=correct;
+  document.getElementById('s-wrong').textContent=wrong;
+  document.getElementById('s-pct').textContent=pct+'%';
+  show('screen-results');
+}
+
+function goHome(){clearInterval(timer);renderLevels();show('screen-levels');}
+function retryLevel(){startLevel(curLevel);}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+renderLevels();
+</script>
+</body>
+</html>

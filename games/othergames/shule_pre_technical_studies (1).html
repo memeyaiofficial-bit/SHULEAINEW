@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shule AI - Pre-Technical Studies Quest</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9d423 0%, #ffc107 25%, #ffeb3b 50%, #ffd600 75%, #f9d423 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 90px rgba(249, 212, 35, 0.6);
+            max-width: 1100px;
+            width: 100%;
+            overflow: hidden;
+            animation: slideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 5px solid #ffc107;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #333;
+            padding: 45px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '🔧🔨⚙️🛠️📐✏️🔩⚡';
+            position: absolute;
+            font-size: 4.5em;
+            opacity: 0.15;
+            top: -10px;
+            left: 0;
+            right: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        .header h1 {
+            font-size: 3.2em;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.4em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-area {
+            padding: 45px;
+        }
+
+        .menu-screen, .game-screen, .results-screen {
+            display: none;
+        }
+
+        .menu-screen.active, .game-screen.active, .results-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-title {
+            text-align: center;
+            color: #f57f17;
+            margin-bottom: 45px;
+            font-size: 2.8em;
+            font-weight: bold;
+        }
+
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+            padding: 32px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid #ffc107;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+
+        .level-card:hover::after {
+            left: 100%;
+        }
+
+        .level-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 25px 60px rgba(249, 212, 35, 0.6);
+            border-color: #ffb300;
+        }
+
+        .level-card.level1 {
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+        }
+
+        .level-card.level2 {
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+        }
+
+        .level-card.level3 {
+            background: linear-gradient(135deg, #fff59d 0%, #fff176 100%);
+        }
+
+        .level-card.level4 {
+            background: linear-gradient(135deg, #fff176 0%, #ffee58 100%);
+        }
+
+        .level-card.level5 {
+            background: linear-gradient(135deg, #ffee58 0%, #fdd835 100%);
+        }
+
+        .level-emoji {
+            font-size: 4em;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounce 2.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        .level-card h3 {
+            color: #f57f17;
+            font-size: 1.9em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .level-card p {
+            color: #f9a825;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: rgba(245, 127, 23, 0.9);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(249, 212, 35, 0.3);
+            border: 3px solid #ffc107;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-item span {
+            display: block;
+            font-size: 2.6em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-item label {
+            color: #f57f17;
+            font-size: 1.05em;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 4px solid #fff9c4;
+            border-radius: 25px;
+            padding: 38px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 35px rgba(249, 212, 35, 0.2);
+        }
+
+        .question-text {
+            font-size: 1.55em;
+            color: #f57f17;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+
+        .options {
+            display: grid;
+            gap: 18px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #fff9c4;
+            padding: 22px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.15em;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            color: #f57f17;
+            font-weight: 500;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 6px;
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .option-btn:hover {
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            border-color: #ffc107;
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(249, 212, 35, 0.4);
+        }
+
+        .option-btn:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #4caf50;
+            animation: correctPulse 0.6s;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border-color: #f44336;
+            animation: wrongShake 0.6s;
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.08); }
+            50% { transform: scale(0.95); }
+            75% { transform: scale(1.05); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-12px); }
+            20%, 40%, 60%, 80% { transform: translateX(12px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            color: #333;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 1.25em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 12px 8px;
+            box-shadow: 0 8px 25px rgba(249, 212, 35, 0.5);
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(249, 212, 35, 0.7);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f57f17 0%, #f9a825 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(245, 127, 23, 0.5);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 12px 35px rgba(245, 127, 23, 0.7);
+        }
+
+        .results-card {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .results-emoji {
+            font-size: 7em;
+            margin-bottom: 30px;
+            animation: spin 2.5s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-15deg) scale(1.15); }
+            50% { transform: rotate(15deg) scale(1.25); }
+            75% { transform: rotate(-15deg) scale(1.15); }
+        }
+
+        .results-card h2 {
+            font-size: 3.2em;
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+        }
+
+        .results-stats {
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            padding: 40px;
+            border-radius: 25px;
+            margin: 30px 0;
+            box-shadow: 0 10px 35px rgba(249, 212, 35, 0.3);
+            border: 3px solid #ffc107;
+        }
+
+        .results-stats p {
+            font-size: 1.6em;
+            margin: 18px 0;
+            color: #f57f17;
+            font-weight: 600;
+        }
+
+        .feedback {
+            font-size: 1.35em;
+            color: #f57f17;
+            margin: 30px 0;
+            padding: 28px;
+            background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+            border-radius: 20px;
+            border-left: 8px solid #ffc107;
+            box-shadow: 0 5px 20px rgba(249, 212, 35, 0.3);
+        }
+
+        .progress-bar {
+            background: #fffde7;
+            height: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.2);
+            border: 2px solid #fff9c4;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ffc107 0%, #ffeb3b 50%, #ffd600 100%);
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 20px rgba(249, 212, 35, 0.8);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .level-title {
+            text-align: center;
+            font-size: 2.4em;
+            background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Pre-Technical Studies Quest</h1>
+            <p>Grade 4-6 • Build, Design, Create!</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Menu Screen -->
+            <div class="menu-screen active">
+                <h2 class="menu-title">Choose Your Technical Level 🚀</h2>
+                
+                <div class="level-grid">
+                    <div class="level-card level1" onclick="startGame(1)">
+                        <span class="level-emoji">🔨</span>
+                        <h3>Level 1: Tools & Safety</h3>
+                        <p>Learn about basic tools, workshop safety, and measurements</p>
+                        <span class="level-badge">Grade 4 • 25 Questions</span>
+                    </div>
+
+                    <div class="level-card level2" onclick="startGame(2)">
+                        <span class="level-emoji">📐</span>
+                        <h3>Level 2: Design & Drawing</h3>
+                        <p>Explore technical drawing, sketching, and design basics</p>
+                        <span class="level-badge">Grade 4-5 • 25 Questions</span>
+                    </div>
+
+                    <div class="level-card level3" onclick="startGame(3)">
+                        <span class="level-emoji">🔩</span>
+                        <h3>Level 3: Materials & Construction</h3>
+                        <p>Understand materials, joints, and building techniques</p>
+                        <span class="level-badge">Grade 5 • 25 Questions</span>
+                    </div>
+
+                    <div class="level-card level4" onclick="startGame(4)">
+                        <span class="level-emoji">⚙️</span>
+                        <h3>Level 4: Mechanics & Systems</h3>
+                        <p>Learn about machines, electricity, and how things work</p>
+                        <span class="level-badge">Grade 5-6 • 25 Questions</span>
+                    </div>
+
+                    <div class="level-card level5" onclick="startGame(5)">
+                        <span class="level-emoji">🚀</span>
+                        <h3>Level 5: Innovation & Projects</h3>
+                        <p>Master problem-solving, innovation, and project planning</p>
+                        <span class="level-badge">Grade 6 • 25 Questions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div class="game-screen">
+                <h3 class="level-title" id="levelTitle"></h3>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+
+                <div class="score-board">
+                    <div class="score-item">
+                        <span id="currentScore">0</span>
+                        <label>🏆 Score</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="questionNumber">1</span>
+                        <label>📝 Question</label>
+                    </div>
+                    <div class="score-item">
+                        <span id="totalQuestions">24</span>
+                        <label>📊 Total</label>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options" id="optionsContainer"></div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-secondary" onclick="goToMenu()">🏠 Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen">
+                <div class="results-card">
+                    <div class="results-emoji" id="resultsEmoji">🎉</div>
+                    <h2 id="resultsTitle">Amazing Performance!</h2>
+                    <div class="results-stats">
+                        <p><strong>🏆 Final Score:</strong> <span id="finalScore"></span></p>
+                        <p><strong>✅ Correct Answers:</strong> <span id="correctAnswers"></span></p>
+                        <p><strong>📝 Total Questions:</strong> <span id="totalQuestionsResult"></span></p>
+                        <p><strong>📊 Percentage:</strong> <span id="percentage"></span>%</p>
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button class="btn" onclick="goToMenu()">🎮 Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            level1: [
+                { q: "🔨 What is a hammer used for?", options: ["Cutting wood", "Driving nails and breaking things", "Measuring", "Drawing"], correct: 1 },
+                { q: "🪚 What tool is used to cut wood?", options: ["Hammer", "Saw", "Screwdriver", "Pliers"], correct: 1 },
+                { q: "🔧 What is a spanner/wrench used for?", options: ["Cutting", "Tightening or loosening nuts and bolts", "Hammering", "Measuring"], correct: 1 },
+                { q: "📏 What tool do we use to measure length?", options: ["Hammer", "Tape measure/Ruler", "Saw", "Screwdriver"], correct: 1 },
+                { q: "👷 Why should you wear safety goggles in a workshop?", options: ["To look cool", "To protect your eyes", "To see better", "No reason"], correct: 1 },
+                { q: "🔨 What should you do before using any tool?", options: ["Run around", "Check if it's in good condition", "Throw it", "Hide it"], correct: 1 },
+                { q: "⚠️ What does a red and white sign in a workshop usually mean?", options: ["Go faster", "Warning/Danger", "Exit", "Toilet"], correct: 1 },
+                { q: "🧤 Why should you wear gloves when handling rough materials?", options: ["To look professional", "To protect hands from cuts and splinters", "To hide dirty hands", "No reason"], correct: 1 },
+                { q: "🔩 What is a screwdriver used for?", options: ["Cutting", "Hammering", "Driving and removing screws", "Measuring"], correct: 2 },
+                { q: "✂️ What should you do with tools after using them?", options: ["Leave them anywhere", "Clean and store them properly", "Throw them away", "Hide them"], correct: 1 },
+                { q: "📐 What tool helps you draw straight lines?", options: ["Compass", "Ruler", "Protractor", "Set square"], correct: 1 },
+                { q: "🔨 What part of the hammer hits the nail?", options: ["Handle", "Head", "Claw", "Side"], correct: 1 },
+                { q: "⚠️ What should you never do with sharp tools?", options: ["Use them carefully", "Point them at people or run with them", "Store them safely", "Clean them"], correct: 1 },
+                { q: "🪛 What are pliers used for?", options: ["Measuring", "Cutting and gripping", "Drawing", "Hammering"], correct: 1 },
+                { q: "📏 How many centimeters are in a meter?", options: ["10", "50", "100", "1000"], correct: 2 },
+                { q: "🔧 What does 'maintenance' mean for tools?", options: ["Breaking them", "Keeping them clean and in good condition", "Hiding them", "Selling them"], correct: 1 },
+                { q: "⚡ Why should you keep water away from electrical tools?", options: ["Water makes them heavy", "Water can cause electric shock", "Water makes them rusty only", "No reason"], correct: 1 },
+                { q: "👷 What should you wear to protect your feet in a workshop?", options: ["Sandals", "Closed shoes/Safety boots", "Socks only", "Nothing"], correct: 1 },
+                { q: "🔨 What is the sharp side of a hammer used for?", options: ["Decoration", "Pulling out nails (claw)", "Hitting nails", "Cutting wood"], correct: 1 },
+                { q: "📐 What is a set square used for?", options: ["Measuring length", "Drawing right angles", "Cutting", "Hammering"], correct: 1 },
+                { q: "🪚 What should you check on a saw before using it?", options: ["Color", "If the teeth are sharp", "Weight", "Length"], correct: 1 },
+                { q: "⚠️ What does PPE stand for in safety?", options: ["People Protect Equipment", "Personal Protective Equipment", "Proper Project Equipment", "Personal Project Equipment"], correct: 1 },
+                { q: "🔧 Why should tools be kept dry?", options: ["To look shiny", "To prevent rust and damage", "To make them heavy", "No reason"], correct: 1 },
+                { q: "📏 What unit do we use to measure very small things?", options: ["Kilometers", "Meters", "Millimeters", "Miles"], correct: 2 },
+                { q: "🔨 What is the purpose of the claw on a claw hammer?", options: ["Driving nails in", "Pulling nails out", "Measuring", "Cutting wood"], correct: 1 }
+            ],
+            level2: [
+                { q: "📐 What is technical drawing?", options: ["Artistic painting", "Precise drawing using tools and measurements", "Free-hand sketching only", "Coloring pictures"], correct: 1 },
+                { q: "✏️ What pencil grade is best for technical drawing?", options: ["6B (very soft)", "HB or 2H (hard)", "8B (very soft)", "Any pencil"], correct: 1 },
+                { q: "📏 What is a scale in technical drawing?", options: ["Weighing machine", "Ratio of drawing size to actual size", "A fish part", "A ruler"], correct: 1 },
+                { q: "📐 What is an orthographic projection?", options: ["3D drawing", "2D views from different angles", "Perspective drawing", "Free-hand sketch"], correct: 1 },
+                { q: "✏️ What are the three main views in orthographic projection?", options: ["Left, right, center", "Front, top, side", "Up, down, across", "Big, medium, small"], correct: 1 },
+                { q: "📏 What is a dimension line?", options: ["Line showing measurements", "Decorative line", "Thick outline", "Hidden line"], correct: 0 },
+                { q: "⭕ What is a compass used for?", options: ["Finding direction", "Drawing circles and arcs", "Measuring angles", "Drawing straight lines"], correct: 1 },
+                { q: "📐 What does a protractor measure?", options: ["Length", "Weight", "Angles", "Temperature"], correct: 2 },
+                { q: "✏️ What type of line shows hidden parts in a drawing?", options: ["Solid line", "Dashed line", "Dotted line", "Thick line"], correct: 1 },
+                { q: "📏 What is a center line in technical drawing?", options: ["Line at the edge", "Line showing center of symmetry", "Outline", "Hidden line"], correct: 1 },
+                { q: "🎨 What is shading in a drawing?", options: ["Coloring only", "Adding darkness to show depth", "Erasing", "Outlining"], correct: 1 },
+                { q: "📐 What is a right angle?", options: ["45 degrees", "60 degrees", "90 degrees", "180 degrees"], correct: 2 },
+                { q: "✏️ What is sketching?", options: ["Only perfect drawing", "Free-hand drawing", "Using only rulers", "Painting"], correct: 1 },
+                { q: "📏 What is an isometric drawing?", options: ["2D drawing", "3D drawing showing three sides", "Top view only", "Side view only"], correct: 1 },
+                { q: "📐 How many degrees in a full circle?", options: ["90", "180", "270", "360"], correct: 3 },
+                { q: "✏️ What is a title block in technical drawing?", options: ["Drawing title only", "Box with drawing information", "Border only", "Scale only"], correct: 1 },
+                { q: "📏 What is proportion in design?", options: ["Color choice", "Relationship between sizes of parts", "Line thickness", "Material type"], correct: 1 },
+                { q: "🎨 What is symmetry?", options: ["Different on all sides", "Same on both sides of a line", "Random design", "No pattern"], correct: 1 },
+                { q: "📐 What tool helps draw parallel lines?", options: ["Compass", "T-square or parallel ruler", "Protractor", "Set square only"], correct: 1 },
+                { q: "✏️ What is an outline in a drawing?", options: ["Hidden line", "Main outer edge", "Center line", "Dimension line"], correct: 1 },
+                { q: "📏 What does 1:10 scale mean?", options: ["10 times bigger", "10 times smaller", "Same size", "1 meter"], correct: 1 },
+                { q: "🎨 What is contrast in design?", options: ["Everything the same", "Difference between elements", "Symmetry", "Proportion"], correct: 1 },
+                { q: "📐 What is a tangent to a circle?", options: ["Line crossing circle", "Line touching circle at one point", "Line inside circle", "Curved line"], correct: 1 },
+                { q: "✏️ What is rendering in technical drawing?", options: ["Erasing", "Adding texture and shading", "Drawing outlines only", "Measuring"], correct: 1 },
+                { q: "📐 What does 'elevation' mean in architectural drawing?", options: ["Height of a building", "Side view showing height and width of a building", "Top view only", "Inside view"], correct: 1 }
+            ],
+            level3: [
+                { q: "🪵 What is wood classified as?", options: ["Metal", "Natural material", "Plastic", "Synthetic material"], correct: 1 },
+                { q: "🔩 What are nails made of?", options: ["Plastic", "Metal (usually steel)", "Wood", "Rubber"], correct: 1 },
+                { q: "🪚 What is a butt joint?", options: ["Two pieces meeting at right angles", "Two pieces joined end-to-end", "Overlapping pieces", "Curved joint"], correct: 1 },
+                { q: "🔨 What is a T-joint?", options: ["Triangle shape", "One piece meeting another at 90 degrees (T-shape)", "Parallel pieces", "Curved joint"], correct: 1 },
+                { q: "🪵 What is plywood?", options: ["Solid wood", "Layers of wood glued together", "Plastic wood", "Metal"], correct: 1 },
+                { q: "🔩 What is the difference between a nail and a screw?", options: ["Size only", "Screws have threads and can be removed", "Color", "No difference"], correct: 1 },
+                { q: "🏗️ What is a foundation in construction?", options: ["Roof", "Base that supports a building", "Wall", "Window"], correct: 1 },
+                { q: "🧱 What are bricks made from?", options: ["Plastic", "Clay or concrete", "Wood", "Glass"], correct: 1 },
+                { q: "🔨 What is glue used for in construction?", options: ["Decoration", "Bonding materials together", "Measurement", "Cutting"], correct: 1 },
+                { q: "🪵 What is hardwood?", options: ["Very soft wood", "Wood from deciduous trees (loses leaves)", "Plastic", "Any hard material"], correct: 1 },
+                { q: "🌲 What is softwood?", options: ["Very hard wood", "Wood from coniferous trees (pine, cedar)", "Metal", "Plastic"], correct: 1 },
+                { q: "🔩 What is a bolt used with?", options: ["Nothing", "A nut", "Glue", "Tape"], correct: 1 },
+                { q: "🪚 What is a miter joint?", options: ["Right angle joint", "45-degree angle joint at corners", "Straight joint", "Curved joint"], correct: 1 },
+                { q: "🏗️ What is concrete made from?", options: ["Wood only", "Cement, sand, gravel, and water", "Metal only", "Plastic"], correct: 1 },
+                { q: "🔨 What is a lap joint?", options: ["Two pieces meeting at ends", "Two pieces overlapping", "Curved joint", "No joint"], correct: 1 },
+                { q: "🪵 Why do we sand wood?", options: ["To make it rough", "To smooth the surface", "To change color", "To make it wet"], correct: 1 },
+                { q: "🔩 What is a washer?", options: ["Cleaning tool", "Flat metal ring used with bolt", "Type of nail", "Glue"], correct: 1 },
+                { q: "🏗️ What holds bricks together in a wall?", options: ["Tape", "Mortar (cement mixture)", "Glue", "Nothing"], correct: 1 },
+                { q: "🪵 What is varnish used for?", options: ["Cutting wood", "Protecting and finishing wood surface", "Measuring", "Joining wood"], correct: 1 },
+                { q: "🔨 What is a housing joint?", options: ["Overlapping joint", "One piece fits into a groove in another", "End joint", "Curved joint"], correct: 1 },
+                { q: "🧱 What is a lintel?", options: ["Floor support", "Horizontal support above doors/windows", "Foundation", "Roof"], correct: 1 },
+                { q: "🪵 What does 'grain' mean in wood?", options: ["Weight", "Pattern of wood fibers", "Color", "Smell"], correct: 1 },
+                { q: "🔩 What is the purpose of a joint in construction?", options: ["Decoration", "Connect two or more pieces", "Measure", "Cut"], correct: 1 },
+                { q: "🏗️ What material is transparent and used in windows?", options: ["Wood", "Metal", "Glass", "Brick"], correct: 2 },
+                { q: "🪵 What is MDF (Medium Density Fibreboard)?", options: ["Natural solid wood", "Engineered wood made from wood fibres and resin", "Type of metal", "Type of plastic"], correct: 1 }
+            ],
+            level4: [
+                { q: "⚙️ What is a simple machine?", options: ["Computer", "Device that makes work easier", "Complex robot", "Electric tool"], correct: 1 },
+                { q: "🔧 Which is an example of a simple machine?", options: ["Smartphone", "Lever, pulley, wheel", "Computer", "Television"], correct: 1 },
+                { q: "🎢 What is a lever?", options: ["A weight", "Rigid bar that pivots on a fulcrum", "A wheel", "A rope"], correct: 1 },
+                { q: "🏋️ What are the three parts of a lever?", options: ["Top, middle, bottom", "Fulcrum, load, effort", "Left, right, center", "Start, middle, end"], correct: 1 },
+                { q: "🛞 What is a wheel and axle?", options: ["Two separate parts", "Wheel attached to a rod (axle)", "Two wheels", "A lever"], correct: 1 },
+                { q: "🔺 What is an inclined plane?", options: ["Flat surface", "Sloping surface (ramp)", "Vertical surface", "Curved surface"], correct: 1 },
+                { q: "🪝 What is a pulley?", options: ["A hammer", "Wheel with rope/cable for lifting", "A lever", "A ramp"], correct: 1 },
+                { q: "🔩 What is a screw (as a simple machine)?", options: ["Fastener only", "Inclined plane wrapped around a rod", "A pulley", "A lever"], correct: 1 },
+                { q: "⛏️ What is a wedge?", options: ["Round object", "Triangular tool that splits things", "Flat surface", "Wheel"], correct: 1 },
+                { q: "⚡ What is electricity?", options: ["Water flow", "Flow of electric charge", "Heat", "Light only"], correct: 1 },
+                { q: "🔋 What is a battery?", options: ["Light source", "Device that stores electrical energy", "Wire", "Switch"], correct: 1 },
+                { q: "💡 What is a circuit?", options: ["Circle shape", "Complete path for electricity to flow", "Wire only", "Battery only"], correct: 1 },
+                { q: "🔌 What is a conductor?", options: ["Material that blocks electricity", "Material that allows electricity to flow", "Insulator", "Battery"], correct: 1 },
+                { q: "🚫 What is an insulator?", options: ["Material allowing electricity", "Material blocking electricity flow", "Conductor", "Battery"], correct: 1 },
+                { q: "💡 Which material is a good conductor?", options: ["Plastic", "Rubber", "Copper wire", "Wood"], correct: 2 },
+                { q: "🔌 Which is a good insulator?", options: ["Metal", "Copper", "Plastic/Rubber", "Water"], correct: 2 },
+                { q: "🔴 What does a switch do?", options: ["Creates electricity", "Opens or closes a circuit", "Stores electricity", "Measures electricity"], correct: 1 },
+                { q: "⚙️ What is mechanical advantage?", options: ["Being strong", "How much a machine multiplies force", "Speed only", "Weight"], correct: 1 },
+                { q: "🔧 What is friction?", options: ["Smooth movement", "Force that resists motion between surfaces", "Speed", "Weight"], correct: 1 },
+                { q: "⚡ What happens in a series circuit?", options: ["Multiple paths", "Components connected in single path", "No connection", "Parallel paths"], correct: 1 },
+                { q: "⚡ What happens in a parallel circuit?", options: ["Single path", "Multiple paths for electricity", "No electricity flows", "Components in line"], correct: 1 },
+                { q: "🔋 What are the two ends of a battery called?", options: ["Left and right", "Positive and negative terminals", "Top and bottom", "Front and back"], correct: 1 },
+                { q: "⚙️ What is a gear?", options: ["Lever", "Toothed wheel that meshes with another", "Pulley", "Ramp"], correct: 1 },
+                { q: "💡 What happens to bulbs in a series circuit when one is removed?", options: ["Others glow brighter", "Others stay on", "All others go out", "Nothing changes"], correct: 2 },
+                { q: "🔧 What is the unit of measuring electrical current?", options: ["Volts", "Watts", "Amperes", "Ohms"], correct: 2 }
+            ],
+            level5: [
+                { q: "💡 What is innovation?", options: ["Copying others", "Creating new ideas or improving existing ones", "Following rules only", "Avoiding change"], correct: 1 },
+                { q: "🎯 What is design thinking?", options: ["Random thoughts", "Problem-solving approach focused on user needs", "Artistic thinking only", "Mathematical thinking"], correct: 1 },
+                { q: "📋 What is the first step in solving a technical problem?", options: ["Build immediately", "Identify and understand the problem", "Test solution", "Celebrate"], correct: 1 },
+                { q: "🔍 What is prototyping?", options: ["Final product", "Creating early model to test ideas", "Documentation", "Problem statement"], correct: 1 },
+                { q: "🧪 Why do we test prototypes?", options: ["Waste time", "Find and fix problems before final product", "Look busy", "No reason"], correct: 1 },
+                { q: "🤔 What is brainstorming?", options: ["One person's idea", "Group generating many ideas quickly", "Final decision", "Testing"], correct: 1 },
+                { q: "📊 What is project planning?", options: ["Random work", "Organizing tasks, time, and resources", "Building only", "Drawing only"], correct: 1 },
+                { q: "♻️ What does sustainability mean in design?", options: ["Using everything once", "Meeting needs without harming future", "Wasting resources", "Ignoring environment"], correct: 1 },
+                { q: "🎨 What is ergonomics?", options: ["Art style", "Designing for human comfort and efficiency", "Mathematics", "Color theory"], correct: 1 },
+                { q: "📱 What is appropriate technology?", options: ["Most expensive tech", "Technology suited to local needs and resources", "Any technology", "Imported tech only"], correct: 1 },
+                { q: "🔧 What is reverse engineering?", options: ["Going backwards", "Taking apart to understand how it works", "Breaking things", "Normal engineering"], correct: 1 },
+                { q: "📈 What is iteration in design?", options: ["Doing once", "Repeating and improving design", "Giving up", "Starting over completely"], correct: 1 },
+                { q: "🎯 What is a constraint in project design?", options: ["Freedom", "Limitation like budget, time, materials", "Advantage", "Tool"], correct: 1 },
+                { q: "💭 What is creativity in technical studies?", options: ["Copying", "Thinking of original solutions", "Following instructions only", "Avoiding work"], correct: 1 },
+                { q: "📐 What is CAD?", options: ["Careful And Dangerous", "Computer-Aided Design", "Creative Art Drawing", "Cannot Add Details"], correct: 1 },
+                { q: "🔄 What is the design process?", options: ["Random steps", "Systematic steps from problem to solution", "Building only", "Testing only"], correct: 1 },
+                { q: "🌍 What is environmental impact in design?", options: ["No concern", "Effect of product on environment", "Cost only", "Appearance"], correct: 1 },
+                { q: "🤝 What is collaboration in projects?", options: ["Working alone", "Working together as a team", "Competing", "Avoiding others"], correct: 1 },
+                { q: "📋 What is documentation in projects?", options: ["Ignoring details", "Recording process, decisions, and results", "Hiding information", "Verbal only"], correct: 1 },
+                { q: "🎯 What is quality control?", options: ["Ignoring mistakes", "Ensuring product meets standards", "Speed only", "Appearance only"], correct: 1 },
+                { q: "💡 What is troubleshooting?", options: ["Creating problems", "Identifying and solving problems", "Giving up", "Ignoring issues"], correct: 1 },
+                { q: "🔧 What skills does a technician need?", options: ["Knowledge only", "Practical skills, problem-solving, communication", "Theory only", "Nothing"], correct: 1 },
+                { q: "🚀 What is automation?", options: ["Manual work", "Using machines to do tasks automatically", "Slower work", "Human work only"], correct: 1 },
+                { q: "📱 How has technology improved communication in Kenya?", options: ["Made it worse", "Mobile phones, internet, M-PESA", "Removed all communication", "No change"], correct: 1 },
+                { q: "🌍 What is the main goal of the CBC curriculum in technical studies?", options: ["Memorizing facts only", "Applying practical skills to solve real-life problems", "Theory and exams only", "Drawing pictures only"], correct: 1 }
+            ]
+        };
+
+        const levelTitles = {
+            1: "🔨 Level 1: Tools & Safety",
+            2: "📐 Level 2: Design & Drawing",
+            3: "🔩 Level 3: Materials & Construction",
+            4: "⚙️ Level 4: Mechanics & Systems",
+            5: "🚀 Level 5: Innovation & Projects"
+        };
+
+        let currentLevel = 1;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+
+        function startGame(level) {
+            currentLevel = level;
+            currentQuestionIndex = 0;
+            score = 0;
+            correctCount = 0;
+
+            currentQuestions = questions[`level${level}`];
+
+            document.querySelector('.menu-screen').classList.remove('active');
+            document.querySelector('.game-screen').classList.add('active');
+            
+            document.getElementById('levelTitle').textContent = levelTitles[level];
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const question = currentQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.q;
+            document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = currentQuestions.length;
+            document.getElementById('currentScore').textContent = score;
+
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btn) {
+            const question = currentQuestions[currentQuestionIndex];
+            const allButtons = document.querySelectorAll('.option-btn');
+            
+            allButtons.forEach(button => button.disabled = true);
+
+            if (selectedIndex === question.correct) {
+                btn.classList.add('correct');
+                score += 10;
+                correctCount++;
+                document.getElementById('currentScore').textContent = score;
+            } else {
+                btn.classList.add('wrong');
+                allButtons[question.correct].classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1800);
+        }
+
+        function showResults() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.add('active');
+
+            const percentage = Math.round((correctCount / currentQuestions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctAnswers').textContent = correctCount;
+            document.getElementById('totalQuestionsResult').textContent = currentQuestions.length;
+            document.getElementById('percentage').textContent = percentage;
+
+            let title, feedback, emoji;
+            if (percentage >= 95) {
+                title = "🌟 Master Builder!";
+                feedback = "Outstanding! You're a technical genius! Your skills are exceptional! 🔧🏆";
+                emoji = "👑";
+            } else if (percentage >= 85) {
+                title = "🎉 Expert Engineer!";
+                feedback = "Amazing work! You have excellent technical knowledge! Keep building! 🚀";
+                emoji = "🔧";
+            } else if (percentage >= 75) {
+                title = "👍 Great Technician!";
+                feedback = "Very good! You're developing strong technical skills! Keep learning! 💪";
+                emoji = "⚙️";
+            } else if (percentage >= 65) {
+                title = "👏 Good Progress!";
+                feedback = "Well done! You're building your technical knowledge steadily! Practice more! 📚";
+                emoji = "🔨";
+            } else if (percentage >= 50) {
+                title = "🌱 Keep Building!";
+                feedback = "You're on the right track! Review the concepts and try again! 🛠️";
+                emoji = "💡";
+            } else {
+                title = "🔄 Try Again!";
+                feedback = "Don't give up! Every expert builder started somewhere. Keep learning! 🌟";
+                emoji = "📐";
+            }
+
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('feedback').textContent = feedback;
+            document.getElementById('resultsEmoji').textContent = emoji;
+        }
+
+        function goToMenu() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.remove('active');
+            document.querySelector('.menu-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>

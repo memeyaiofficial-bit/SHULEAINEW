@@ -7,8 +7,45 @@
 
     <!-- External CSS -->
     <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      #global-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #ffffff;
+        z-index: 999999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        transition: opacity 0.5s ease;
+      }
+      .loader-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #e3f2fd;
+        border-top: 5px solid #2e7d4a;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      #global-loader h2 {
+        margin-top: 20px;
+        color: #2e7d4a;
+        font-family: Arial, sans-serif;
+      }
+    </style>
   </head>
   <body>
+    <div id="global-loader">
+      <div class="loader-spinner"></div>
+      <h2>Shule AI Plus +</h2>
+    </div>
     <!-- Landing Page / Sign In Gate -->
     <div id="landing-page" class="landing-page">
       <div class="landing-container">
@@ -42,15 +79,6 @@
           <div class="pricing-section">
             <h2>Choose Your Plan</h2>
             <div class="pricing-cards">
-              <div class="pricing-card" style="opacity: 0.85; border: 2px dashed #999;">
-                <h3>Test Plan</h3>
-                <div class="price">KES 5</div>
-                <ul class="features-list">
-                  <li>✓ Test M-Pesa</li>
-                  <li>✓ 1 day access</li>
-                  <li>✓ Demo purposes</li>
-                </ul>
-              </div>
               <div class="pricing-card">
                 <h3>Weekly Access</h3>
                 <div class="price">KES 200</div>
@@ -223,7 +251,6 @@
                 <label for="planType">Subscription Plan *</label>
                 <select id="planType" name="planType" required style="width: 100%; padding: 1rem; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; background: white;">
                   <option value="">Select a plan</option>
-                  <option value="test">Test Plan - KES 5 (1 day)</option>
                   <option value="weekly">Weekly - KES 200</option>
                   <option value="monthly">Monthly - KES 600</option>
                   <option value="termly">Termly (3 Months) - KES 1650</option>
@@ -11440,7 +11467,7 @@
         // Configure backend API URL - UPDATE THIS FOR YOUR ENVIRONMENT
         // For development: use http://localhost:5000 (local backend)
         // For production: use your backend URL (e.g., https://shuleaibackend-0fcq.onrender.com)
-        const API_BASE_URL = 'http://localhost:5000';  // ← CHANGE THIS to your backend URL
+        const API_BASE_URL = 'https://shuleaiv1.onrender.com';  // ← CHANGE THIS to your backend URL
         
         console.log('🔗 API Base URL configured as:', API_BASE_URL);
 

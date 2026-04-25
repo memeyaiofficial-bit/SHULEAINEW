@@ -45,6 +45,15 @@ window.addEventListener("DOMContentLoaded", () => {
   const accessType = localStorage.getItem("shuleai_access_type");
   const expiryTime = localStorage.getItem("shuleai_access_expiry");
 
+  // Hide the global loader
+  const loader = document.getElementById("global-loader");
+  if (loader) {
+    loader.style.opacity = "0";
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 500);
+  }
+
   if (isSignedIn === "true" && accessCode) {
     // Check if it's a special code and if it has expired
     if (accessType === "special" && expiryTime) {
