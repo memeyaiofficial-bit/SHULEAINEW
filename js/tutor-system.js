@@ -1,7 +1,7 @@
 // Tutor System Frontend API Integration
 // Production-ready JavaScript for ShuleAI Tutor System
 
-const API_BASE = "https://shuleaiv1.onrender.com/api"; // Update this to your backend URL
+const API_BASE = "https://shuleaibackend-rpe3.onrender.com/api"; // Update this to your backend URL
 
 // Plus Modal Management
 let currentUserRole = null;
