@@ -8,6 +8,9 @@ require("dotenv").config();
 
 const app = express();
 
+// Trust proxy - required when deployed behind a reverse proxy (e.g. Render, Heroku, Nginx)
+app.set("trust proxy", 1);
+
 // Security middleware
 app.use(helmet());
 app.use(
@@ -18,7 +21,8 @@ app.use(
       "https://your-frontend-domain.com",
       "http://127.0.0.1:5502",
       "https://shule.memeyai.com",
-      "https://shuleaibackend-0fcq.onrender.com",
+      "https://shuleaiadmin.memeyai.com",
+      "https://shuleaibackend-rpe3.onrender.com",
     ],
     credentials: true,
   }),

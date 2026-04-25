@@ -13,9 +13,9 @@ class EmailService {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
+      connectionTimeout: 120000,
+      greetingTimeout: 120000,
+      socketTimeout: 120000,
       tls: {
         rejectUnauthorized: false,
       },
@@ -37,16 +37,23 @@ class EmailService {
 
     this.transporter = nodemailer.createTransport(transportConfig);
 
-    // Verify connection configuration
+    // Verify connection configuration (non-blocking)
     this.verifyConnection();
   }
 
   async verifyConnection() {
     try {
-      await this.transporter.verify();
+      // Add a timeout to prevent hanging on production (1 hour for Render)
+      const verifyPromise = this.transporter.verify();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Verification timeout")), 3600000),
+      );
+
+      await Promise.race([verifyPromise, timeoutPromise]);
       console.log("✅ SMTP connection verified");
     } catch (error) {
       console.warn("⚠️ SMTP connection warning:", error.message);
+      console.log("📧 Email service will retry on first message send");
     }
   }
 
@@ -692,88 +699,6 @@ Thank you for choosing ShuleAI!
       return { success: false, error: error.message };
     }
   }
-
-  /* async sendActivationConfirmation(paymentData) {
-    const plan = SUBSCRIPTION_PLANS[paymentData.planType];
-    const expiresAt = new Date(paymentData.expires_at);
-
-    const mailOptions = {
-      from: `"ShuleAI" <${process.env.EMAIL_USER}>`,
-      to: paymentData.email,
-      subject: `🎉 Your ShuleAI Subscription is Now Active!`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: linear-gradient(135deg, #4caf50, #2e7d4a); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                .success-icon { font-size: 4rem; margin: 20px 0; }
-                .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
-                .cta-button { display: inline-block; background: #4caf50; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; }
-                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 0.9rem; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <div class="success-icon">✅</div>
-                    <h1>Subscription Activated!</h1>
-                    <p>Your ShuleAI access is now active</p>
-                </div>
-                <div class="content">
-                    <h2>Welcome to ShuleAI Premium, ${
-                      paymentData.full_name
-                    }!</h2>
-                    
-                    <p>Your <strong>${
-                      plan.name
-                    }</strong> subscription has been verified and activated.</p>
-                    
-                    <h3>Your Subscription Details:</h3>
-                    <ul>
-                        <li><strong>Plan:</strong> ${plan.name}</li>
-                        <li><strong>Expires:</strong> ${expiresAt.toLocaleDateString()}</li>
-                        <li><strong>Days Remaining:</strong> ${Math.ceil(
-                          (expiresAt - new Date()) / (1000 * 60 * 60 * 24)
-                        )} days</li>
-                        <li><strong>Access Level:</strong> Full access to all games and features</li>
-                    </ul>
-                    
-                    <a href="${
-                      process.env.FRONTEND_URL || "http://localhost:5500"
-                    }" class="cta-button">
-                        Start Playing Now! 🎮
-                    </a>
-                    
-                    <p><strong>Need Help?</strong></p>
-                    <ul>
-                        <li>Email: ${process.env.SUPPORT_EMAIL}</li>
-                        <li>WhatsApp: ${SUPPORT_WHATSAPP}</li>
-                        <li>Website: ${
-                          process.env.FRONTEND_URL || "http://localhost:5500"
-                        }</li>
-                    </ul>
-                    
-                    <div class="footer">
-                        <p>Happy learning!<br>The ShuleAI Team</p>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-      `,
-    };
-
-    try {
-      await this.transporter.sendMail(mailOptions);
-      return { success: true };
-    } catch (error) {
-      console.error("Activation Email Error:", error);
-      return { success: false, error: error.message };
-    }
-  } */
 }
 
 module.exports = new EmailService();
